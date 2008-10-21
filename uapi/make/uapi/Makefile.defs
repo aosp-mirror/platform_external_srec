@@ -1,0 +1,918 @@
+###############################################################################
+# Defines $(UAPI_GLOBAL_DEFINES) (among other things) that specify a build.
+#
+# !!! NOTE:	This file must be kept synchronized with builddef.h
+# !!!		Also the values of $(UAPI_OPTIMIZE), $(UAPI_PROFILE), & $(UAPI_TRACE) must
+# !!!		be compatible with the corresponding values in buildddef.h
+#
+# Required macros set in macros.mak:
+#	$(UAPI_OS)			The name of the operating system.
+#	$(UAPI_CPU)			The name of the CPU architecture.
+#	$(UAPI_COMPILER)		The name of the compiler.
+#	$(UAPI_BUILD)		A string that defines what type of build to perform.
+#	$(UAPI_UI)			The name of the type of user interface.
+#
+# The important macros defined herein are:
+# *	$(UAPI_GLOBAL_DEFINES)The compiler defines based on the values of:
+#					$(UAPI_OS), $(UAPI_CPU), $(UAPI_COMPILER), $(UAPI_BUILD), & $(UAPI_UI).
+# *	$(UAPI_SUB_DIR)		The object, library, & binary sub-directory name.
+# *	$(UAPI_OPTIMIZE)		Used by $(UAPI_COMPILER_CHAR)flags.mak to enable optimization.
+# *	$(UAPI_PROFILE)		Used by $(UAPI_COMPILER_CHAR)flags.mak to enable profiling.
+# *	$(UAPI_TRACE)		Used by $(UAPI_COMPILER_CHAR)flags.mak to enable tracing.
+#
+# Other macros incidentally valid on exit:
+# *	$(UAPI_OS_TYPE)		Value corresponding to the type of operating system.
+#	$(UAPI_CPU_TYPE)		Value corresponding to the type of CPU architecture.
+#	$(UAPI_COMPILER_TYPE)Value corresponding to the type of compiler.
+# *	$(UAPI_BUILD_TYPE)	Value corresponding to the type of build to perform.
+#	$(UAPI_UI_TYPE)		Value corresponding to the type of user interface.
+#	$(UAPI_OS_CHAR)		Character corresponding to the type of operating system.
+#	$(UAPI_CPU_CHARS)	Characters corresponding to the type of CPU architecture.
+# *	$(UAPI_COMPILER_CHAR)Character corresponding to the type of compiler.
+#	$(UAPI_BUILD_CHAR)	Character corresponding to the type of build to perform.
+#	$(UAPI_OS_MSDOS)		Value associated with $(UAPI_OS_CHAR) = D.
+#	$(UAPI_OS_WIN32)		Value associated with $(UAPI_OS_CHAR) = W.
+#	$(UAPI_OS_MAC)		Value associated with $(UAPI_OS_CHAR) = M.
+#	$(UAPI_OS_UNIX)		Value associated with $(UAPI_OS_CHAR) = U.
+#	$(UAPI_OS_EMBEDDED)	Value associated with $(UAPI_OS_CHAR) = E.
+#	$(UAPI_OS_VXWORKS)	Value associated with $(UAPI_OS_CHAR) = V.
+#	$(UAPI_OS_QNX)		Value associated with $(UAPI_OS_CHAR) = Q.
+#	$(UAPI_OS_PSOS)		Value associated with $(UAPI_OS_CHAR) = S.
+#	$(UAPI_OS_WINCE)		Value associated with $(UAPI_OS_CHAR) = C.
+#	$(UAPI_OS_PALM)		Value associated with $(UAPI_OS_CHAR) = P.
+#	$(UAPI_OS_JAVA)		Value associated with $(UAPI_OS_CHAR) = J.
+#	$(UAPI_CPU_I86)		Value associated with $(UAPI_CPU_CHARS) = IN.
+#	$(UAPI_CPU_68K)		Value associated with $(UAPI_CPU_CHARS) = MO.
+#	$(UAPI_CPU_MIPS)		Value associated with $(UAPI_CPU_CHARS) = MI.
+#	$(UAPI_CPU_ALPHA)	Value associated with $(UAPI_CPU_CHARS) = AL.
+#	$(UAPI_CPU_PPC)		Value associated with $(UAPI_CPU_CHARS) = PP.
+#	$(UAPI_CPU_SPARC)	Value associated with $(UAPI_CPU_CHARS) = SP.
+#	$(UAPI_CPU_ARM)		Value associated with $(UAPI_CPU_CHARS) = AR.
+#	$(UAPI_CPU_STRONGARM)Value associated with $(UAPI_CPU_CHARS) = SA.
+#	$(UAPI_CPU_TMS320X)	Value associated with $(UAPI_CPU_CHARS) = TI.
+#	$(UAPI_CPU_SH3)		Value associated with $(UAPI_CPU_CHARS) = HI.
+#	$(UAPI_CPU_SH4)		Value associated with $(UAPI_CPU_CHARS) = HI.
+#	$(UAPI_CPU_FAMILY_TMS320C30)Value associated with $(UAPI_CPU_FAMILY) = 3.
+#	$(UAPI_CPU_FAMILY_TMS320C40)Value associated with $(UAPI_CPU_FAMILY) = 4.
+#	$(UAPI_CPU_FAMILY_TMS320C2XX)Value associated with $(UAPI_CPU_FAMILY) = 2.
+#	$(UAPI_CPU_FAMILY_TMS320C54X)Value associated with $(UAPI_CPU_FAMILY) = 5.
+#	$(UAPI_C_BORLAND)	Value associated with $(UAPI_COMPILER_CHAR) = B.
+#	$(UAPI_C_MICROSOFT)	Value associated with $(UAPI_COMPILER_CHAR) = M.
+#	$(UAPI_C_HIGH)		Value associated with $(UAPI_COMPILER_CHAR) = H.
+#	$(UAPI_C_INTEL)		Value associated with $(UAPI_COMPILER_CHAR) = I.
+#	$(UAPI_C_ZORTECH)	Value associated with $(UAPI_COMPILER_CHAR) = Z.
+#	$(UAPI_C_WATCOM)		Value associated with $(UAPI_COMPILER_CHAR) = W.
+#	$(UAPI_C_GNU)		Value associated with $(UAPI_COMPILER_CHAR) = G.
+#	$(UAPI_C_SUNPRO)		Value associated with $(UAPI_COMPILER_CHAR) = S.
+#	$(UAPI_C_DECCXX)		Value associated with $(UAPI_COMPILER_CHAR) = D.
+#	$(UAPI_C_METROWERKS)	Value associated with $(UAPI_COMPILER_CHAR) = C.
+#	$(UAPI_C_GHS)		Value associated with $(UAPI_COMPILER_CHAR) = X.
+#	$(UAPI_C_TICXC)		Value associated with $(UAPI_COMPILER_CHAR) = T.
+#	$(UAPI_C_ARM)		Value associated with $(UAPI_COMPILER_CHAR) = A.
+#	$(UAPI_BUILD_SHIP)	Value associated with $(UAPI_BUILD_CHAR) = S.
+#	$(UAPI_BUILD_INHOUSE)Value associated with $(UAPI_BUILD_CHAR) = I.
+#	$(UAPI_BUILD_DEBUGO)	Value associated with $(UAPI_BUILD_CHAR) = G.
+#	$(UAPI_BUILD_DEBUG)	Value associated with $(UAPI_BUILD_CHAR) = X.
+#	$(UAPI_BUILD_PROFILE)Value associated with $(UAPI_BUILD_CHAR) = P.
+#	$(UAPI_BUILD_TRACE)	Value associated with $(UAPI_BUILD_CHAR) = L.
+#
+# !!! NOTE:	Should these UI macros be used?
+#
+#	$(UAPI_UI_NONE)
+#	$(UAPI_UI_TTY)
+#	$(UAPI_UI_GUI)
+#
+# Optional (for certain values of $(UAPI_CPU)) macros used herein:
+#	$(UAPI_CPU_FAMILY)	OPTIONAL single-character name of the $(UAPI_CPU) family.
+#
+# Optional (for certain values of $(UAPI_CPU)) macros defined herein:
+# *	$(UAPI_CPU_FAMILY_TYPE)For OPTIONAL CPU-specifics in $(UAPI_COMPILER_CHAR)flags.mak.
+#
+# *	Used outside of this makefile. All macros with the suffix ``_TYPE''
+#	used outside of this makefile can be &ed with macros with the
+#	corresponding prefix. Threfore it is implied that those macros are
+#	also available outside of this makefile.
+###############################################################################
+
+# Makefile.config configures the ASR build.  Include this first!
+include $(UAPI_MAKE_DIR)/Makefile.config
+
+# Makefile.common contains settings available to all ASR modules
+include $(UAPI_MAKE_DIR)/Makefile.common
+
+# Define $(UAPI_OS_*), $(UAPI_CPU_*), $(UAPI_COMPILER_*), $(UAPI_BUILD_*) & $(UAPI_UI_*) values.
+
+# OS
+
+UAPI_OS_MSDOS = 1
+UAPI_OS_WIN32 = 2
+UAPI_OS_MAC = 4
+UAPI_OS_UNIX = 8
+UAPI_OS_EMBEDDED = 16
+UAPI_OS_VXWORKS = 32
+UAPI_OS_PSOS = 64
+UAPI_OS_WINCE = 128
+UAPI_OS_PALM = 256
+UAPI_OS_JAVA = 512
+UAPI_OS_QNX = 1024
+
+# CPU
+
+UAPI_CPU_I86 = 1
+UAPI_CPU_68K = 2
+UAPI_CPU_MIPS = 4
+UAPI_CPU_ALPHA = 8
+UAPI_CPU_PPC = 16
+UAPI_CPU_SPARC = 32
+UAPI_CPU_ARM = 64
+UAPI_CPU_STRONGARM = 128
+UAPI_CPU_TMS320X = 256
+UAPI_CPU_SH3 = 512
+UAPI_CPU_SH4 = 1024
+
+# Used only by TFLAGS.MAK.
+
+UAPI_CPU_FAMILY_TMS320C30 = 1
+UAPI_CPU_FAMILY_TMS320C40 = 2
+UAPI_CPU_FAMILY_TMS320C2XX = 4
+UAPI_CPU_FAMILY_TMS320C54X = 8
+
+# COMPILER
+
+UAPI_C_BORLAND = 1
+UAPI_C_MICROSOFT = 2
+UAPI_C_INTEL = 4
+UAPI_C_HIGH = 8
+UAPI_C_ZORTECH = 16
+UAPI_C_WATCOM = 32
+UAPI_C_GNU = 64
+UAPI_C_SUNPRO = 128
+UAPI_C_DECCXX = 256
+UAPI_C_METROWERKS = 512
+UAPI_C_GHS = 1024
+UAPI_C_TICXC = 2048
+UAPI_C_ARM = 4096
+UAPI_C_DIABDATA = 8192
+
+# BUILD (must be synchronized with vcc_helper.h included by buildopt.h)
+
+UAPI_BUILD_SHIP = 1
+UAPI_BUILD_INHOUSE = 2
+UAPI_BUILD_DEBUGO = 4
+UAPI_BUILD_DEBUG = 8
+UAPI_BUILD_PROFILE = 16
+UAPI_BUILD_TRACE = 32
+
+UAPI_OFF = 0
+
+# UI
+
+UAPI_UI_NONE = 1
+UAPI_UI_TTY = 2
+UAPI_UI_GUI = 4
+
+########################################################################
+#
+# Define $(UAPI_*_TYPE) and $(UAPI_*_CHAR[S]) to be used to define $(UAPI_GLOBAL_DEFINES)
+# and $(UAPI_SUB_DIR).
+
+################################## OS ##################################
+
+ifeq ("$(UAPI_OS)","MSDOS")
+UAPI_OS_TYPE = $(UAPI_OS_MSDOS)
+
+else								# same as OS = "Windows_NT"
+ifeq ("$(UAPI_OS)","WIN32")
+UAPI_OS_TYPE = $(UAPI_OS_WIN32)
+
+else								# same as OS = "WIN32"
+ifeq ("$(UAPI_OS)","Windows_NT")
+UAPI_OS_TYPE = $(UAPI_OS_WIN32)
+
+else
+ifeq ("$(UAPI_OS)","MAC")
+UAPI_OS_TYPE = $(UAPI_OS_MAC)
+
+else
+ifeq ("$(UAPI_OS)","UNIX")
+UAPI_OS_TYPE = $(UAPI_OS_UNIX)
+
+else
+ifeq ("$(UAPI_OS)","EMBEDDED")
+UAPI_OS_TYPE = $(UAPI_OS_EMBEDDED)
+
+else
+ifeq ("$(UAPI_OS)","VXWORKS")
+UAPI_OS_TYPE = $(UAPI_OS_VXWORKS)
+
+else
+ifeq ("$(UAPI_OS)","PSOS")
+UAPI_OS_TYPE = $(UAPI_OS_PSOS)
+
+else
+ifeq ("$(UAPI_OS)","Wince")
+UAPI_OS_TYPE = $(UAPI_OS_WINCE)
+
+else
+ifeq ("$(UAPI_OS)","PALM")
+UAPI_OS_TYPE = $(UAPI_OS_PALM)
+
+else
+ifeq ("$(UAPI_OS)","JAVA")
+UAPI_OS_TYPE = $(UAPI_OS_JAVA)
+
+else
+ifeq ("$(UAPI_OS)","QNX")
+UAPI_OS_TYPE = $(UAPI_OS_QNX)
+
+else
+ERROR += \
+$(subst $(space),|,'Failed to select operating system with $$(UAPI_OS) == "$(UAPI_$(UAPI_OS))"')
+UAPI_OS_TYPE = UAPI_BAD_OS
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+
+
+################################## HOST_OS ##################################
+
+ifeq ("$(UAPI_HOST_OS)","MSDOS")
+UAPI_HOST_OS_TYPE = $(UAPI_OS_MSDOS)
+
+else								# same as OS = "Windows_NT"
+ifeq ("$(UAPI_HOST_OS)","WIN32")
+UAPI_HOST_OS_TYPE = $(UAPI_OS_WIN32)
+
+else								# same as OS = "WIN32"
+ifeq ("$(UAPI_HOST_OS)","Windows_NT")
+UAPI_HOST_OS_TYPE = $(UAPI_OS_WIN32)
+
+else
+ifeq ("$(UAPI_HOST_OS)","MAC")
+UAPI_HOST_OS_TYPE = $(UAPI_OS_MAC)
+
+else
+ifeq ("$(UAPI_HOST_OS)","UNIX")
+UAPI_HOST_OS_TYPE = $(UAPI_OS_UNIX)
+
+else
+ifeq ("$(UAPI_HOST_OS)","EMBEDDED")
+UAPI_HOST_OS_TYPE = $(UAPI_OS_EMBEDDED)
+
+else
+ifeq ("$(UAPI_HOST_OS)","VXWORKS")
+UAPI_HOST_OS_TYPE = $(UAPI_OS_VXWORKS)
+
+else
+ifeq ("$(UAPI_HOST_OS)","PSOS")
+UAPI_HOST_OS_TYPE = $(UAPI_OS_PSOS)
+
+else
+ifeq ("$(UAPI_HOST_OS)","Wince")
+UAPI_HOST_OS_TYPE = $(UAPI_OS_WINCE)
+
+else
+ifeq ("$(UAPI_HOST_OS)","PALM")
+UAPI_HOST_OS_TYPE = $(UAPI_OS_PALM)
+
+else
+ifeq ("$(UAPI_HOST_OS)","JAVA")
+UAPI_HOST_OS_TYPE = $(UAPI_OS_JAVA)
+
+else
+ifeq ("$(UAPI_HOST_OS)","QNX")
+UAPI_HOST_OS_TYPE = $(UAPI_OS_QNX)
+
+else
+ERROR += \
+$(subst $(space),|,'Failed to select operating system with $$(UAPI_HOST_OS) == "$(UAPI_HOST_OS)"')
+UAPI_HOST_OS_TYPE = UAPI_BAD_OS
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+
+################################## TARGET_OS ##################################
+
+ifeq ("$(UAPI_TARGET_OS)","MSDOS")
+UAPI_TARGET_OS_TYPE = $(UAPI_OS_MSDOS)
+
+else								# same as OS = "Windows_NT"
+ifeq ("$(UAPI_TARGET_OS)","WIN32")
+UAPI_TARGET_OS_TYPE = $(UAPI_OS_WIN32)
+
+else								# same as OS = "WIN32"
+ifeq ("$(UAPI_TARGET_OS)","Windows_NT")
+UAPI_TARGET_OS_TYPE = $(UAPI_OS_WIN32)
+
+else
+ifeq ("$(UAPI_TARGET_OS)","MAC")
+UAPI_TARGET_OS_TYPE = $(UAPI_OS_MAC)
+
+else
+ifeq ("$(UAPI_TARGET_OS)","UNIX")
+UAPI_TARGET_OS_TYPE = $(UAPI_OS_UNIX)
+
+else
+ifeq ("$(UAPI_TARGET_OS)","EMBEDDED")
+UAPI_TARGET_OS_TYPE = $(UAPI_OS_EMBEDDED)
+
+else
+ifeq ("$(UAPI_TARGET_OS)","VXWORKS")
+UAPI_TARGET_OS_TYPE = $(UAPI_OS_VXWORKS)
+
+else
+ifeq ("$(UAPI_TARGET_OS)","PSOS")
+UAPI_TARGET_OS_TYPE = $(UAPI_OS_PSOS)
+
+else
+ifeq ("$(UAPI_TARGET_OS)","Wince")
+UAPI_TARGET_OS_TYPE = $(UAPI_OS_WINCE)
+
+else
+ifeq ("$(UAPI_TARGET_OS)","PALM")
+UAPI_TARGET_OS_TYPE = $(UAPI_OS_PALM)
+
+else
+ifeq ("$(UAPI_TARGET_OS)","JAVA")
+UAPI_TARGET_OS_TYPE = $(UAPI_OS_JAVA)
+
+else
+ifeq ("$(UAPI_TARGET_OS)","QNX")
+UAPI_TARGET_OS_TYPE = $(UAPI_OS_QNX)
+
+else
+ERROR += \
+$(subst $(space),|,'Failed to select operating system with $$(UAPI_TARGET_OS) == "$(UAPI_TARGET_OS)"')
+UAPI_TARGET_OS_TYPE = UAPI_BAD_OS
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+
+################################## CPU #################################
+
+ifeq ("$(UAPI_CPU)","I86")
+UAPI_CPU_TYPE = $(UAPI_CPU_I86)
+UAPI_CPU_CHARS = in
+
+else
+ifeq ("$(UAPI_CPU)", "SIMNT")
+UAPI_CPU_TYPE = $(UAPI_CPU_I86)
+UAPI_CPU_CHARS = in
+
+else
+ifeq ("$(UAPI_CPU)","68K")
+UAPI_CPU_TYPE = $(UAPI_CPU_68K)
+UAPI_CPU_CHARS = mo
+
+else
+ifeq ("$(UAPI_CPU)","MIPS")
+UAPI_CPU_TYPE = $(UAPI_CPU_MIPS)
+UAPI_CPU_CHARS = mi
+
+else
+ifeq ("$(UAPI_CPU)","ALPHA")
+UAPI_CPU_TYPE = $(UAPI_CPU_ALPHA)
+UAPI_CPU_CHARS = al
+
+else
+ifeq ("$(UAPI_CPU)","PPC")
+UAPI_CPU_TYPE = $(UAPI_CPU_PPC)
+UAPI_CPU_CHARS = pp
+
+else
+ifeq ("$(UAPI_CPU)","SPARC")
+UAPI_CPU_TYPE = $(UAPI_CPU_SPARC)
+UAPI_CPU_CHARS = pp
+
+else
+ifeq ("$(UAPI_CPU)","ARM")
+UAPI_CPU_TYPE = $(UAPI_CPU_ARM)
+UAPI_CPU_CHARS = ar
+
+else
+ifeq ("$(UAPI_CPU)","STRONGARM")
+UAPI_CPU_TYPE = $(UAPI_CPU_STRONGARM)
+UAPI_CPU_CHARS = sa
+
+else
+ifeq ("$(UAPI_CPU)","TMS320X")
+UAPI_CPU_TYPE = $(UAPI_CPU_TMS320X)
+UAPI_CPU_CHARS = ti
+
+ifndef CPU_FAMILY
+CPU_FAMILY_TYPE = 0
+MESSAGE += \
+$(subst $(space),|,'$$(UAPI_CPU_FAMILY_TYPE) defaulted to "$(UAPI_CPU_FAMILY_TYPE)"')
+
+else
+UAPI_CPU_CHARS = T$(UAPI_CPU_FAMILY)
+
+ifeq ("$(UAPI_CPU_FAMILY)","3")
+UAPI_CPU_FAMILY_TYPE = $(UAPI_CPU_FAMILY_TMS320C30)
+
+else
+ifeq ("$(UAPI_CPU_FAMILY)","4")
+UAPI_CPU_FAMILY_TYPE = $(UAPI_CPU_FAMILY_TMS320C40)
+
+else
+ifeq ("$(UAPI_CPU_FAMILY)","2")
+UAPI_CPU_FAMILY_TYPE = $(UAPI_CPU_FAMILY_TMS320C2XX)
+
+else
+ifeq ("$(UAPI_CPU_FAMILY)","5")
+UAPI_CPU_FAMILY_TYPE = $(UAPI_CPU_FAMILY_TMS320C54X)
+
+else
+ERROR += \
+$(subst $(space),|,\
+'Failed to select CPU family with $$(UAPI_CPU_FAMILY) == "$(UAPI_CPU_FAMILY)"')
+UAPI_CPU_FAMILY_TYPE=UAPI_BAD_CPU_FAMILY
+endif
+endif
+endif
+endif
+endif
+
+else
+ifeq ("$(UAPI_CPU)","SH3")
+UAPI_CPU_TYPE = $(UAPI_CPU_SH3)
+UAPI_CPU_CHARS = hi
+
+else
+ifeq ("$(UAPI_CPU)","SH4")
+UAPI_CPU_TYPE = $(UAPI_CPU_SH4)
+UAPI_CPU_CHARS = hi
+
+else
+ERROR += \
+$(subst $(space),|,\
+'Failed to select CPU architecture with $$(UAPI_CPU) == "$(UAPI_$(UAPI_CPU))"')
+UAPI_CPU_TYPE = UAPI_BAD_CPU
+UAPI_CPU_CHARS = UAPI_BAD_CPU
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+
+################################## HOST_CPU #################################
+
+ifeq ("$(UAPI_HOST_CPU)","I86")
+UAPI_HOST_CPU_TYPE = $(UAPI_CPU_I86)
+
+else
+ifeq ("$(UAPI_HOST_CPU)","68K")
+UAPI_HOST_CPU_TYPE = $(UAPI_CPU_68K)
+
+else
+ifeq ("$(UAPI_HOST_CPU)","MIPS")
+UAPI_HOST_CPU_TYPE = $(UAPI_CPU_MIPS)
+
+else
+ifeq ("$(UAPI_HOST_CPU)","ALPHA")
+UAPI_HOST_CPU_TYPE = $(UAPI_CPU_ALPHA)
+
+else
+ifeq ("$(UAPI_HOST_CPU)","PPC")
+UAPI_HOST_CPU_TYPE = $(UAPI_CPU_PPC)
+
+else
+ifeq ("$(UAPI_HOST_CPU)","SPARC")
+UAPI_HOST_CPU_TYPE = $(UAPI_CPU_SPARC)
+
+else
+ifeq ("$(UAPI_HOST_CPU)","ARM")
+UAPI_HOST_CPU_TYPE = $(UAPI_CPU_ARM)
+
+else
+ifeq ("$(UAPI_HOST_CPU)","STRONGARM")
+UAPI_HOST_CPU_TYPE = $(UAPI_CPU_STRONGARM)
+
+else
+ifeq ("$(UAPI_HOST_CPU)","TMS320X")
+UAPI_HOST_CPU_TYPE = $(UAPI_CPU_TMS320X)
+
+ifndef CPU_FAMILY
+UAPI_CPU_FAMILY_TYPE = 0
+MESSAGE += \
+$(subst $(space),|,'$$(UAPI_CPU_FAMILY_TYPE) defaulted to "$(UAPI_CPU_FAMILY_TYPE)"')
+
+else
+
+ifeq ("$(UAPI_CPU_FAMILY)","3")
+UAPI_CPU_FAMILY_TYPE = $(UAPI_CPU_FAMILY_TMS320C30)
+
+else
+ifeq ("$(UAPI_CPU_FAMILY)","4")
+UAPI_CPU_FAMILY_TYPE = $(UAPI_CPU_FAMILY_TMS320C40)
+
+else
+ifeq ("$(UAPI_CPU_FAMILY)","2")
+UAPI_CPU_FAMILY_TYPE = $(UAPI_CPU_FAMILY_TMS320C2XX)
+
+else
+ifeq ("$(UAPI_CPU_FAMILY)","5")
+UAPI_CPU_FAMILY_TYPE = $(UAPI_CPU_FAMILY_TMS320C54X)
+
+else
+ERROR += \
+$(subst $(space),|,\
+'Failed to select CPU family with $$(UAPI_CPU_FAMILY) == "$(UAPI_CPU_FAMILY)"')
+UAPI_CPU_FAMILY_TYPE=UAPI_BAD_CPU_FAMILY
+endif
+endif
+endif
+endif
+endif
+
+else
+ifeq ("$(UAPI_HOST_CPU)","SH3")
+UAPI_HOST_CPU_TYPE = $(UAPI_CPU_SH3)
+
+else
+ifeq ("$(UAPI_HOST_CPU)","SH4")
+UAPI_HOST_CPU_TYPE = $(UAPI_CPU_SH4)
+
+
+else
+ERROR += \
+$(subst $(space),|,\
+'Failed to select CPU architecture with $$(UAPI_HOST_CPU) == "$(UAPI_HOST_CPU)"')
+UAPI_HOST_CPU_TYPE = UAPI_BAD_CPU
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+
+################################## TARGET_CPU #################################
+
+ifeq ("$(UAPI_TARGET_CPU)","I86")
+UAPI_TARGET_CPU_TYPE = $(UAPI_CPU_I86)
+
+else
+ifeq ("$(UAPI_TARGET_CPU)","68K")
+UAPI_TARGET_CPU_TYPE = $(UAPI_CPU_68K)
+
+else
+ifeq ("$(UAPI_TARGET_CPU)","MIPS")
+UAPI_TARGET_CPU_TYPE = $(UAPI_CPU_MIPS)
+
+else
+ifeq ("$(UAPI_TARGET_CPU)","ALPHA")
+UAPI_TARGET_CPU_TYPE = $(UAPI_CPU_ALPHA)
+
+else
+ifeq ("$(UAPI_TARGET_CPU)","PPC")
+UAPI_TARGET_CPU_TYPE = $(UAPI_CPU_PPC)
+
+else
+ifeq ("$(UAPI_TARGET_CPU)","SPARC")
+UAPI_TARGET_CPU_TYPE = $(UAPI_CPU_SPARC)
+
+else
+ifeq ("$(UAPI_TARGET_CPU)","ARM")
+UAPI_TARGET_CPU_TYPE = $(UAPI_CPU_ARM)
+
+else
+ifeq ("$(UAPI_TARGET_CPU)","STRONGARM")
+UAPI_TARGET_CPU_TYPE = $(UAPI_CPU_STRONGARM)
+
+else
+ifeq ("$(UAPI_TARGET_CPU)","TMS320X")
+UAPI_TARGET_CPU_TYPE = $(UAPI_CPU_TMS320X)
+
+ifndef CPU_FAMILY
+UAPI_CPU_FAMILY_TYPE = 0
+MESSAGE += \
+$(subst $(space),|,'$$(UAPI_CPU_FAMILY_TYPE) defaulted to "$(UAPI_CPU_FAMILY_TYPE)"')
+
+else
+
+ifeq ("$(UAPI_CPU_FAMILY)","3")
+UAPI_CPU_FAMILY_TYPE = $(UAPI_CPU_FAMILY_TMS320C30)
+
+else
+ifeq ("$(UAPI_CPU_FAMILY)","4")
+UAPI_CPU_FAMILY_TYPE = $(UAPI_CPU_FAMILY_TMS320C40)
+
+else
+ifeq ("$(UAPI_CPU_FAMILY)","2")
+UAPI_CPU_FAMILY_TYPE = $(UAPI_CPU_FAMILY_TMS320C2XX)
+
+else
+ifeq ("$(UAPI_CPU_FAMILY)","5")
+UAPI_CPU_FAMILY_TYPE = $(UAPI_CPU_FAMILY_TMS320C54X)
+
+else
+ERROR += \
+$(subst $(space),|,\
+'Failed to select CPU family with $$(UAPI_CPU_FAMILY) == "$(UAPI_CPU_FAMILY)"')
+UAPI_CPU_FAMILY_TYPE=UAPI_BAD_CPU_FAMILY
+endif
+endif
+endif
+endif
+endif
+
+else
+ifeq ("$(UAPI_TARGET_CPU)","SH3")
+UAPI_TARGET_CPU_TYPE = $(UAPI_CPU_SH3)
+
+else
+ifeq ("$(UAPI_TARGET_CPU)","SH4")
+UAPI_TARGET_CPU_TYPE = $(UAPI_CPU_SH4)
+
+else
+
+ERROR += \
+$(subst $(space),|,\
+'Failed to select CPU architecture with $$(UAPI_TARGET_CPU) == "$(UAPI_TARGET_CPU)"')
+UAPI_TARGET_CPU_TYPE = UAPI_BAD_CPU
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+
+
+############################### COMPILER ###############################
+#
+# $(UAPI_COMPILER_CHAR) is also used to select which flags makefile to include.
+
+ifeq ("$(UAPI_COMPILER)","BORLAND")		# !!! NOT SURE WHAT STRING TO USE !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_BORLAND)
+
+else								# same as COMPILER = "M$$"
+ifeq ("$(UAPI_COMPILER)","MS")
+UAPI_COMPILER_TYPE = $(UAPI_C_MICROSOFT)
+
+else
+ifeq ("$(UAPI_COMPILER)","INTEL")		# !!! NOT SURE WHAT STRING TO USE !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_INTEL)
+
+else
+ifeq ("$(UAPI_COMPILER)","HIGH")			# !!! NOT SURE WHAT STRING TO USE !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_HIGH)
+
+else
+ifeq ("$(UAPI_COMPILER)","ZORTECH")		# !!! NOT SURE WHAT STRING TO USE !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_ZORTECH)
+
+else
+ifeq ("$(UAPI_COMPILER)","WATCOM")		# !!! NOT SURE WHAT STRING TO USE !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_WATCOM)
+
+else
+ifeq ("$(UAPI_COMPILER)","GNU")			# !!! NOT SURE WHAT STRING TO USE !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_GNU)
+
+else
+ifeq ("$(UAPI_COMPILER)","SUNPRO")		# !!! NOT SURE WHAT STRING TO USE !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_SUNPRO)
+
+else
+ifeq ("$(UAPI_COMPILER)","DECCXX")		# !!! NOT SURE WHAT STRING TO USE !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_DECCXX)
+
+else
+ifeq ("$(UAPI_COMPILER)","METROWERKS")	# !!! NOT SURE WHAT STRING TO USE !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_METROWERKS)
+
+else
+ifeq ("$(UAPI_COMPILER)","GHS")			# !!! NOT SURE WHAT STRING TO USE !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_GHS)
+
+else
+ifeq ("$(UAPI_COMPILER)","TICXC")		# !!! NOT SURE WHAT STRING TO USE !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_TICXC)
+
+else
+ifeq ("$(UAPI_COMPILER)","ARM")			# !!! NOT ANY PARTICULAR COMPILER !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_ARM)
+
+else
+ifeq ("$(UAPI_COMPILER)","DIABDATA")			# !!! NOT ANY PARTICULAR COMPILER !!!
+UAPI_COMPILER_TYPE = $(UAPI_C_DIABDATA)
+
+else
+ERROR += \
+$(subst $(space),|,\
+'Failed to select compiler with $$(UAPI_COMPILER) == "$(UAPI_COMPILER)"')
+UAPI_COMPILER_TYPE = UAPI_BAD_COMPILER
+UAPI_COMPILER_CHAR = UAPI_BAD_COMPILER
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+
+################################# BUILD ################################
+#
+# Define OPTIMIZE, PROFILE, and TRACE for use in $(UAPI_COMPILER_CHAR)flags.mak.
+# These values must be compatible with the corresponding ones in builddef.h.
+
+UAPI_OPTIMIZE = $(UAPI_OFF)
+UAPI_PROFILE = $(UAPI_OFF)
+UAPI_TRACE = $(UAPI_OFF)
+
+#									# BUILD  CHAR  OPTIMIZE  PROFILE  TRACE
+#									  ----   ----  --------  -------  -----
+ifeq ("$(UAPI_BUILD)","SHIP")			# SHIP    `S'  OPTIMIZE
+UAPI_BUILD_TYPE = $(UAPI_BUILD_SHIP)
+UAPI_BUILD_CHAR = s
+UAPI_OPTIMIZE = $(UAPI_BUILD_TYPE)
+
+else
+ifeq ("$(UAPI_BUILD)","NDEBUG")			# SHIP    `S'  OPTIMIZE
+UAPI_BUILD_TYPE = $(UAPI_BUILD_SHIP)
+UAPI_BUILD_CHAR = s
+UAPI_OPTIMIZE = $(UAPI_BUILD_TYPE)
+
+else
+ifeq ("$(UAPI_BUILD)","INHOUSE")			# INHOUSE `I'  OPTIMIZE
+UAPI_BUILD_TYPE = $(UAPI_BUILD_INHOUSE)
+UAPI_BUILD_CHAR = i
+UAPI_OPTIMIZE = $(UAPI_BUILD_TYPE)
+
+else
+ifeq ("$(UAPI_BUILD)","DEBUGO")			# DEBUG   `G'  OPTIMIZE
+UAPI_BUILD_TYPE = $(UAPI_BUILD_DEBUGO)
+UAPI_BUILD_CHAR = g
+UAPI_OPTIMIZE = $(UAPI_BUILD_TYPE)
+
+else
+ifeq ("$(UAPI_BUILD)","DEBUG")			# DEBUG   `X'
+UAPI_BUILD_TYPE = $(UAPI_BUILD_DEBUG)
+UAPI_BUILD_CHAR = x
+
+else
+ifeq ("$(UAPI_BUILD)","PROFILE")			# INHOUSE `P'  OPTIMIZE  PROFILE
+UAPI_BUILD_TYPE = $(UAPI_BUILD_PROFILE)
+UAPI_BUILD_CHAR = p
+UAPI_OPTIMIZE = $(UAPI_BUILD_TYPE)
+UAPI_PROFILE = $(UAPI_BUILD_TYPE)
+
+else
+ifeq ("$(UAPI_BUILD)","TRACE")			# INHOUSE `L'  OPTIMIZE           TRACE
+UAPI_BUILD_TYPE = $(UAPI_BUILD_TRACE)
+UAPI_BUILD_CHAR = l
+UAPI_OPTIMIZE = $(UAPI_BUILD_TYPE)
+UAPI_TRACE = $(UAPI_BUILD_TYPE)
+
+else
+ERROR += \
+$(subst $(space),|,'Failed to select build type with $$(UAPI_BUILD) == "$(UAPI_BUILD)"')
+UAPI_BUILD_TYPE = UAPI_BAD_BUILD
+UAPI_BUILD_CHAR = UAPI_BAD_BUILD
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+
+################################# UI #################################
+#
+# !!! NOT USED !!!
+
+######################################################################
+#
+# Finally define the macros of interest.
+
+UAPI_GLOBAL_DEFINES = \
+	-DOS_UNIX=$(UAPI_OS_UNIX) \
+	-DOS_EMBEDDED=$(UAPI_OS_EMBEDDED) \
+	-DOS_VXWORKS=$(UAPI_OS_VXWORKS) \
+	-DOS_PSOS=$(UAPI_OS_PSOS) \
+	-DOS_QNX=$(UAPI_OS_QNX) \
+	-DOS=$(UAPI_OS_TYPE) \
+	-DHOST_OS=$(UAPI_HOST_OS_TYPE) \
+	-DTARGET_OS=$(UAPI_TARGET_OS_TYPE) \
+	-DCPU_PPC=$(UAPI_CPU_PPC) \
+	-DCPU_SPARC=$(UAPI_CPU_SPARC) \
+	-DCPU_ARM=$(UAPI_CPU_ARM) \
+	-DCPU_STRONGARM=$(UAPI_CPU_STRONGARM) \
+	-DCPU_TMS320X=$(UAPI_CPU_TMS320X) \
+	-DCPU_SH3=$(UAPI_CPU_SH3) \
+	-DCPU_SH4=$(UAPI_CPU_SH4) \
+	-DCPU=$(UAPI_CPU_TYPE) \
+	-DHOST_CPU=$(UAPI_HOST_CPU_TYPE) \
+	-DTARGET_CPU=$(UAPI_TARGET_CPU_TYPE) \
+	-DC_GNU=$(UAPI_C_GNU) \
+	-DC_SUNPRO=$(UAPI_C_SUNPRO) \
+	-DC_METROWERKS=$(UAPI_C_METROWERKS) \
+	-DC_TICXC=$(UAPI_C_TICXC) \
+	-DC_ARM=$(UAPI_C_ARM) \
+	-DCOMPILER=$(UAPI_COMPILER_TYPE) \
+	-DBUILD_SHIP=$(UAPI_BUILD_SHIP) \
+	-DBUILD_DEBUG=$(UAPI_BUILD_DEBUG) \
+	-DBUILD=$(UAPI_BUILD_TYPE) \
+
+# Include these from Makefile.common
+UAPI_GLOBAL_DEFINES += $(UAPI_COMMON_DEFINES) $(UAPI_WORKAROUND_DEFINES)
+
+# OS specific defines
+ifeq ($(UAPI_TARGET_OS),UNIX)
+UAPI_GLOBAL_DEFINES += -DPOSIX -D__linux
+endif
+
+
+# BUILD specific defines and flags
+UAPI_GLOBAL_CPPFLAGS =
+
+ifeq ($(UAPI_BUILD),SHIP)
+UAPI_GLOBAL_DEFINES += -DNDEBUG -D_SHIP -DFINAL_RELEASE
+#UAPI_GLOBAL_CPPFLAGS += -O3 -fno-strict-aliasing
+endif
+
+ifeq ($(UAPI_BUILD),NDEBUG)
+UAPI_GLOBAL_DEFINES += -DNDEBUG
+#UAPI_GLOBAL_CPPFLAGS +=
+endif
+
+ifeq ($(UAPI_BUILD),INHOUSE)
+UAPI_GLOBAL_DEFINES += -D_INHOUSE
+#UAPI_GLOBAL_CPPFLAGS += -g3
+endif
+
+ifeq ($(UAPI_BUILD),DEBUGO)
+UAPI_GLOBAL_DEFINES += -D_DEBUG
+#UAPI_GLOBAL_CPPFLAGS += -g
+endif
+
+ifeq ($(UAPI_BUILD),DEBUG)
+UAPI_GLOBAL_DEFINES += -D_DEBUG
+#UAPI_GLOBAL_CPPFLAGS += -g
+endif
+
+ifneq ($(UAPI_OPTIMIZE),$(UAPI_OFF))
+UAPI_GLOBAL_DEFINES += -D_OPTIMIZE
+#UAPI_GLOBAL_CPPFLAGS += -O3
+endif
+
+ifneq ($(UAPI_PROFILE),$(UAPI_OFF))
+UAPI_GLOBAL_DEFINES += -D_PROFILE
+#UAPI_GLOBAL_CPPFLAGS += -g3
+endif
+
+ifneq ($(UAPI_TRACE),$(UAPI_OFF))
+UAPI_GLOBAL_DEFINES += -D_TRACE
+#UAPI_GLOBAL_CPPFLAGS +=
+endif

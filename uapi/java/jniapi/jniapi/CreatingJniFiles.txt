@@ -1,0 +1,12 @@
+---------------------------------------------------------
+	 UAPI JNI Header Creation process
+---------------------------------------------------------
+
+- Edit file create_jni_h.bat and change the classpath where the
+uapi classes are located (Ex. /XSA/Q/UnifiedSpeechAPI/build/classes)
+
+- Execute the create_jni_h.bat and all the JNI header files will be created.
+
+- Remeber that every time you regenerate the header files you should also
+verify that all the .CPP files are updated as well (this is a manual process).
+

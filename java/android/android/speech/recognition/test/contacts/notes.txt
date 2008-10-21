@@ -1,0 +1,32 @@
+
+1. passing bad path to EmbeddedRecognizer.configure() does not raise an exception.
+Instead I get 
+peechTest3Console
+Initialising...
+uapi.test.RecognizerHandler:before EmbeddedRecognizer.getInstance()
+uapi.test.RecognizerHandler:after EmbeddedRecognizer.getInstance()
+uapi.test.RecognizerHandler:before EmbeddedRecognizer.configure(/sdcard/test/config/en.us/baseline11k.par)
+Exception in thread "Thread-0" java.lang.OutOfMemoryError: Could not allocate memory to perform the operation (OUT_OF_MEMORY)
+        at uapi.impl.EmbeddedRecognizerImpl.configureProxy(Native Method)
+        at uapi.impl.EmbeddedRecognizerImpl.configure(EmbeddedRecognizerImpl.java:70)
+        at uapi.test.RecognizerHandler.<init>(RecognizerHandler.java:187)
+        at uapi.test.Main$SetupRecognizer.run(Main.java:56)
+        at java.lang.Thread.run(Thread.java:595)
+#
+# An unexpected error has been detected by HotSpot Virtual Machine:
+#
+#  SIGSEGV (0xb) at pc=0xb7f6e3d5, pid=4308, tid=3085137600
+#
+# Java VM: Java HotSpot(TM) Client VM (1.5.0_11-b03 mixed mode, sharing)
+# Problematic frame:
+# C  [libpthread.so.0+0x43d5]
+#
+# An error report file with more information is saved as hs_err_pid4308.log
+#
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+#
+
+
+
+

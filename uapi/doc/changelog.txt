@@ -1,0 +1,418 @@
+Beta1: revision 298
+
+*********************************************************************************************************
+Beta2: revision 650
+*********************************************************************************************************
+
+
+Bugfixes
+--------
+
+- Maintaining classpath in C++ JNI code
+- Recognizer was leaking memory on successful recognition
+- Recursive mutexes are broken on the Q platform. We've implemented a workaround.
+- Singleton creation was not thread-safe
+- Q platform does not support native methods on Java nested classes. We've implemented a workaround.
+- NBestRecognitionResult.getEntry() crashes if index == NBestRecognitionResult.getSize()
+- Deleting components from inside callbacks caused a crash
+- Recognizer was leaking memory if a recognition result was returned before end-of-speech
+- Grammar::UnloadTask was invoking onLoad() instead of onUnload()
+- We no longer attach() and detach() native threads to the JVM every time an event is fired
+
+
+
+Legend
+------
+
++ Feature added to the API
+* Feature changed in the API
+- Feature removed from the API
+
+
+
+C++ New Features
+----------------
+
+* API methods now return shared_ptr instances, see SmartProxy.h for more information.
++ Documented some of the C++ return codes
++ Added AbstractGrammarListener, AbstractRecognizerListener: convenience classes for building event-listeners
+
+
+
+Java New Features
+-----------------
+
++ Documented some of the Java exceptions
++ Added EmbeddedRecognizerTest test application
++ JVMKeepAlive feature: we attach a non-daemon Java thread when the C++ layer is busy to prevent the JVM from shutting down
++ WordItem.valueOf() now rejects empty-string pronunciations
++ Added AbstractGrammarListener, AbstractRecognizerListener: convenience classes for building event-listeners
+
+
+
+C++ API changes
+---------------
+
++ Added AbstractGrammarListener
++ Added AbstractRecognizerListener
++ Added Codec::PCM_16BIT_22K
++ Added DeviceSpeaker::getInstance()
++ Added DeviceSpeaker::setCodec()
++ Added DeviceSpeaker::setListener()
+* Renamed DeviceSpeakerListener::onCompleted() to onStopped()
+* DeviceSpeakerListener::onError() now takes a return-code as argument
++ Added EmbeddedRecognizer::getInstance()
++ Added EmbeddedRecognizer::configure()
++ Added EmbeddedRecognizer::setListener()
++ Added EmbeddedRecognizer::resetAcousticState()
+* G2GConfiguration::grammarToMeaning() now takes in key-value pairs instead of a char*
++ Added GrammarConfiguration::disposeMeaning()
+* Moved events specific to EmbeddedGrammar out of GrammarListener into EmbeddedGrammarListener
++ Added Logger
++ Added MediaFileReader::create()
++ Added MediaFileReaderListener::onStarted()
+* Renamed MediaFileReaderListener::onCompleted() to onStopped()
+* MediaFileReaderListener::onError() now takes in a return-code as argument
++ Added MediaFileWriter::create()
+* Renamed MediaFileWriterListener::onCompleted() to onStopped()
+* MediaFileWriterListener::onError() now takes in a return-code as argument
++ Added Microphone::getInstance()
++ Added Microphone::setCodec()
++ Added Microphone::setListener()
+* Renamed MicrophoneListener::onCompleted() to onStopped()
+* MicrophoneListener::onError() now takes in a return-code as argument
+- NBestRecognitionResult::Entry::get() has been removed. Instead, key-value pairs are passed into G2GConfiguration::grammarToMeaning().
+* NBestRecognitionResult::getSemanticMeaning() now returns a user-defined value which is retured by G2GConfiguration::grammarToMeaning()
+* NBestRecognitionResult::getConfidenceScore() now returns values from 0 to 100
+* NBestRecognitionResult::getEntry() returns NO_MATCH if all active GrammarConfiguration.grammarToMeaning() return null
+* RecognitionResult::getEndpointedWaveform() moved to VoicetagItem::getAudio()
++ Added NBestRecognitionResult::createVoicetagItem()
+- Removed Network
+- Removed NetworkListener
+* Renamed Parameters::createParameters() to Parameters::create()
++ Added convenience method for recognizing against a single grammar: Recognizer::recognize()
+* Recognizer::stop() now has a return-code
++ Added RecognizerListener::resetAcousticState()
+* Renamed RecognizerListener::FailureType to FailureReason
+* Renamed RecognizerListener::onFailure to onRecognitionFailure
+* Renamed RecognizerListener::onRecognitionResult to onRecognitionSuccess
+* Renamed UAPI_LONG to uapi::LONG
+* Renamed UAPI_ULONG to uapi::ULONG
+* Renamed UAPI_INT32 to uapi::INT32
+* Renamed UAPI_UINT32 to uapi::UINT32
+* Renamed UAPI_INT16 to uapi::INT16
+* Renamed UAPI_UINT16 to uapi::UINT16
+* Renamed UAPI_INT8 to uapi::INT8
+* Renamed UAPI_UINT8 to uapi::UINT8
+* Renamed UAPI_ARRAY_LIMIT to uapi::ARRAY_LIMIT
++ Added uapi::UINT16_MAX
++ Added uapi::ARRAY_LIMIT_MAX
+- Removed VoconGrammar
++ Added VoicetagItem::getAudio()
++ Added VoicetagItem::setAudio()
++ Added WordItem::create()
+
+
+
+Java API changes
+----------------
+
++ Added AbstractGrammarListener
++ Added AbstractRecognizerListener
++ Added AudioAlreadyInUseException
++ Added AudioDriverErrorException
+- Removed AudioSource.dispose()
+* Deprecated AudioStream.dispose()
++ Added Codec.PCM_16BIT_22K
++ Added DeviceSpeaker.getInstance()
++ Added DeviceSpeaker.setCodec()
++ Added DeviceSpeaker.setListener()
+- Removed DeviceSpeaker.dispose()
+* Renamed DeviceSpeakerListener.onCompleted() to onStopped()
+* DeviceSpeakerListener.onError() now takes an Exception argument
++ Added EmbeddedRecognizer.getInstance()
++ Added EmbeddedRecognizer.configure()
++ Added EmbeddedRecognizer.setListener()
++ Added EmbeddedRecognizer.resetAdaptation()
+* G2GConfiguration.grammarToMeaning() now takes in key-value pairs instead of a String
++ Added GrammarOverflowException
+* Moved events specific to EmbeddedGrammar out of GrammarListener into EmbeddedGrammarListener
++ Added Logger
++ Added MediaFileReader.create()
++ Added MediaFileReaderListener.onStarted()
+* Renamed MediaFileReaderListener.onCompleted() to onStopped()
+* MediaFileReaderListener.onError() now takes an Exception argument
++ Added MediaFileWriter.create()
+- Removed MediaFileWriter.dispose()
+* Renamed MediaFileWriterListener.onCompleted() to onStopped()
+* MediaFileWriterListener.onError() now takes an Exception argument
++ Added Microphone.getInstance()
++ Added Microphone.setCodec()
++ Added Microphone.setListener()
+* Renamed MicrophoneListener.onCompleted() to onStopped()
+* MicrophoneListener.onError() now takes an Exception argument
+* NBestRecognitionResult.Entry.getSemanticResult() now returns Object instead of String
+- NBestRecognitionResult.Entry.get() has been removed. Instead, key-value pairs are passed into G2GConfiguration.grammarToMeaning().
+- NBestRecognitionResult.Entry.keys() has been removed. Instead, key-value pairs are passed into G2GConfiguration.grammarToMeaning().
+* NBestRecognitionResult.getSemanticMeaning() now returns a user-defined value which is retured by G2GConfiguration.grammarToMeaning()
+* NBestRecognitionResult.getConfidenceScore() now returns values from 0 to 100
+* RecognitionResult.getEndpointedWaveform() moved to VoicetagItem.getAudio()
++ Added NBestRecognitionResult.createVoicetagItem()
+- Removed Network
+- Removed NetworkListener
+- Removed Parameters.dispose()
+- Removed Recognizer.createGrammar() for inline grammars
++ Added convenience method for recognizing against a single grammar: Recognizer.recognize()
+- Removed Recognizer.dispose()
++ Added RecognizerListener.onAdaptationReset()
+* Renamed RecognizerListener.FailureType to FailureReason
+* Renamed RecognizerListener.onFailure to onRecognitionFailure
+* Renamed RecognizerListener.onRecognitionResult to onRecognitionSuccess
+- Removed SlotItem.dispose()
+- Removed UAPI (replaced by singletons and static factory methods)
+- Removed VoconGrammar
+* Replaced VoicetagItem.valueOf() by NBestRecognitionResult.createVoicetagItem()
+- Removed VoicetagItem.dispose()
++ Added VoicetagItem.getAudio()
++ Added convenience method for creating a WordItem from with a single pronunciation
+- Removed WordItem.dispose()
+
+
+Beta 2 Logging
+--------------
+
+	Disabling UAPI logging
+	----------------------
+
+	Logger logger = Logger.getInstance();
+	logger.setLoggingLevel(LoggingLevel.LEVEL_NONE);
+
+
+	Enabling UAPI logging
+	---------------------
+
+	Logger logger = Logger.getInstance();
+	logger.setLoggingLevel(LoggingLevel.LEVEL_TRACE);
+
+
+	SREC Logging
+	------------
+
+	One can define SREC_ENGINE_VERBOSE_LOGGING so SREC prints out a lot of information to stdout. This is normally not defined to avoid clutter. These can be added by editing the following files under the SREC source tree:
+
+	make\asr\Makefile.common for Q Device
+
+
+*********************************************************************************************************
+Beta3: revision 758
+*********************************************************************************************************
+
+
+Bugfixes
+--------
+
+- Hang due to increment of jvmReferences even if there was a scheduled task pending
+- Hang during process shutdown (threads killed in an unpredictable order)
+- JVMKeepAlive would sometimes create a new thread before the old thread died.  This caused the new thread to never start.
+- Possible crash on non-numeric or 0 confidence score
+- Javadoc corrections
+
+
+Legend
+------
+
++ Feature added to the API
+* Feature changed in the API
+- Feature removed from the API
+
+
+
+C++ New Features
+----------------
+
+
+Java New Features
+-----------------
+
+
+C++ API changes
+---------------
+
+* Reorganized C++ layer code (moved cpp/common to cpp/utilities, etc).
+
+
+Java API changes
+----------------
+
+* AudioStream was reporting AUDIO_ALREADY_IN_USE if the stream was empty. It now reports END_OF_STREAM.
+* Replaced Parameters class with Vector and Hashtable
+* Changed package name from com.nuance.uapi to android.speech.recognition
+
+
+
+
+*********************************************************************************************************
+Beta3.1: revision 761
+*********************************************************************************************************
+
+
+Same as Beta 3 but with consolidated shared libraries for Q platform (everything in libUAPI_jni.so).
+This primarily involved SREC and UAPI makefile changes (what used to be .so is now .a, except for
+final libUAPI_jni.so).  There was a change in EmbeddedRecognizer.cpp so libUAPI_api.so is no longer
+dynamically loaded, and relevant functions are just called directly.  For Windows and Ubuntu builds
+the symbol RECOGNIZER_DYNAMICALLY_LOADED had to be defined.
+
+
+*********************************************************************************************************
+Beta3.2: revision 819
+*********************************************************************************************************
+
+
+General stability improvements
+Still has local reference table overflow issue
+Java test program reorganization
+Java, C++ and C test programs need to explicitly built
+renamed /system/usr/srec.config/ to /system/usr/srec/config/
+
+
+*********************************************************************************************************
+Beta4.0: revision 882
+*********************************************************************************************************
+
+- Speed and stability improvements
+- Fixed local reference table overflow
+- Fixed crash on 2nd Recognizer.configure() call
+- Fixed crash on calling Recognizer.stop()
+- Fixed Microphone race condition
+- Replaced inefficient logger introduced in Beta 3.2
+- Disabled JNIKeepAlive for improved efficiency.  Console apps must now keep main thread alive to prevent the JVM from shutting down
+- SpeechRecorder no longer crashes
+- Implemented Recognizer getParam()/setParam() and provided sample Java app Parameters.java
+- Robustness1 ran for over 2 days (250,000+ iterations) before it was stopped.
+- New Robustness2 application for microphone + recognizer testing
+- Reduced compiler warnings
+- Updated SpeakContact example to compile with 11/08 Android SDK snapshot
+
+
+*********************************************************************************************************
+Beta5.0: revision 939
+*********************************************************************************************************
+
+- Speed and stability improvements
+- Includes open-source grammar compiler (extlibs/srec/tools/grxmlcompile) for Ubuntu 6.06 Linux.  The SpeechWorks grammar compiler is no longer supported.
+- New Robustness3 application for more thorough exercise of API
+- Includes Voicetags support
+- New Voicetags1 application to exercise voicetags
+- New API function to add a list of items to a slot (see addItemList method)
+- Added a work around for audio driver bug: unable to set input format immediately after closing the driver since DMA is still active, according to HTC.  See ANDROID_AUDIODRIVER_WORKAROUND in device/extlibs/srec/uapi/cpp/audio/linux/source/MicrophoneLINUX.cpp and device/extlibs/srec/uapi/make/uapi/Makefile.common
+
+
+*********************************************************************************************************
+RC-1: revision 1040
+*********************************************************************************************************
+
+- Speed and stability improvements
+- Includes open-source grammar compiler (extlibs/srec/tools/grxmlcompile) for Ubuntu 6.06 Linux.  The SpeechWorks grammar compiler is no longer supported.  This grammar compiler no longer needs cppdom binaries.  Instead, tinyxml is used.
+- Faster grammar compilation
+- New models (cross-word triphones)
+ -Voicetags end of speed detection fix
+- Added getAPIversion() to hidden System class (see limitations below)
+- Faster audio input processing
+- Test programs bug fixes
+
+
+*********************************************************************************************************
+Beta7.0: revision 1071
+*********************************************************************************************************
+
+- SREC and UAPI now use Android logger on device
+- Delay loading of SREC user dictionary until it is needed
+- Merged Mike Glover’s optimized dictionary load code
+- Added # prefix to *.ok language header (#LANG=EN-US)
+- Reduced compiler warnings for third-party library OpenFst
+- Reduced /system/usr/srec footprint from 12 MB to 1.9 MB. Now one must “make srec_test_files” to install optional test files.
+- More complete checking of dictionary for non-lower-case words
+- Speed improvement: compute log tables offline (log_tabl.c, log_add.c)
+- Fix: Crash when null string: SrecGrammar.Item(WordItem, 1, (String)null)
+- Fix: Crash when null AudioStream passed to EmbeddedRecognizer.recognize
+- Fix: Crash on long list passed to addItemList(). Local references were previously leaked.
+- Fix: Mispronunciation when there are special characters or two embedded blanks in a name passed to WordItem
+- Fix: Pronunciation involving unprintable characters
+- Fix: Pronunciation for “oh”, now should get fewer insertions
+- Fix: Homonym collision problem. No longer abort processing.
+
+
+
+
+*********************************************************************************************************
+Beta8.0:
+    CVS tag  for SREC: Q-BETA-8
+    SVN tag  for UAPI: beta8
+*********************************************************************************************************
+
+- Speed improvement: compute log tables offline (log_tabl.c, log_add.c)
+- Speed improvement: G2P lookup
+- Speed improvement: strcmp for dictionary lookup
+- Defer G2P creation until it is needed
+- Use run-time (dynamic) allocations for slot memory when needed (so that ,addWords=N is now optional)
+- Removed G2P fsm_dictionary (large.ok enlarged as necessary)
+- Expanded large.ok SREC dictionary
+- Grammar compiler grxmlcompile now has –outpath command-line option to specify the output directory.
+- Grammars are compiled during build time (make srec_test_files).  The release no longer includes pre-compiled grammars *.g2g
+- Grammar compiler builds under Mac
+- Removed G2GConfiguration
+- Updated some Android applications to new Java API (due to G2GConfiguration removal)
+- MediaFileReader and MediaFileWriter now operate on WAV files
+- Improved audio efficiency
+- Defined LOG_TAG “Srec” and “Uapi” for Android logger
+- Support for Nuance Mobile Speech Platform (NMSP) network recognizer.  libUAPI_nmsp.so should be added to device/config/prelink-linux-arm.map.
+- Fix: “pau” and other problems in pronunciations related to periods and quotes
+- Fix: SRecTest now uses proper API SR_Grammar and SR_Semantic for checkparse
+- Fix: OpenFst compiler warnings
+
+
+
+
+*********************************************************************************************************
+Beta9.0:
+    CVS tag  for SREC: Q-BETA-9
+    SVN tag  for UAPI: beta9
+*********************************************************************************************************
+
+- Modified grammar makefile so .g2g depends on .grxml (no separate rule for .map)
+- Removed network recognizer
+- Updated some Android applications (due to removal of network recognizer)
+- Fix: SIGSEGV on shutdown
+- Fix: unhandled exceptions in callback
+
+
+
+
+*********************************************************************************************************
+RC2:
+    CVS tag  for SREC: Q-RC-2
+    SVN tag  for UAPI: rc2
+*********************************************************************************************************
+
+- Fix: Meaning string max length (349 chars). The engine now reports an error if the string will be truncated.
+- Support for changing the enrollment grammar (i.e., enrolling a name in a carrier phrase).
+- Code clean-up (including removal of useless files latlib.h lat_desc.h syntax.h acc_sub.c)
+- SREC_User_Guide.pdf was updated to reflect min and max values for parameters.
+
+
+
+
+*********************************************************************************************************
+RC3:
+    CVS tag  for SREC: Q-RC-3
+    SVN tag  for UAPI: rc3
+*********************************************************************************************************
+
+- Fix: slot nomenclature changes, fixes to more gracefully handle larger number or too many slots
+- Fix: change associated with homonym bug
+- Fix: throw exception on NULL configuration
+- Fix: Renamed getBitRate to getBitsPerSample
+- Fix: Corrected UALW to ULAW in Codec.java
+- Remove obsolete comment about problem with dlopen() when UAPI_LINUX is defined (LibraryLoader.cpp:172)
+- Changes associated with logging CMN vector
+- The CMN vector can be retrieved by getting the parameter “CREC.Frontend.swicms.cmn”. The value is in the form of an opaque

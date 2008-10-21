@@ -1,0 +1,19 @@
+###############################################################################
+# FILE: Makefile.common
+#
+# Common settings, independent of configuration (independent of Makefile.config).
+# This is included by Makefile.defs
+###############################################################################
+
+UAPI_COMMON_DEFINES = \
+	-DUAPI_LINUX \
+	-DUAPI_MT \
+	-DAUDIOIN_SUPPORT_CALLBACK \
+	-DUSE_CUSTOM_RECURSIVE_MUTEX \
+#	-DANDROID_AUDIODRIVER_WORKAROUND\
+
+# Temporary workarounds for library limitations
+UAPI_WORKAROUND_DEFINES = \
+	-DNO_ATTACHCURRENTTHREAD_CAST_VOIDPP \
+
+JAVA_HOME = /usr/local/jdk1.5.0_11
