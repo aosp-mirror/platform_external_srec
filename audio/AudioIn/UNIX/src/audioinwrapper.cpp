@@ -18,7 +18,7 @@
  *---------------------------------------------------------------------------*/
 
 
-#if defined(ANDROID) && defined(__ARM_ARCH_5__)
+#if defined(ANDROID) && (defined(__ARM_ARCH_5__) || defined(__ARM_ARCH_4__))
 
 //#define USE_DEV_EAC_FILE 1
 
@@ -31,7 +31,7 @@
 using namespace android;
 #endif
 
-#endif // defined(ANDROID) && defined(__ARM_ARCH_5__)
+#endif // defined(ANDROID) && (defined(__ARM_ARCH_5__) || defined(__ARM_ARCH_4__))
 
 #include "plog.h"
 
@@ -98,7 +98,7 @@ static void AudioIn_Log_Samples_Received ( void )
 extern "C" 
 {
 
-#if defined(ANDROID) && defined(__ARM_ARCH_5__)
+#if defined(ANDROID) && (defined(__ARM_ARCH_5__) || defined(__ARM_ARCH_4__))
     
 #if defined(USE_DEV_EAC_FILE)
 static int audiofd = -1;
