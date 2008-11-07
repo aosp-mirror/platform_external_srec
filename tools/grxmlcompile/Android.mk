@@ -68,8 +68,12 @@ LOCAL_STATIC_LIBRARIES := \
 
 LOCAL_LDLIBS := \
 	-lm \
-	-lpthread \
-	-ldl \
+	-lpthread
+
+ifeq ($(HOST_OS),freebsd)
+else
+	LOCAL_LDLIBS += -ldl
+endif
 
 LOCAL_MODULE:= grxmlcompile
 

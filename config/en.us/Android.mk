@@ -32,6 +32,9 @@ MAKE_G2G=$(HOST_OUT_EXECUTABLES)/make_g2g
 DEFAULT_PAR=$(ASR_ROOT_DIR)/config/en.us/baseline11k.par
 G2G_INSTALL_PATH=$(TARGET_OUT)/usr/srec/config/en.us/grammars
 
+# XXX: to use grxmlcompile and make_g2g we need either exec ldconfig or
+#    use LD_LIBRARY_PATH variable
+
 srec_grammars : \
 	$(G2G_INSTALL_PATH)/enroll.g2g \
 	$(G2G_INSTALL_PATH)/bothtags5.g2g \
@@ -55,8 +58,10 @@ ALL_PREBUILT += $(G2G_INSTALL_PATH)/VoiceDialer.g2g
 # This needs an explicit rule to specify the vocabulary (dictionary)
 $(G2G_INSTALL_PATH)/enroll.g2g: $(LOCAL_PATH)/grammars/enroll.grxml $(GRXML) $(MAKE_G2G) dictionary/enroll.ok
 	mkdir -p $(G2G_INSTALL_PATH)
-	$(GRXML) -par $(DEFAULT_PAR) -grxml $< -vocab dictionary/enroll.ok -outdir $(G2G_INSTALL_PATH)
-	$(MAKE_G2G) -base $(G2G_INSTALL_PATH)/enroll,addWords=0 -out $@
+	$(hide) ( \
+	export LD_LIBRARY_PATH=$(HOST_OUT_SHARED_LIBRARIES) \
+	&& $(GRXML) -par $(DEFAULT_PAR) -grxml $< -vocab dictionary/enroll.ok -outdir $(G2G_INSTALL_PATH) \
+	&& $(MAKE_G2G) -base $(G2G_INSTALL_PATH)/enroll,addWords=0 -out $@ )
 	(cd $(G2G_INSTALL_PATH); rm -f $*.Grev2.det.txt $*.map $*.omap $*.P.txt $*.params $*.PCLG.txt $*.script)
 
 
@@ -66,8 +71,10 @@ $(G2G_INSTALL_PATH)/enroll.g2g: $(LOCAL_PATH)/grammars/enroll.grxml $(GRXML) $(M
 
 $(G2G_INSTALL_PATH)/%.g2g: $(LOCAL_PATH)/grammars/%.grxml $(GRXML) $(MAKE_G2G)
 	mkdir -p $(G2G_INSTALL_PATH)
-	$(GRXML) -par $(DEFAULT_PAR) -grxml $< -outdir $(G2G_INSTALL_PATH)
-	$(MAKE_G2G) -base $(G2G_INSTALL_PATH)/$*,addWords=0 -out $@
+	$(hide) ( \
+	export LD_LIBRARY_PATH=$(HOST_OUT_SHARED_LIBRARIES) \
+	&& $(GRXML) -par $(DEFAULT_PAR) -grxml $< -outdir $(G2G_INSTALL_PATH) \
+	&& $(MAKE_G2G) -base $(G2G_INSTALL_PATH)/$*,addWords=0 -out $@ )
 	(cd $(G2G_INSTALL_PATH); rm -f $*.Grev2.det.txt $*.map $*.omap $*.P.txt $*.params $*.PCLG.txt $*.script)
 
 
