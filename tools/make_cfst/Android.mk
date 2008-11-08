@@ -42,8 +42,10 @@ LOCAL_SHARED_LIBRARIES := \
 
 LOCAL_LDLIBS := \
 	-lm \
-	-lpthread \
-	-ldl \
+	-lpthread
+ifneq ($(HOST_OS),freebsd)
+LOCAL_LDLIBS += -ldl
+endif
 
 LOCAL_MODULE:= make_cfst
 
