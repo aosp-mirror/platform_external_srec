@@ -993,7 +993,8 @@ int srec_test_free_context ( SR_Grammar *active_grammar, ApplicationData *data, 
                 {
                 if ( grammar_is_ve == ESR_TRUE )
                     {
-                    esr_status = SR_RecognizerSetBoolParameter ( data->recognizer, L("enableGetWaveform"), ESR_FALSE );
+                    esr_status = ESR_SessionSetBool("enableGetWaveform", ESR_FALSE);
+                    //esr_status = SR_RecognizerSetBoolParameter ( data->recognizer, L("enableGetWaveform"), ESR_FALSE );
 
                     if ( esr_status != ESR_SUCCESS )
                         {
@@ -1117,7 +1118,8 @@ int srec_test_use_context ( SR_Grammar *active_grammar, ApplicationData *data, L
                         {
                         if ( data->grammars [grammar_num].is_ve_grammar == ESR_TRUE )
                             {
-                            esr_status = SR_RecognizerSetBoolParameter ( data->recognizer, L("enableGetWaveform"), ESR_TRUE );
+                            esr_status = ESR_SessionSetBool("enableGetWaveform", ESR_TRUE);
+                            //esr_status = SR_RecognizerSetBoolParameter ( data->recognizer, L("enableGetWaveform"), ESR_TRUE );
 
                             if ( esr_status == ESR_SUCCESS )
                                 {

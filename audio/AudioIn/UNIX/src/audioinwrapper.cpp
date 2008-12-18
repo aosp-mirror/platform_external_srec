@@ -141,9 +141,10 @@ int AudioOpen(void)
         sprintf ( file_name, "data_%ld_%ld.raw", buffer_save_audio.tv_sec, buffer_save_audio.tv_usec );
         audio_data = fopen ( file_name, "w" );
     #endif
-  record = new android::AudioRecord(
+// TODO: get record buffer size from hardware.
+    record = new android::AudioRecord(
     android::AudioRecord::DEFAULT_INPUT, sampleRate,
-    android::AudioSystem::PCM_16_BIT, numChannels, 8, 0);
+    android::AudioSystem::PCM_16_BIT, numChannels, 8*1024, 0);
   
   if (!record) return -1;
   

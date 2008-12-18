@@ -53,7 +53,7 @@ ALL_PREBUILT += $(G2G_INSTALL_PATH)/VoiceDialer.g2g
 #---------------------------------------------------------------------------------
 
 # This needs an explicit rule to specify the vocabulary (dictionary)
-$(G2G_INSTALL_PATH)/enroll.g2g: $(LOCAL_PATH)/grammars/enroll.grxml $(GRXML) $(MAKE_G2G) dictionary/enroll.ok
+$(G2G_INSTALL_PATH)/enroll.g2g: $(LOCAL_PATH)/grammars/enroll.grxml $(GRXML) $(MAKE_G2G) $(DEFAULT_PAR) $(LOCAL_PATH)/dictionary/enroll.ok
 	mkdir -p $(G2G_INSTALL_PATH)
 	$(GRXML) -par $(DEFAULT_PAR) -grxml $< -vocab dictionary/enroll.ok -outdir $(G2G_INSTALL_PATH)
 	$(MAKE_G2G) -base $(G2G_INSTALL_PATH)/enroll,addWords=0 -out $@
@@ -64,11 +64,27 @@ $(G2G_INSTALL_PATH)/enroll.g2g: $(LOCAL_PATH)/grammars/enroll.grxml $(GRXML) $(M
 # Those without explicit rules are subject to the rule below
 #---------------------------------------------------------------------------------
 
-$(G2G_INSTALL_PATH)/%.g2g: $(LOCAL_PATH)/grammars/%.grxml $(GRXML) $(MAKE_G2G)
+$(G2G_INSTALL_PATH)/%.g2g: $(LOCAL_PATH)/grammars/%.grxml $(GRXML) $(MAKE_G2G) $(DEFAULT_PAR) $(LOCAL_PATH)/dictionary/cmu6plus.ok.zip
 	mkdir -p $(G2G_INSTALL_PATH)
 	$(GRXML) -par $(DEFAULT_PAR) -grxml $< -outdir $(G2G_INSTALL_PATH)
 	$(MAKE_G2G) -base $(G2G_INSTALL_PATH)/$*,addWords=0 -out $@
 	(cd $(G2G_INSTALL_PATH); rm -f $*.Grev2.det.txt $*.map $*.omap $*.P.txt $*.params $*.PCLG.txt $*.script)
+
+
+#-----------------------------------------------------------------
+# this rule generates cmu6plus.ok.zip, which is built manually and checked in.
+# the grxml compiler expects this (and other) data files to be here.
+# $ g4 edit external/srec/config/en.us/dictionary/cmu6plus.ok.zip
+# $ make cmu6plus.ok.zip
+#-----------------------------------------------------------------
+
+CMU2NUANCE=$(HOST_OUT_EXECUTABLES)/cmu2nuance
+DICT_DIR=$(ASR_ROOT_DIR)/config/en.us/dictionary
+
+cmu6plus.ok.zip: $(CMU2NUANCE) $(DICT_DIR)/c0.6 $(DICT_DIR)/numbers.ok $(DICT_DIR)/fixit.ok $(DICT_DIR)/enroll.ok
+	$(CMU2NUANCE) < $(DICT_DIR)/c0.6 > $(DICT_DIR)/c0.6.ok 
+	sort -u $(DICT_DIR)/c0.6.ok $(DICT_DIR)/numbers.ok $(DICT_DIR)/fixit.ok $(DICT_DIR)/enroll.ok > $(DICT_DIR)/cmu6plus.ok
+	(cd $(DICT_DIR)/ && zip cmu6plus.ok.zip cmu6plus.ok)
 
 
 #-----------------------------------------------------------------

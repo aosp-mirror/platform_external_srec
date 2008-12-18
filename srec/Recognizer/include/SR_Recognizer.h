@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -101,7 +101,7 @@ typedef enum SR_RecognizerResultType_t
   /**
    * Reserved value.
    */
-  SR_RECOGNIZER_INVALID,
+  SR_RECOGNIZER_RESULT_TYPE_INVALID,
   /**
    * The result is complete from a full recognition of audio.
    */
@@ -165,7 +165,7 @@ typedef struct SR_Recognizer_t
    */
   ESR_ReturnCode(*destroy)(struct SR_Recognizer_t* self);
   /**
-   * Associates a set of models with the recognizer. 
+   * Associates a set of models with the recognizer.
    *
    * @param self SR_Recognizer handle
   * @return ESR_INVALID_ARGUMENT if self is null
@@ -562,7 +562,7 @@ SREC_RECOGNIZER_API ESR_ReturnCode SR_RecognizerStop(SR_Recognizer* self);
  * Create a new recognizer.
  *
  * @param self SR_Recognizer handle
- * @return ESR_INVALID_ARGUMENT if self is null; ESR_OUT_OF_MEMORY if system is out of memory; 
+ * @return ESR_INVALID_ARGUMENT if self is null; ESR_OUT_OF_MEMORY if system is out of memory;
  * ESR_INVALID_STATE if an internal error occurs
  */
 SREC_RECOGNIZER_API ESR_ReturnCode SR_RecognizerCreate(SR_Recognizer** self);
