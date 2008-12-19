@@ -22,6 +22,8 @@
 //
 // to run: make cmu2nuance && ./cmu2nuance <c0.6 >c0.6.ok
 //
+// TODO: look at generation of 'L', ')', and ','
+//
 
 #include <stdio.h>
 #include <string.h>
@@ -40,18 +42,18 @@ int main(int argc, const char* argv[]) {
   char line[200];
 
   fputs("#LANG=EN-US\n", stdout);
-  
+
   for (int lineno = 1; NULL != fgets(line, sizeof(line), stdin); lineno++)
   {
     if (line[0] == '#') continue;
     if (line[0] == 0) continue;
     if (!isalnum(line[0])) {
-      fprintf(stderr, "warning: ignoring line %d\n", lineno);
+      fprintf(stderr, "warning: ignoring line %d - %s", lineno, line);
       continue;
     }
-    
+
     const char* p = line;
-    
+
     // parse name, echoing in lower case and skipping (2) suffix
     while (!isspace(*p)) {
       if (*p == 0) {
@@ -66,13 +68,13 @@ int main(int argc, const char* argv[]) {
       p++;
     }
     fputc(' ', stdout);
-    
+
     // loop over whitespace delimited phonemes
     while (1) {
       // skip leading whitespace
       while (isspace(*p)) p++;
       if (*p == 0) break;
-      
+
       const char* next = 0;
       if (
         (next=xlate(p, "AA1 R", ")r")) ||   // odd     AA D
@@ -84,6 +86,7 @@ int main(int argc, const char* argv[]) {
         (next=xlate(p, "AE1", "a")) ||   // at      AE T
         (next=xlate(p, "AE2", "a")) ||   // at      AE T
 
+//        (next=xlate(p, "AH0 L", "L")) || // drops accuracy by 1%
         (next=xlate(p, "AH0 N", "~")) ||   // hut     HH AH T - from jean
         (next=xlate(p, "AH0 M", "}")) ||   // hut     HH AH T - from jean
         (next=xlate(p, "AH0", "@")) ||   // hut     HH AH T - from jean
@@ -105,7 +108,7 @@ int main(int argc, const char* argv[]) {
         (next=xlate(p, "B"  , "b")) ||   // be      B IY
         (next=xlate(p, "CH" , "C")) ||   // cheese  CH IY Z
         (next=xlate(p, "D"  , "d")) ||   // dee     D IY
-        (next=xlate(p, "DH" , "T")) ||   // thee    DH IY
+        (next=xlate(p, "DH" , "D")) ||   // thee    DH IY
 
         (next=xlate(p, "EH1 R", ",r")) ||   // Ed      EH D
         (next=xlate(p, "EH0", "c")) ||   // Ed      EH D - from jean
@@ -174,10 +177,10 @@ int main(int argc, const char* argv[]) {
         fprintf(stderr, "can't pronounce line %d: %s", lineno, p);
         break;
       }
-      
+
     }
-      
+
     fputc('\n', stdout);
-        
+
   }
 }

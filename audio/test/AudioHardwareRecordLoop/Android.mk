@@ -16,9 +16,12 @@ LOCAL_C_INCLUDES := \
 LOCAL_CFLAGS := \
 
 LOCAL_SHARED_LIBRARIES := \
-	libUAPI_jni \
+	libsrec_jni \
 	libutils \
 	libhardware \
+
+LOCAL_STATIC_LIBRARIES := \
+	libSR_AudioIn
 
 LOCAL_MODULE:= AudioHardwareRecordLoop
 

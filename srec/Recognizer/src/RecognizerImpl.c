@@ -18,13 +18,12 @@
  *---------------------------------------------------------------------------*/
 
 /*#define SREC_MEASURE_LATENCY    1*/
- 
+
 #ifdef SREC_MEASURE_LATENCY
 #include <sys/time.h>
- 
+
 struct timeval latency_start;
 #endif
-
 
 #include "ESR_Session.h"
 #include "ESR_SessionTypeImpl.h"
@@ -66,31 +65,31 @@ struct timeval latency_start;
 #ifdef MEASURE_SAMPLE_TIMES
 #include <sys/time.h>
 #include <stdio.h>
- 
+
 #define MAX_SAMPLES_TO_MEASURE      500
- 
+
 static long sample_buffers_received = 0;
 static long total_samples_received = 0;
 static long samples_in_buffer [MAX_SAMPLES_TO_MEASURE];
 static long seconds_buffer_received [MAX_SAMPLES_TO_MEASURE];
 static long micro_seconds_buffer_received [MAX_SAMPLES_TO_MEASURE];
 static struct timeval buffer_received_time;
- 
+
 static void SR_Recognizer_Log_Samples_Received ( void );
- 
+
 static void SR_Recognizer_Log_Samples_Received ( void )
 {
     FILE *log_file;
     char file_name [256];
     char log_buffer [256];
     long loop_counter;
- 
+
     if ( sample_buffers_received > 0 )
-        {	
+        {
         gettimeofday ( &buffer_received_time, NULL );
         sprintf ( file_name, "reco_recvd_%ld_%ld.txt", buffer_received_time.tv_sec, buffer_received_time.tv_usec );
         log_file = fopen ( file_name, "w" );
-						 
+
         if ( log_file != NULL )
             {
             for ( loop_counter = 0; loop_counter < sample_buffers_received; loop_counter++ )
@@ -143,6 +142,8 @@ ESR_ReturnCode SR_RecognizerToSessionImpl()
   CHKLOG(rc, ESR_SessionSetIntIfEmpty("CREC.Recognizer.wordpen", 0));
 
   CHKLOG(rc, ESR_SessionSetSize_tIfEmpty("SREC.Recognizer.utterance_timeout", 400));
+
+  CHKLOG(rc, ESR_SessionSetBoolIfEmpty("enableGetWaveform", ESR_FALSE));
 
   return ESR_SUCCESS;
 CLEANUP:
@@ -663,7 +664,7 @@ ESR_ReturnCode SR_RecognizerCreate(SR_Recognizer** self)
   SR_RecognizerImpl* impl;
   CA_RecInputParams* recogParams = NULL;
   ESR_ReturnCode rc;
-  LCHAR recHandle[20] = { 0 };
+  LCHAR recHandle[12];
 
   if (self == NULL)
   {
@@ -848,7 +849,7 @@ ESR_ReturnCode SR_RecognizerDestroyImpl(SR_Recognizer* self)
   SR_RecognizerImpl* impl = (SR_RecognizerImpl*) self;
   ESR_BOOL exists; // isSetup;
   ESR_ReturnCode rc;
-  LCHAR recHandle[20] = { 0 };
+  LCHAR recHandle[12];
 
   if (impl->result != NULL)
   {
@@ -1078,7 +1079,8 @@ ESR_ReturnCode SR_RecognizerStartImpl(SR_Recognizer* self)
   CHKLOG(rc, WaveformBuffer_Reset(impl->waveformBuffer));
 
   /* is waveform buffering active? */
-  rc = impl->parameters->getBool(impl->parameters, L("enableGetWaveform"), &enableGetWaveform);
+  rc = ESR_SessionGetBool(L("enableGetWaveform"), &enableGetWaveform);
+  // rc = impl->parameters->getBool(impl->parameters, L("enableGetWaveform"), &enableGetWaveform);
   if (rc != ESR_SUCCESS && rc != ESR_NO_MATCH_ERROR)
   {
     PLogError(L("%s: could determine whether VoiceEnrollment active or not"), ESR_rc2str(rc));
@@ -2230,27 +2232,27 @@ ESR_ReturnCode SR_RecognizerCreateResultImpl(SR_Recognizer* self, SR_RecognizerS
     grammarIndex_for_iBest = 0;
     CHKLOG(rc, impl->grammars->getKeyAtIndex(impl->grammars, grammarIndex_for_iBest, &pkey));
     CHKLOG(rc, impl->grammars->get(impl->grammars, pkey, (void **)&pgrammar));
-    
+
     CHKLOG(rc, SR_GrammarGetSize_tParameter((SR_Grammar*) pgrammar, L("locale"), &locale));
     resultImpl->locale = locale;
-    
+
     /* I need to manage my semantic results external to the check parse function */
     for (k = 0; k < MAX_SEM_RESULTS; ++k)
       SR_SemanticResultCreate(&semanticResults[k]);
-    
-    /* 
-       The code here tries to make the voice-enrollment more effective. 
+
+    /*
+       The code here tries to make the voice-enrollment more effective.
        The VE grammar decodes a sequence of best phonemes, but the nbest
        processing may find a better score for an alternative choice than
-       the score of the viterbi best choice.  The reason for this is that 
+       the score of the viterbi best choice.  The reason for this is that
        alternative choices don't honor cross-word context-dependency quite
-       accurately.  If we choose an alternative choice then the sequence of 
+       accurately.  If we choose an alternative choice then the sequence of
        phoneme decoded does not correspond to the sequence of models decoded.
-       To counter this, we FORCIBLY make sure the top choice here is the 
-       VITERBI top choice. 
+       To counter this, we FORCIBLY make sure the top choice here is the
+       VITERBI top choice.
     */
 
-    if (iBest == 0) 
+    if (iBest == 0)
       {
         if (CA_IsEnrollmentSyntax( pgrammar->syntax)) {
           /* this was voice enrollment, so let's try to replace */
@@ -2267,7 +2269,7 @@ ESR_ReturnCode SR_RecognizerCreateResultImpl(SR_Recognizer* self, SR_RecognizerS
             }
         }
       }
-    
+
     LSTRCPY(label, L(""));
     for (k = 0; wordIDs[k] != MAXwordID; ++k)
       {
@@ -2278,27 +2280,27 @@ ESR_ReturnCode SR_RecognizerCreateResultImpl(SR_Recognizer* self, SR_RecognizerS
       }
     CHKLOG(rc, CA_ResultStripSlotMarkers(label));
     passert(LSTRCMP(label, L("")) != 0);
-    
+
     /* strip the trailing blank */
     k = LSTRLEN(label) - 1;
     if (k > 0 && label[k] == L(' '))
       label[k] = 0;
-    
+
     semanticResultsSize = MAX_SEM_RESULTS;
-    
+
 #if SEMPROC_ACTIVE
-    
+
     /* set the literal prior to processing so that semproc can read the value
        during processing */
     CHKLOG(rc, pgrammar->semproc->flush(pgrammar->semproc));
     CHKLOG(rc, pgrammar->semproc->setParam(pgrammar->semproc, L("literal"), label));
-    
+
     rc = pgrammar->semproc->checkParseByWordID(pgrammar->semproc, pgrammar->semgraph,
                                                wordIDs, semanticResults, &semanticResultsSize);
-    
+
     /* rc = pgrammar->semproc->checkParse(pgrammar->semproc, pgrammar->semgraph,
        label, semanticResults, &semanticResultsSize); */
-    
+
     if (rc != ESR_SUCCESS)
       {
         for (k = 0; k < MAX_SEM_RESULTS; ++k)
@@ -2317,7 +2319,7 @@ ESR_ReturnCode SR_RecognizerCreateResultImpl(SR_Recognizer* self, SR_RecognizerS
         CHKLOG(rc, semanticResults[k]->destroy(semanticResults[k]));
         semanticResults[k] = NULL;
       }
-    
+
     /* save the good ones */
     for (k = 0; k < semanticResultsSize; ++k)
       {
@@ -2329,7 +2331,7 @@ ESR_ReturnCode SR_RecognizerCreateResultImpl(SR_Recognizer* self, SR_RecognizerS
          */
         CHKLOG(rc, semanticList->add(semanticList, semanticResults[k]));
       }
-    
+
 #if SEMPROC_ACTIVE
     if (semanticResultsSize > 0)
       {
@@ -2598,9 +2600,9 @@ if( impl->osi_log_level != 0)
       }
 
 	  /* semanticResultsSize is the number of semantic meanings, although
-		 ambiguous parses are not entirely supported 
+		 ambiguous parses are not entirely supported
 		 num_semanticKeys    is associated to a particular parse         */
-	 
+
       rc = semanticList->getSize(semanticList, &semanticResultsSize);
       if (rc != ESR_SUCCESS)
       {
@@ -2730,7 +2732,7 @@ PINLINE ESR_ReturnCode pushAudioIntoRecognizer(SR_RecognizerImpl* impl, SR_Recog
     /* Don't push frames unless they're needed */
 
     /* Check for leaked state */
-    passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_INVALID);
+    passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_RESULT_TYPE_INVALID);
     return ESR_CONTINUE_PROCESSING;
   }
   if (impl->lockFunction)
@@ -2768,7 +2770,7 @@ PINLINE ESR_ReturnCode pushAudioIntoRecognizer(SR_RecognizerImpl* impl, SR_Recog
 
   CA_ConditionSamples(impl->wavein);
   /* Check for leaked state */
-  passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_INVALID);
+  passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_RESULT_TYPE_INVALID);
   return ESR_CONTINUE_PROCESSING;
 CLEANUP:
   return rc;
@@ -2787,7 +2789,7 @@ PINLINE ESR_ReturnCode generateFrameFromAudio(SR_RecognizerImpl* impl, SR_Recogn
     /* Don't create frames unless they're needed */
 
     /* Check for leaked state */
-    passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_INVALID);
+    passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_RESULT_TYPE_INVALID);
     return ESR_CONTINUE_PROCESSING;
   }
 
@@ -2813,7 +2815,7 @@ PINLINE ESR_ReturnCode generateFrameFromAudio(SR_RecognizerImpl* impl, SR_Recogn
   }
   ++impl->frames;
   /* Check for leaked state */
-  passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_INVALID);
+  passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_RESULT_TYPE_INVALID);
   return ESR_CONTINUE_PROCESSING;
 }
 
@@ -2836,7 +2838,7 @@ PINLINE ESR_ReturnCode generateFrameStats(SR_RecognizerImpl* impl, SR_Recognizer
     CA_CalculateUtteranceStatistics(impl->utterance, 0, impl->bgsniff);
 
   /* Check for leaked state */
-  passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_INVALID);
+  passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_RESULT_TYPE_INVALID);
   return ESR_CONTINUE_PROCESSING;
 }
 
@@ -2941,7 +2943,7 @@ PINLINE ESR_ReturnCode generatePatternFromFrame(SR_RecognizerImpl* impl, SR_Reco
     impl->lockFunction(ESR_UNLOCK, impl->lockData);
 
   /* Check for leaked state */
-  passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_INVALID);
+  passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_RESULT_TYPE_INVALID);
   return ESR_CONTINUE_PROCESSING;
 CLEANUP:
   return rc;
@@ -3029,7 +3031,7 @@ PINLINE ESR_ReturnCode generatePatternFromFrameEOI(SR_RecognizerImpl* impl, SR_R
     impl->lockFunction(ESR_UNLOCK, impl->lockData);
 
   /* Check for leaked state */
-  passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_INVALID);
+  passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_RESULT_TYPE_INVALID);
   return ESR_CONTINUE_PROCESSING;
 CLEANUP:
   if (impl->lockFunction)
@@ -3062,7 +3064,8 @@ ESR_ReturnCode detectEndOfSpeech(SR_RecognizerImpl* impl, SR_RecognizerStatus* s
     eos = CA_IsEndOfUtteranceByResults(impl->recognizer);
   }
 
-  impl->parameters->getBool(impl->parameters, L("enableGetWaveform"), &enableGetWaveform);
+  ESR_SessionGetBool(L("enableGetWaveform"), &enableGetWaveform);
+  //impl->parameters->getBool(impl->parameters, L("enableGetWaveform"), &enableGetWaveform);
 
   if (eos == VALID_SPEECH_CONTINUING && enableGetWaveform && impl->waveformBuffer->overflow_count > 0)
   {
@@ -3129,7 +3132,7 @@ ESR_ReturnCode detectEndOfSpeech(SR_RecognizerImpl* impl, SR_RecognizerStatus* s
   }
 
   /* Check for leaked state */
-  passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_INVALID);
+  passert(*status == SR_RECOGNIZER_EVENT_INVALID && *type == SR_RECOGNIZER_RESULT_TYPE_INVALID);
   return ESR_CONTINUE_PROCESSING;
 CLEANUP:
   return rc;
@@ -3338,7 +3341,7 @@ ESR_ReturnCode SR_RecognizerAdvanceImpl(SR_Recognizer* self, SR_RecognizerStatus
    * status or type before returning
    */
   *status = SR_RECOGNIZER_EVENT_INVALID;
-  *type = SR_RECOGNIZER_INVALID;
+  *type = SR_RECOGNIZER_RESULT_TYPE_INVALID;
 
 MOVE_TO_NEXT_STATE:
   switch (impl->internalState)
@@ -3965,7 +3968,7 @@ ESR_ReturnCode WaveformBuffer_ParseEndPointedResultAndTrim(WaveformBuffer* wavef
      what I need to extract is the integer between "-pau-@" and ' '
      and the integer between '@' and " -pau2-"
   */
-  
+
 
   p = LSTRSTR( end_pointed_result, PREFIX_WORD);
   if(p) p+=PREFIX_WORD_LEN; while(p && *p == '@') p++;
