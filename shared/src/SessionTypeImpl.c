@@ -862,7 +862,7 @@ static ESR_ReturnCode importKeyValueFile(ESR_SessionType* self,
 
   if (file == NULL)
   {
-    LCHAR msg[2 * P_PATH_MAX + 30];
+    LCHAR msg[P_PATH_MAX + 30];
     LCHAR cwd[P_PATH_MAX];
     size_t len;
 
@@ -1333,6 +1333,8 @@ ESR_ReturnCode ESR_SessionTypeImportParFileImpl(ESR_SessionType* self,
   CHKLOG(rc, parameterList->put(parameterList, "G2P.Available", &Bool));
   CHKLOG(rc, parameterList->put(parameterList, "G2P.Data", &PLChar));
   CHKLOG(rc, parameterList->put(parameterList, "G2P.Dictionary", &PLChar));
+  /* Enable Get Waveform */
+  CHKLOG(rc, parameterList->put(parameterList, "enableGetWaveform", &Bool));
 
   rc = importKeyValueFile(self, filename, addParMapping, parameterList);
   if (rc != ESR_SUCCESS)

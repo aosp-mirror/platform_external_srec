@@ -37,7 +37,10 @@ LOCAL_CFLAGS += \
 LOCAL_SHARED_LIBRARIES := \
 	libutils \
 	libhardware \
-	libUAPI_jni \
+	libsrec_jni \
+
+LOCAL_STATIC_LIBRARIES := \
+	libSR_AudioIn
 
 LOCAL_MODULE:= SRecTestAudio
 

@@ -158,8 +158,8 @@ int main(int argc, char **argv)
 	  modelId = (modelID)get_modelid_for_pic(allotree, 0, cphonId, 0);
 	}
 	if(modelId == MAXmodelID) {
-	  printf("error while get_modelid_for_pic( %x, %d, %d, %d)\n",
-		 (int)allotree, lphonId, cphonId, rphonId);
+	  printf("error while get_modelid_for_pic( %p, %d, %d, %d)\n",
+		 allotree, lphonId, cphonId, rphonId);
 	  continue;
 	} else 
 	  if(do_show_text) printf("%c %c %c hmm%03d_%c %d %d %d\n", lphon, cphon, rphon, modelId, cphon, lphonId, cphonId, rphonId);

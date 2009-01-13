@@ -19,6 +19,8 @@
 #include "fst/lib/symbol-table.h"
 #include "fst/lib/util.h"
 
+#include <string.h>
+
 DEFINE_bool(fst_compat_symbols, true,
             "Require symbol tables to match when appropriate");
 
