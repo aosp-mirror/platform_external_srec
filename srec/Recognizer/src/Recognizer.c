@@ -154,6 +154,17 @@ ESR_ReturnCode SR_RecognizerSetBoolParameter(SR_Recognizer* self, const LCHAR* n
   return self->setBoolParameter(self, name, value);
 }
 
+ESR_ReturnCode SR_RecognizerSetupRule(SR_Recognizer* self, SR_Grammar* grammar,
+    const LCHAR* ruleName)
+{
+  if (self == NULL)
+  {
+    PLogError(L("ESR_INVALID_ARGUMENT"));
+    return ESR_INVALID_ARGUMENT;
+  }
+  return self->setupRule(self, grammar, ruleName);
+}
+
 ESR_ReturnCode SR_RecognizerHasSetupRules(SR_Recognizer* self,
     ESR_BOOL* hasSetupRules)
 {
@@ -185,6 +196,16 @@ ESR_ReturnCode SR_RecognizerDeactivateRule(SR_Recognizer* self, SR_Grammar* gram
     return ESR_INVALID_ARGUMENT;
   }
   return self->deactivateRule(self, grammar, ruleName);
+}
+
+ESR_ReturnCode SR_RecognizerDeactivateAllRules(SR_Recognizer* self)
+{
+  if (self == NULL)
+  {
+    PLogError(L("ESR_INVALID_ARGUMENT"));
+    return ESR_INVALID_ARGUMENT;
+  }
+  return self->deactivateAllRules(self);
 }
 
 ESR_ReturnCode SR_RecognizerIsActiveRule(SR_Recognizer* self, SR_Grammar* grammar,

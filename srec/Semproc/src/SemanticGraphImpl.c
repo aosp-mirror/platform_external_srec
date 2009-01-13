@@ -1025,7 +1025,7 @@ ESR_ReturnCode SR_SemanticGraph_AddWordToSlot(SR_SemanticGraph* self, const LCHA
   arc_token *tmp_arc_token_list;
   wordID wdID, scriptID, old_scriptID;
   wordID slotID;
-  LCHAR union_script[1280]; /* sizeof used elsewhere */
+  LCHAR union_script[MAX_STRING_LEN]; /* sizeof used elsewhere */
   ESR_ReturnCode rc; int i;
   int tmp_arc_token_list_len;
   int offset;
