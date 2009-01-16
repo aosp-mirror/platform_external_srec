@@ -41,7 +41,7 @@ LOCAL_CFLAGS += \
 
 LOCAL_SHARED_LIBRARIES := \
   libutils \
-  libhardware \
+  libhardware_legacy \
   libcutils \
   libmedia \
 
