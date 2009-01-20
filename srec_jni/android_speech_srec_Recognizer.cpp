@@ -311,6 +311,34 @@ static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1Recogn
 
 
 //////////////////////////////////////////////////////////////////////////
+// SR_AcousticState JNI implementations
+//////////////////////////////////////////////////////////////////////////
+
+static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1AcousticStateReset
+        (JNIEnv *env, jclass clazz, jint recognizer) {
+    checkEsrError(env, SR_AcousticStateReset((SR_Recognizer*)recognizer));
+}
+
+static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1AcousticStateSet
+        (JNIEnv *env, jclass clazz, jint recognizer, jstring state) {
+    const char* st = env->GetStringUTFChars(state, 0);
+    checkEsrError(env, SR_AcousticStateSet((SR_Recognizer*)recognizer, st));
+    env->ReleaseStringUTFChars(state, st);
+}
+
+static JNIEXPORT jstring JNICALL Java_android_speech_srec_Recognizer_SR_1AcousticStateGet
+        (JNIEnv *env, jclass clazz, jint recognizer) {
+    const LCHAR* st = NULL;
+    ESR_ReturnCode esr_status = SR_AcousticStateGet((SR_Recognizer*)recognizer, &st);
+    if (esr_status || st == NULL) {
+        checkEsrError(env, esr_status);
+        return NULL;
+    }
+    return env->NewStringUTF(st);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
 // SR_Grammar JNI implementations
 //////////////////////////////////////////////////////////////////////////
 
@@ -523,6 +551,10 @@ static JNINativeMethod gMethods[] = {
     {"SR_RecognizerIsSignalTooQuiet",      "(I)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalTooQuiet},
     {"SR_RecognizerIsSignalTooFewSamples", "(I)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalTooFewSamples},
     {"SR_RecognizerIsSignalTooManySamples", "(I)Z",                   (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalTooManySamples},
+    // SR_AcousticState
+    {"SR_AcousticStateReset",               "(I)V",                   (void*)Java_android_speech_srec_Recognizer_SR_1AcousticStateReset},
+    {"SR_AcousticStateSet",                 "(ILjava/lang/String;)V", (void*)Java_android_speech_srec_Recognizer_SR_1AcousticStateSet},
+    {"SR_AcousticStateGet",                 "(I)Ljava/lang/String;",  (void*)Java_android_speech_srec_Recognizer_SR_1AcousticStateGet},
     // SR_Grammar
     {"SR_GrammarCompile",                  "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1GrammarCompile},
     {"SR_GrammarAddWordToSlot",            "(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;)V", (void*)Java_android_speech_srec_Recognizer_SR_1GrammarAddWordToSlot},
