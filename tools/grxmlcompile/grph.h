@@ -23,22 +23,21 @@
 class Graph
 {
 public:
-    Graph (char *name)
+    Graph (const char *name)
     {
         int count= strlen(name);
         title= new char [count+1];
         strcpy (title, name);
         numSubGraph= 0;
-        return;
+        subGraph= 0;
+        subIndex= 0;
     };
 
     ~Graph()
     {
-	  delete [] subGraph;
-	  delete [] subIndex;
-	if (title) {
-	    delete [] title;
-	}
+        delete [] subGraph;
+        delete [] subIndex;
+        delete [] title;
     }
 
     int addSubGraph (SubGraph *subGraph);
@@ -60,11 +59,11 @@ public:
 
     void ExpandRules (SubGraph *subg);
 
+private:
+
     int         numSubGraph;
     SubGraph    **subGraph;
     int         *subIndex;
-
-private:
 
     int getSubGraphIndex (int subId);
 
