@@ -321,7 +321,7 @@ static asr_uint16_t best_uint16(asr_uint16_t* p, int n)
   for (;--n > 0;p++) if (rv > *p) rv = *p;
   return rv;
 }
-static int compute_model_scores(costdata *current_model_scores, SWIModel *acoustic_models,
+static int compute_model_scores(costdata *current_model_scores, const SWIModel *acoustic_models,
                                 pattern_info *pattern, frameID current_search_frame)
 {
   int i;
@@ -329,13 +329,10 @@ static int compute_model_scores(costdata *current_model_scores, SWIModel *acoust
 
   for (i = 0; i < acoustic_models->num_hmmstates; i++)
   {
-    SWIhmmState *hmmstate = &acoustic_models->hmmstates[i];
-
-    scodata score;
-
     if (current_model_scores[i] == DO_COMPUTE_MODEL)
     {
-      score = mixture_diagonal_gaussian_swimodel(pattern->prep, hmmstate, acoustic_models->num_dims);
+      scodata score = mixture_diagonal_gaussian_swimodel(pattern->prep,
+              &acoustic_models->hmmstates[i], acoustic_models->num_dims);
       ASSERT(score <= 0 && "model score out of range");
 
       current_model_scores[i] = (costdata) - score;
@@ -349,7 +346,7 @@ static int compute_model_scores(costdata *current_model_scores, SWIModel *acoust
 
 /*precompute all needed models to be used by next frame of search*/
 
-static int find_which_models_to_compute(srec *rec, SWIModel *acoustic_models)
+static int find_which_models_to_compute(srec *rec, const SWIModel *acoustic_models)
 {
   int i;
   modelID model_index;
@@ -1017,7 +1014,7 @@ static int do_epsilon_updates(srec *rec, costdata prune_delta,
               new_ftoken->next_token_index = current_ftoken->next_token_index;
               current_ftoken->next_token_index = new_ftoken_index;
               rec->best_token_for_node[ fsm_arc->to_node] = new_ftoken_index;
-	      /* new_ftoken->aword_backtrace must be null, alts here were 
+	      /* new_ftoken->aword_backtrace must be null, alts here were
 		 processed and dropped in srec_process_word_boundary_nbest() */
               if(new_ftoken->aword_backtrace != AWTNULL) {
 		PLogError( ("Error: internal search error near %s %d\n"), __FILE__, __LINE__);
@@ -1052,9 +1049,9 @@ static int do_epsilon_updates(srec *rec, costdata prune_delta,
             new_ftoken->word_backtrace = current_ftoken->word_backtrace;
             new_ftoken->word = word_with_wtw;
 	    /* here we are giving up the path and alternatives that existed at
-	       this node, which is not great! The new (better) top choice 
-	       coming in and it's alternatives are propagated instead. 
-	       TODO: merge the alternative lists and the previous top choice 
+	       this node, which is not great! The new (better) top choice
+	       coming in and it's alternatives are propagated instead.
+	       TODO: merge the alternative lists and the previous top choice
 	    */
 	    if(new_ftoken->aword_backtrace!=AWTNULL)
               free_altword_token_batch( rec, new_ftoken->aword_backtrace);
@@ -1996,7 +1993,7 @@ void srec_terminate(srec* rec)
 */
 
 void srec_viterbi_part1(srec *rec,
-                        SWIModel *acoustic_models,
+                        const SWIModel *acoustic_models,
                         pattern_info *pattern,
                         costdata silence_model_cost);
 
@@ -2038,8 +2035,8 @@ int multi_srec_viterbi(multi_srec *recm,
   {
     srec* rec1 = &recm->rec[0];
     srec* rec2 = &recm->rec[1];
-    SWIModel* acoustic_models1 = recm->swimodel[0];
-    SWIModel* acoustic_models2 = recm->swimodel[1];
+    const SWIModel* acoustic_models1 = recm->swimodel[0];
+    const SWIModel* acoustic_models2 = recm->swimodel[1];
     costdata diff;
     costdata current_best_cost;
 
@@ -2163,7 +2160,7 @@ int multi_srec_viterbi(multi_srec *recm,
 
 
 void srec_viterbi_part1(srec *rec,
-                        SWIModel *acoustic_models,
+                        const SWIModel *acoustic_models,
                         pattern_info *pattern,
                         costdata silence_model_cost)
 {

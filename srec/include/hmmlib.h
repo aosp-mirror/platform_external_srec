@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -32,5 +32,8 @@ static const char hmmlib_h[] = "$Id: hmmlib.h,v 1.4.6.8 2008/01/21 20:30:05 daha
 int read_word_transcription(const LCHAR* basename, vocab_info* voc, ESR_Locale* locale);
 void delete_word_transcription(vocab_info* voc);
 int get_prons(const vocab_info* voc, const char* label, char* prons, int prons_len);
-                                
+
+int mmap_zip(const char* fname, void** buf, size_t* size);
+int munmap_zip(void* buf, size_t size);
+
 #endif /* _h_hmmlib_ */

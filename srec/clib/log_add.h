@@ -20,9 +20,9 @@
 #ifndef _inl_log_add_
 #define _inl_log_add_
 
-static PINLINE prdata log_increment_inline(prdata ival, logadd_table_info *logtab);
+static PINLINE prdata log_increment_inline(prdata ival, const logadd_table_info *logtab);
 
-static PINLINE prdata log_increment_inline(prdata ival, logadd_table_info *logtab)
+static PINLINE prdata log_increment_inline(prdata ival, const logadd_table_info *logtab)
 /*
 **  To add two numbers stored as their natural logarithms
 **  A more efficient implementation is to use lookup tables.

@@ -277,7 +277,7 @@ struct srec_t
   arcID max_fsm_arcs;             /* see multi_srec below */
   asr_int16_t srec_ended;
   AstarStack *astar_stack;        /* for backwards word search */
-  featdata* avg_state_durations;  /* average state durations (from AMs) */
+  const featdata* avg_state_durations;  /* average state durations (from AMs) */
 
   srec_eos_detector_state eosd_state;
 };
@@ -311,7 +311,7 @@ typedef struct
 
   /* non owning pointer to compact acoustic models */
   asr_int32_t num_swimodels;
-  SWIModel    *swimodel[MAX_ACOUSTIC_MODELS];
+  const SWIModel    *swimodel[MAX_ACOUSTIC_MODELS];
   EOSrc eos_status;
 }
 multi_srec;

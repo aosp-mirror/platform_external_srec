@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -61,7 +61,7 @@ extern "C"
                          utterance_info *utt);
   void begin_recognition(multi_srec *rec, int begin_syn_node);
   void end_recognition(multi_srec *rec);
-  int  add_acoustic_model_for_recognition(multi_srec* rec, SWIModel* swimodel);
+  int  add_acoustic_model_for_recognition(multi_srec* rec, const SWIModel* swimodel);
   int  clear_acoustic_models_for_recognition(multi_srec* rec);
 
   void free_recognition(multi_srec *rec);

@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -32,37 +32,9 @@
 #include "log_add.h"
 #include "swimodel.h"
 
-/* const float   root_pi_over_2= (float)1.2533141; */
-const prdata  max_log = (prdata) MAX_LOG;
 
 #define MTAG NULL
 
-/*--------------------------------------------------------------*
- *                                                              *
- *                                                              *
- *                                                              *
- *--------------------------------------------------------------*/
-
-costdata DURATION_PENALTY_UNIT = 1;
-int      NUM_FRAMES_PER_VALID_FRAME = 0;
-/* this is just for debugging, able to turn duration model off */
-
-void check_duration_penalty()
-{
-  char *p = getenv("DUR_PR");
-  if (p)
-  {
-    DURATION_PENALTY_UNIT = (costdata) atoi(p);
-  }
-#ifdef SREC_ENGINE_VERBOSE_LOGGING
-  PLogMessage("DUR_PR %d\n", DURATION_PENALTY_UNIT);
-#endif
-}
-
-void duration_penalty_set_frames_per_valid_frame(int n)
-{
-  NUM_FRAMES_PER_VALID_FRAME = n;
-}
 
 /*--------------------------------------------------------------*
  *                                                              *
@@ -75,7 +47,7 @@ void duration_penalty_set_frames_per_valid_frame(int n)
    look roughly like normal distributions centered at the average state
    durations */
 
-char loop_cost_table [128][6] = {
+const char loop_cost_table [128][6] = {
 {0,0,0,0,0,0},
 {13,15,16,16,16,16},
 {12,13,14,14,14,14},
@@ -211,7 +183,7 @@ char loop_cost_table [128][6] = {
    look roughly like normal distributions centered at the average state
    durations */
 
-char trans_cost_table [128][6] = {
+const char trans_cost_table [128][6] = {
 {0,0,0,0,0,0},
 {0,0,0,0,0,0},
 {0,0,0,0,0,0},
@@ -355,88 +327,84 @@ static short load_short(PFile* fp)
   return v;
 }
 
-SWIModel* load_swimodel(char *filename)
+const SWIModel* load_swimodel(const char *filename)
 {
-  featdata *mean_ptr;
-  wtdata *weight_ptr;
   int i;
-  PFile* fp = NULL;
-  short* num_pdfs_in_model;
-  int num_allocated;
-  SWIModel *swimodel;
-  int ni;
-
-  fp = pfopen ( filename, L("rb") );
-/*  CHKLOG(rc, PFileSystemCreatePFile(filename, ESR_TRUE, &fp));
-  CHKLOG(rc, PFileOpen(fp, L("rb")));*/
-
-  if ( fp == NULL )
-    goto CLEANUP;
+  SWIModel *swimodel = NULL;
+  const void* file = NULL;
 
 #ifdef SREC_ENGINE_VERBOSE_LOGGING
   PLogMessage("load_swimodel: loaded %s", filename);
 #endif
   swimodel = (SWIModel*) CALLOC(1, sizeof(SWIModel), "clib.models.base");
-  num_allocated = sizeof(SWIModel);
-  swimodel->num_hmmstates = load_short(fp);
-  swimodel->num_dims      = load_short(fp);
-  swimodel->num_pdfs      = load_short(fp);
 
-  swimodel->hmmstates     = (SWIhmmState*) CALLOC(swimodel->num_hmmstates, sizeof(SWIhmmState), "clib.models.states");
-  num_allocated += swimodel->num_hmmstates * sizeof(SWIhmmState);
+  if (mmap_zip(filename, &swimodel->mmap_zip_data, &swimodel->mmap_zip_size)) {
+      PLogError("load_swimodel: mmap_zip failed for %s\n", filename);
+      goto CLEANUP;
+  }
+  file = swimodel->mmap_zip_data;
 
-  swimodel->allmeans      = (featdata*) CALLOC(swimodel->num_pdfs * swimodel->num_dims, sizeof(featdata), "clib.models.means");
-  num_allocated += swimodel->num_pdfs * swimodel->num_dims * sizeof(featdata);
-  swimodel->allweights    = (wtdata*) CALLOC(swimodel->num_pdfs, sizeof(wtdata), "clib.models.weights");
-  num_allocated += swimodel->num_pdfs * sizeof(featdata);
-  swimodel->avg_state_durations = (featdata*) CALLOC(swimodel->num_hmmstates, sizeof(featdata), "clib.models.durs");
+  swimodel->num_hmmstates = *(const short*)file;
+  file += sizeof(short);
+  swimodel->num_dims = *(const short*)file;
+  file += sizeof(short);
+  swimodel->num_pdfs = *(const short*)file;
+  file += sizeof(short);
 
-  num_pdfs_in_model = (short*) MALLOC(sizeof(short) * swimodel->num_hmmstates, MTAG);
-  ni = pfread(num_pdfs_in_model, sizeof(short), swimodel->num_hmmstates, fp);
-  ASSERT(ni == swimodel->num_hmmstates);
-  ni = pfread(swimodel->allmeans, sizeof(featdata), swimodel->num_dims * swimodel->num_pdfs, fp);
-  ASSERT(ni == swimodel->num_pdfs*swimodel->num_dims);
-  ni = pfread(swimodel->allweights, sizeof(wtdata), swimodel->num_pdfs, fp);
-  ASSERT(ni == swimodel->num_pdfs);
-  ni = pfread(swimodel->avg_state_durations, sizeof(featdata), swimodel->num_hmmstates, fp);
-  ASSERT(ni == swimodel->num_hmmstates);
+  SWIhmmState* hmmstates = (SWIhmmState*) CALLOC(swimodel->num_hmmstates, sizeof(SWIhmmState), "clib.models.states");
+  swimodel->hmmstates = hmmstates;
+
+  const short* num_pdfs_in_model = (const short*)file;
+  file += sizeof(short) * swimodel->num_hmmstates;
+
+  swimodel->allmeans = (const featdata*)file;
+  file += sizeof(featdata) * swimodel->num_pdfs * swimodel->num_dims;
+
+  swimodel->allweights = (const wtdata*)file;
+  file += sizeof(wtdata) * swimodel->num_pdfs;
+
+  swimodel->avg_state_durations = (const featdata*)file;
+  file += sizeof(featdata) * swimodel->num_hmmstates;
+
+  if (file > swimodel->mmap_zip_data + swimodel->mmap_zip_size) {
+      PLogError("load_swimodel: not enough data in %s", filename);
+      goto CLEANUP;
+  }
 
 #ifdef SREC_ENGINE_VERBOSE_LOGGING
-  PLogMessage("loaded models %s num_hmmstates %d num_dims %d num_pdfs %d allocated %d bytes weights[0] %d\n",
-              filename, swimodel->num_hmmstates, swimodel->num_dims, swimodel->num_pdfs, num_allocated,
+  PLogMessage("loaded models %s num_hmmstates %d num_dims %d num_pdfs %d weights[0] %d\n",
+              filename, swimodel->num_hmmstates, swimodel->num_dims, swimodel->num_pdfs,
               *swimodel->allweights);
 #endif
 
-  mean_ptr = swimodel->allmeans;
-  weight_ptr = swimodel->allweights;
+  const featdata* mean_ptr = swimodel->allmeans;
+  const wtdata* weight_ptr = swimodel->allweights;
 
   for (i = 0;i < swimodel->num_hmmstates;i++)
   {
-    swimodel->hmmstates[i].num_pdfs = num_pdfs_in_model[i];
-    swimodel->hmmstates[i].means = mean_ptr;
-    swimodel->hmmstates[i].weights = weight_ptr;
+    hmmstates[i].num_pdfs = num_pdfs_in_model[i];
+    hmmstates[i].means = mean_ptr;
+    hmmstates[i].weights = weight_ptr;
     mean_ptr += swimodel->num_dims * num_pdfs_in_model[i];
     weight_ptr += num_pdfs_in_model[i];
   }
-  FREE(num_pdfs_in_model);
-  num_pdfs_in_model = NULL;
-  pfclose(fp);
+
   return swimodel;
+
 CLEANUP:
-  if (fp != NULL)
-    pfclose ( fp );
+  free_swimodel(swimodel);
   return NULL;
 }
 
-void free_swimodel(SWIModel* swimodel)
+void free_swimodel(const SWIModel* swimodel)
 {
-  FREE(swimodel->hmmstates);
-  FREE(swimodel->allmeans);
-  FREE(swimodel->allweights);
-  FREE(swimodel->avg_state_durations);
-  FREE(swimodel);
+  if (!swimodel) return;
+  if (swimodel->mmap_zip_data) munmap_zip(swimodel->mmap_zip_data, swimodel->mmap_zip_size);
+  FREE((void*)swimodel->hmmstates);
+  FREE((void*)swimodel);
 }
-static PINLINE prdata Gaussian_Grand_Density_Swimodel(preprocessed *data, featdata *means)
+
+static PINLINE prdata Gaussian_Grand_Density_Swimodel(const preprocessed *data, const featdata *means)
 /*
 **  Observation probability function of a Gaussian pdf
 **  with diagonal covariance matrix.
@@ -444,8 +412,8 @@ static PINLINE prdata Gaussian_Grand_Density_Swimodel(preprocessed *data, featda
 {
   prdata pval;
   prdata diff;
-  imeldata *dvec;
-  imeldata *dend;
+  const imeldata *dvec;
+  const imeldata *dend;
   int count;
 
   dvec = data->seq + data->use_from;    /* Move to starting feature element */
@@ -463,8 +431,8 @@ static PINLINE prdata Gaussian_Grand_Density_Swimodel(preprocessed *data, featda
   return (pval);
 }
 
-scodata mixture_diagonal_gaussian_swimodel(preprocessed *prep,
-    SWIhmmState *spd, short num_dims)
+scodata mixture_diagonal_gaussian_swimodel(const preprocessed *prep,
+    const SWIhmmState *spd, short num_dims)
 /*
 **  Observation probability function
 */
@@ -473,13 +441,14 @@ scodata mixture_diagonal_gaussian_swimodel(preprocessed *prep,
   prdata pval, gval;
 
   prdata dval;
-  featdata *meanptr;
-  wtdata *weightptr;
+  const featdata *meanptr;
+  const wtdata *weightptr;
 
   ASSERT(prep);
   ASSERT(spd);
 
-  pval = -max_log;
+  pval = -(prdata) MAX_LOG;
+
   meanptr = spd->means;
   weightptr = spd->weights;
 
