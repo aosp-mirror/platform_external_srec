@@ -328,13 +328,15 @@ static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1AcousticSt
 
 static JNIEXPORT jstring JNICALL Java_android_speech_srec_Recognizer_SR_1AcousticStateGet
         (JNIEnv *env, jclass clazz, jint recognizer) {
-    const LCHAR* st = NULL;
-    ESR_ReturnCode esr_status = SR_AcousticStateGet((SR_Recognizer*)recognizer, &st);
-    if (esr_status || st == NULL) {
+    char rtn[1000];
+    size_t rtnLength = sizeof(rtn) - 1;
+    ESR_ReturnCode esr_status = SR_AcousticStateGet((SR_Recognizer*)recognizer, rtn, &rtnLength);
+    if (esr_status) {
         checkEsrError(env, esr_status);
         return NULL;
     }
-    return env->NewStringUTF(st);
+    rtn[rtnLength] = 0;
+    return env->NewStringUTF(rtn);
 }
 
 

@@ -31,7 +31,7 @@
 #if USE_CONFIDENCE_SCORER
 
 #ifdef SREC_ENGINE_VERBOSE_LOGGING
-static const char* conf_feature_names[12] =
+static const char* const conf_feature_names[12] =
   { "gdiff", "sd", "sd13", "spf", "abs", "gdiffpf", "gv" };
 #endif
 
@@ -82,7 +82,7 @@ void CA_FreeConfidenceScorer(CA_ConfidenceScorer* hConfidenceScorer)
 
 int CA_LoadConfidenceScorer(CA_ConfidenceScorer* hConfidenceScorer)
 {
-  static const char* names[NUM_CONF_FEATURES] = {
+  static char const * const names[NUM_CONF_FEATURES] = {
       "gdiff",
       "sd",
       "sd13",

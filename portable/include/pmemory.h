@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -22,7 +22,7 @@
 
 
 
-#define PMEM_MAP_TRACE
+/* #define PMEM_MAP_TRACE */
 
 #include "PortPrefix.h"
 #include "ptypes.h"
@@ -47,6 +47,40 @@
  */
 #define _STR(x) _VAL(x)
 
+#ifndef offsetof
+#define offsetof(type, member) ((size_t) &(((type *)0)->member))
+#endif
+
+/**
+ * \<static_cast\> implementation for C.
+ */
+#define STATIC_CAST(self, subClass, member) ((subClass*) (((char*) self) - (offsetof(subClass, member))))
+
+
+#define USE_STDLIB_MALLOC
+
+#ifdef USE_STDLIB_MALLOC
+
+#define MALLOC(n, tag) malloc(n)
+#define CALLOC(m, n, tag) calloc(m, n)
+#define CALLOC_CLR(m, n, tag) calloc(m, n)
+#define REALLOC(p, n) realloc(p, n)
+#define FREE(p) free(p)
+#define NEW(type, tag) ((type*)MALLOC(sizeof(type), tag))
+#define NEW_ARRAY(type, n, tag) ((type*)CALLOC(n, sizeof(type), tag))
+
+#define PMemInit() ESR_SUCCESS
+#define PMemShutdown() ESR_SUCCESS
+#define PMemSetLogFile(f) ESR_NOT_SUPPORTED
+#define PMemDumpLogFile() ESR_NOT_SUPPORTED
+#define PMemSetLogEnabled(b) ESR_NOT_SUPPORTED
+#define PMemLogFree(p) (free(p), ESR_SUCCESS)
+#define PMemReport(f) ESR_NOT_SUPPORTED
+#define PMemorySetPoolSize(n) ESR_NOT_SUPPORTED
+#define PMemoryGetPoolSize(p) ESR_NOT_SUPPORTED
+
+#else
+
 #ifdef DISABLE_MALLOC
 #define malloc #error
 #define calloc #error
@@ -54,20 +88,11 @@
 #define free #error
 #endif
 
-#ifndef offsetof
-#define offsetof(type, member) ((size_t) &(((type *)0)->member))
-#endif
-
 /*
  * PMEM_MAP_TRACE is not defined by default.
  * It is up to user to define PMEM_MAP_TRACE;
  * define in either makefile or here for test purpose.
  */
-
-/**
- * \<static_cast\> implementation for C.
- */
-#define STATIC_CAST(self, subClass, member) ((subClass*) (((char*) self) - (offsetof(subClass, member))))
 
 #ifdef PMEM_MAP_TRACE
 /**
@@ -305,5 +330,7 @@ PORTABLE_API ESR_ReturnCode PMemoryGetPoolSize(size_t *size);
 /**
  * @}
  */
+
+#endif
 
 #endif

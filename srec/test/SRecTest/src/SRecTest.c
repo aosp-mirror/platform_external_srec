@@ -1687,10 +1687,12 @@ int srec_test_get_acousticstate ( ApplicationData *data )
     {
     int             get_status;
     ESR_ReturnCode  esr_status;
-    const LCHAR     *state_string;
+    LCHAR           state_string[1000];
+    size_t len;
 
     get_status = 0;
-    esr_status = SR_AcousticStateGet ( data->recognizer, &state_string );
+    len = sizeof(state_string);
+    esr_status = SR_AcousticStateGet ( data->recognizer, state_string, &len );
 
     if ( esr_status == ESR_SUCCESS )
         {

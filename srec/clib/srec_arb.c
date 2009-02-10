@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*
- *  srec_arb.c  *
+ *  srec_arb.c                                                               *
  *                                                                           *
- *  Copyright 2007, 2008 Nuance Communciations, Inc.                               *
+ *  Copyright 2007, 2008 Nuance Communciations, Inc.                         *
  *                                                                           *
  *  Licensed under the Apache License, Version 2.0 (the 'License');          *
  *  you may not use this file except in compliance with the License.         *
@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -123,7 +123,7 @@ int get_modelids_for_pron(srec_arbdata* allotree,
   modelID modelid;
   phonemeID lphon, cphon, rphon;
 
-  if( allotree == NULL) 
+  if( allotree == NULL)
 	  return 1;
 
   if (num_phonemes == 0)
@@ -142,11 +142,11 @@ int get_modelids_for_pron(srec_arbdata* allotree,
     return 1; /* bad phoneme */
   for(i=0; i<num_phonemes; i++) {
 #if !USE_WWTRIPHONE
-    rphon = (i==num_phonemes-1 ? 
+    rphon = (i==num_phonemes-1 ?
 	     (phonemeID)allotree->phoneme_index[ SILENCE_CODE] :
 	     (phonemeID)allotree->phoneme_index[ (unsigned)phonemes[i+1] ] ) ;
 #else
-    rphon = (i==num_phonemes-1 ? 
+    rphon = (i==num_phonemes-1 ?
 	     WBPHONEME_CODE /*(phonemeID)allotree->phoneme_index[ WBPHONEME_CODE] */ :
 	     (phonemeID)allotree->phoneme_index[ (unsigned)phonemes[i+1] ] ) ;
 #endif
@@ -436,35 +436,23 @@ static unsigned int version_arbdata_add(unsigned int ics, int data)
 
 unsigned int version_arbdata_models(srec_arbdata* a)
 {
-  static unsigned int last_arbdata_modelid = 0;
-  static srec_arbdata*     last_arbdata;
   int i, num_hmms_in_phoneme;
 
   tree_head topo;
   unsigned int checksum = 0;
-
-  if (a == last_arbdata)
+  /* if(debug)printf("num_hmms %d\n", a->num_hmms); */
+  /* if(debug)printf("num_phonemes %d\n", a->num_phonemes); */
+  for (i = 0; i < a->num_phonemes; i++)
   {
-    checksum = last_arbdata_modelid;
-  }
-  else
-  {
-    /* if(debug)printf("num_hmms %d\n", a->num_hmms); */
-    /* if(debug)printf("num_phonemes %d\n", a->num_phonemes); */
-    for (i = 0; i < a->num_phonemes; i++)
-    {
-      num_hmms_in_phoneme = 0;
-      topo.low_pel_no  = 32567;
-      topo.high_pel_no = 0;
-      topo.nnodes = 0;
-      traverse_tree(a->pdata[i].model_nodes, &topo, &num_hmms_in_phoneme);
-      /* if(debug)printf("phoneme %d num_hmms %d (%d-%d)\n", i, num_hmms_in_phoneme,
-      topo.low_pel_no, topo.high_pel_no); */
-      if (topo.nnodes == 256) return(checksum = 0);
-      checksum = version_arbdata_add(checksum,  topo.low_pel_no);
-    }
-    last_arbdata_modelid = checksum;
-    last_arbdata         = a;
+    num_hmms_in_phoneme = 0;
+    topo.low_pel_no = 32567;
+    topo.high_pel_no = 0;
+    topo.nnodes = 0;
+    traverse_tree(a->pdata[i].model_nodes, &topo, &num_hmms_in_phoneme);
+    /* if(debug)printf("phoneme %d num_hmms %d (%d-%d)\n", i, num_hmms_in_phoneme,
+    topo.low_pel_no, topo.high_pel_no); */
+    if (topo.nnodes == 256) return 0;
+    checksum = version_arbdata_add(checksum, topo.low_pel_no);
   }
   return checksum;
 }
