@@ -76,15 +76,24 @@ $(G2G_INSTALL_PATH)/%.g2g: $(LOCAL_PATH)/grammars/%.grxml $(GRXML) $(MAKE_G2G) $
 # the grxml compiler expects this (and other) data files to be here.
 # $ g4 edit external/srec/config/en.us/dictionary/cmu6plus.ok.zip
 # $ make cmu6plus.ok.zip
+#
+# To make the resulting zip as small as possible, install advzip from
+# the advancecomp suite of compression utilities.  (On ubuntu,
+# "apt-get install advancecomp".)  It makes the output about 10% smaller.
+# This make rule will fall back to 'zip' if 'advzip' is not
+# available.
 #-----------------------------------------------------------------
 
 CMU2NUANCE=$(HOST_OUT_EXECUTABLES)/cmu2nuance
 DICT_DIR=$(ASR_ROOT_DIR)/config/en.us/dictionary
 
 cmu6plus.ok.zip: $(CMU2NUANCE) $(DICT_DIR)/c0.6 $(DICT_DIR)/numbers.ok $(DICT_DIR)/fixit.ok $(DICT_DIR)/enroll.ok
-	$(CMU2NUANCE) < $(DICT_DIR)/c0.6 > $(DICT_DIR)/c0.6.ok 
+	$(CMU2NUANCE) < $(DICT_DIR)/c0.6 > $(DICT_DIR)/c0.6.ok
 	sort -u $(DICT_DIR)/c0.6.ok $(DICT_DIR)/numbers.ok $(DICT_DIR)/fixit.ok $(DICT_DIR)/enroll.ok > $(DICT_DIR)/cmu6plus.ok
-	(cd $(DICT_DIR)/ && zip cmu6plus.ok.zip cmu6plus.ok)
+	$(hide) (cd $(DICT_DIR)/ && advzip -a -4 cmu6plus.ok.zip cmu6plus.ok || \
+	 (zip cmu6plus.ok.zip cmu6plus.ok && \
+          echo -e "\n+++ advzip not installed; fell back to zip\n    cmu6plus.ok.zip (`du -h cmu6plus.ok.zip | cut -f 1`) could be ~10% smaller with advzip\n"))
+
 
 
 #-----------------------------------------------------------------
