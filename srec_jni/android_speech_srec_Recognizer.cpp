@@ -493,8 +493,32 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1Recognizer
 
 static JNIEXPORT jobjectArray JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetKeyList
         (JNIEnv *env, jclass clazz, jint recognizer, jint nbest) {
-    unimplemented(env);
-    return NULL;
+    // fetch list
+    LCHAR* list[200];
+    size_t listSize = sizeof(list) / sizeof(list[0]);
+    ESR_ReturnCode esr_status = SR_RecognizerResultGetKeyList(((SR_RecognizerImpl*)recognizer)->result, nbest, list, &listSize);
+    if (esr_status) {
+        checkEsrError(env, esr_status);
+        return NULL;
+    }
+
+    // create String[] of keys
+    jclass stringClass = env->FindClass("[Ljava/lang/String;");
+    if (!stringClass) return NULL;
+    jobjectArray array = env->NewObjectArray(listSize, stringClass, NULL);
+    if (!array) return NULL;
+
+    // fill it
+    for (size_t i = 0; i < listSize; i++) {
+        // generate new String for key
+        jstring key = env->NewStringUTF(list[i]);
+        if (!key) return NULL;
+        // set the array
+        env->SetObjectArrayElement(array, i, key);
+        env->DeleteLocalRef(key);
+    }
+
+    return array;
 }
 
 static JNIEXPORT jstring JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetValue
