@@ -69,16 +69,19 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordNew
             LOGE("initCheck error %d ", s);
         }
     }
+    LOGV("new AudioRecord(%p)", ar);
     return (int)ar;
 }
 
 static JNIEXPORT int JNICALL Java_android_speech_srec_Recognizer_AudioRecordStart
         (JNIEnv *env, jclass clazz, jint audioRecord) {
+    LOGV("start = 0x%x", audioRecord);
     return (int)(((AudioRecord*)audioRecord)->start());
 }
 
 static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordRead
         (JNIEnv *env, jclass clazz, jint audioRecord, jbyteArray array, jint offset, jint length) {
+    LOGV("read(0x%x)", audioRecord);
     jbyte buffer[4096];
     if (length > (int)sizeof(buffer)) length = sizeof(buffer);
     length = ((AudioRecord*)audioRecord)->read(buffer, length);
@@ -92,6 +95,7 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordRea
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_AudioRecordStop
         (JNIEnv *env, jclass clazz, jint audioRecord) {
+    LOGV("stop(0x%x)", audioRecord);
     if (int rtn = ((AudioRecord*)audioRecord)->stop()) {
         throwException(env, "java/io/IOException", "AudioRecord::stop failed %d", rtn);
     }
@@ -99,6 +103,7 @@ static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_AudioRecordSto
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_AudioRecordDelete
         (JNIEnv *env, jclass clazz, jint audioRecord) {
+    LOGV("delete(0x%x)", audioRecord);
     delete (AudioRecord*)audioRecord;
 }
 
