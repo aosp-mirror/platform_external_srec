@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -27,7 +27,7 @@
 #include "srec_context.h"
 #include "srec.h"
 
-int add_acoustic_model_for_recognition(multi_srec* recm, SWIModel* model)
+int add_acoustic_model_for_recognition(multi_srec* recm, const SWIModel* model)
 {
   if (recm->num_swimodels >= MAX_ACOUSTIC_MODELS)
   {
@@ -39,7 +39,7 @@ int add_acoustic_model_for_recognition(multi_srec* recm, SWIModel* model)
     log_report("Error: too few recognizers allocated\n");
     return 0;
   }
-  
+
   if (recm->rec[0].num_model_slots_allocated < model->num_hmmstates)
   {
     PLogError("recognizer max_model_states %d, acoustic model num states %d, set CREC.Recognizer.max_model_states higher\n",
@@ -47,10 +47,10 @@ int add_acoustic_model_for_recognition(multi_srec* recm, SWIModel* model)
               model->num_hmmstates);
     return 0;
   }
-  
+
   recm->swimodel[ recm->num_swimodels] = model;
   recm->num_swimodels++;
-  
+
   recm->num_activated_recs++;
   return 1;
 }
@@ -90,11 +90,11 @@ void end_recognition(multi_srec *recm)
 
 int activate_grammar_for_recognition(multi_srec* recm, srec_context* grammar, const char* rule)
 {
-  srec_context* context = (srec_context*)grammar;
-  
+  srec_context* context = grammar;
+
   context->max_searchable_nodes = recm->max_fsm_nodes;
   context->max_searchable_arcs  = recm->max_fsm_arcs;
-  
+
   if (context->max_searchable_nodes < context->num_nodes || context->max_searchable_arcs < context->num_arcs)
   {
     PLogError(L("Error: context switch failed due to search limitations [arcs max=%d, actual=%d], [nodes max=%d, actual=%d]\n"),

@@ -35,8 +35,6 @@
 #define DEBUG   0
 #define FUDGE_FACTOR 1.2f
 
-extern const prdata  max_log;
-
 const float root_pi_over_2 = (float) 1.2533141;
 
 static const char get_fram[] = "$Id: get_fram.c,v 1.7.6.13 2007/10/15 18:06:24 dahan Exp $";
