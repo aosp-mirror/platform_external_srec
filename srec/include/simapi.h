@@ -115,7 +115,7 @@ typedef struct
     int         use_dim;
     int         partial_distance_calc_dim;
     prdata      imelda_scale;
-    SWIModel    *swimodel; /* owning pointer to compact acoustic models */
+    const SWIModel    *swimodel; /* owning pointer to compact acoustic models */
   }
   CA_Acoustic;
 
@@ -1461,7 +1461,7 @@ typedef struct
    * Returns      int
    *
    ************************************************************************
-   * tells whether a syntax is to be used for voice-enrollment 
+   * tells whether a syntax is to be used for voice-enrollment
    ************************************************************************
    */
 
@@ -2794,7 +2794,7 @@ void CA_UnloadRecognitionModels (CA_Recog *hRecog);
 
   void CA_FreeConfidenceScorer(CA_ConfidenceScorer *hConfidenceScorer);
 
- 
+
   int CA_LoadConfidenceScorer(CA_ConfidenceScorer* hConfidenceScorer);
   /**
    *
