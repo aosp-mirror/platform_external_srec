@@ -59,23 +59,22 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordNew
             android::AudioSystem::PCM_16_BIT, 1,
             fifoFrames, 0);
     if (ar == NULL) {
-        throwException(env, "java/lang/IllegalArgumentException",
-                "new AudioRecord::AudioRecord() failed", 0);
+        LOGE("Error creating AudioRecord");
     }
-    else if (int rtn = ar->initCheck()) {
-        delete ar;
-        ar = NULL;
-        throwException(env, "java/lang/IllegalStateException",
-                "AudioRecord::initCheck() failed - another instance open?", rtn);
+    else {
+        status_t s = ar->initCheck();
+        if (s != NO_ERROR) {
+            delete ar;
+            ar = NULL;
+            LOGE("initCheck error %d ", s);
+        }
     }
     return (int)ar;
 }
 
-static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_AudioRecordStart
+static JNIEXPORT int JNICALL Java_android_speech_srec_Recognizer_AudioRecordStart
         (JNIEnv *env, jclass clazz, jint audioRecord) {
-    if (int rtn = ((AudioRecord*)audioRecord)->start()) {
-        throwException(env, "java/lang/IllegalStateException", "AudioRecord::start failed %d", rtn);
-    }
+    return (int)(((AudioRecord*)audioRecord)->start());
 }
 
 static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordRead
@@ -94,7 +93,7 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordRea
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_AudioRecordStop
         (JNIEnv *env, jclass clazz, jint audioRecord) {
     if (int rtn = ((AudioRecord*)audioRecord)->stop()) {
-        throwException(env, "java/lang/IllegalStateException", "AudioRecord::stop failed %d", rtn);
+        throwException(env, "java/io/IOException", "AudioRecord::stop failed %d", rtn);
     }
 }
 
@@ -110,7 +109,7 @@ static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_AudioRecordDel
 static JNINativeMethod gMethods[] = {
     /* name, signature, funcPtr */
     {"AudioRecordNew",    "(II)I",    (void*)Java_android_speech_srec_Recognizer_AudioRecordNew},
-    {"AudioRecordStart",  "(I)V",     (void*)Java_android_speech_srec_Recognizer_AudioRecordStart},
+    {"AudioRecordStart",  "(I)I",     (void*)Java_android_speech_srec_Recognizer_AudioRecordStart},
     {"AudioRecordRead",   "(I[BII)I", (void*)Java_android_speech_srec_Recognizer_AudioRecordRead},
     {"AudioRecordStop",   "(I)V",     (void*)Java_android_speech_srec_Recognizer_AudioRecordStop},
     {"AudioRecordDelete", "(I)V",     (void*)Java_android_speech_srec_Recognizer_AudioRecordDelete},

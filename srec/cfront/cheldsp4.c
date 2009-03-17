@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -59,24 +59,26 @@
 #define RASTA_CONSTANT  0.85
 #endif
 
-static void regress(cepdata *rg, cepdata *cp_buf, unsigned short frmind,
+static void regress(cepdata *rg, const cepdata *cp_buf, unsigned short frmind,
                     int mel_dim);
-static void dd_regress(cepdata *dd, cepdata *cp_buf, unsigned short frmind,
+static void dd_regress(cepdata *dd, const cepdata *cp_buf, unsigned short frmind,
                        int mel_dim);
-static void scale_data(front_cep *cepobj, featdata *rpram,  featdata *pram1,
-                       featdata *pram2, featdata *ddpram, cepdata *rast,
-                       cepdata *cep, cepdata *rcep, cepdata *ddcep);
-static void pack_frame(front_cep *cepobj, featdata *dest_frame,
-                       featdata *rasta_data, featdata *mel_data,
-                       featdata *del_data, featdata *deldel_data);
+static void scale_data(const front_cep *cepobj, const featdata *rpram,  featdata *pram1,
+                       featdata *pram2, featdata *ddpram, const cepdata *rast,
+                       const cepdata *cep, const cepdata *rcep, const cepdata *ddcep);
+static void pack_frame(const front_cep *cepobj, featdata *dest_frame,
+                       const featdata *rasta_data, const featdata *mel_data,
+                       const featdata *del_data, const featdata *deldel_data);
 
 
 
-static void regress(cepdata *rg, cepdata*cp_buf, unsigned short frmind,
+static void regress(cepdata *rg, const cepdata*cp_buf, unsigned short frmind,
                     int mel_dim)
 {
   int     i, j, d;
-  cepdata val, *cpt;
+  cepdata val;
+  const cepdata* cpt;
+  /*
   static cepdata a = (cepdata) 0.0;
 
   if (a == (cepdata) 0.0)
@@ -85,6 +87,9 @@ static void regress(cepdata *rg, cepdata*cp_buf, unsigned short frmind,
       a += j * j;
     a *= (cepdata) 2.0;
   }
+  */
+  /* replace above code with the following constant */
+  cepdata a = (DELTA * (DELTA + 1) * (2 * DELTA + 1) / 6) * 2;
   d = DELTA;
   if (frmind < Q2 - 1)
   {
@@ -104,13 +109,15 @@ static void regress(cepdata *rg, cepdata*cp_buf, unsigned short frmind,
 		}
   return;
 }
-cepdata deldel[] = {2, 0, -1, -2, -1, 0, 2};  /* delta - delta */
-void dd_regress(cepdata *dd, cepdata *cp_buf, unsigned short frmind, int mel_dim)
+static const cepdata deldel[] = {2, 0, -1, -2, -1, 0, 2};  /* delta - delta */
+
+void dd_regress(cepdata *dd, const cepdata *cp_buf, unsigned short frmind, int mel_dim)
 /*
 **  Computes ALL delta delta mel cep pars. BP 8/96 */
 {
   int i, j, d;
-  cepdata val, *cpt;
+  cepdata val;
+  const cepdata *cpt;
 
   d = DELTA;
   if (frmind < Q2 - 1)
@@ -142,9 +149,9 @@ void dd_regress(cepdata *dd, cepdata *cp_buf, unsigned short frmind, int mel_dim
 }
 
 
-static void scale_data(front_cep *cepobj, featdata *rpram,  featdata *pram1,
-                       featdata *pram2, featdata *ddpram, cepdata *rast,
-                       cepdata *cep, cepdata *rcep, cepdata *ddcep)
+static void scale_data(const front_cep *cepobj, const featdata *rpram,  featdata *pram1,
+                       featdata *pram2, featdata *ddpram, const cepdata *rast,
+                       const cepdata *cep, const cepdata *rcep, const cepdata *ddcep)
 {
   size_t   i;
   bigdata a;
@@ -185,9 +192,9 @@ static void scale_data(front_cep *cepobj, featdata *rpram,  featdata *pram1,
   return;
 }
 
-static void pack_frame(front_cep *cepobj, featdata *dest_frame,
-                       featdata *rasta_data, featdata *mel_data,
-                       featdata *del_data, featdata *deldel_data)
+static void pack_frame(const front_cep *cepobj, featdata *dest_frame,
+                       const featdata *rasta_data, const featdata *mel_data,
+                       const featdata *del_data, const featdata *deldel_data)
 {
   size_t ii, cnt;
 

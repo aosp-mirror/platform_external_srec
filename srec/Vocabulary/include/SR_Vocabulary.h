@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*
- *  SR_Vocabulary.h  *
+ *  SR_Vocabulary.h                                                          *
  *                                                                           *
- *  Copyright 2007, 2008 Nuance Communciations, Inc.                               *
+ *  Copyright 2007, 2008 Nuance Communciations, Inc.                         *
  *                                                                           *
  *  Licensed under the Apache License, Version 2.0 (the 'License');          *
  *  you may not use this file except in compliance with the License.         *
@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -47,7 +47,7 @@ typedef struct SR_Vocabulary_t
   * @param filename File to write to
   */
   ESR_ReturnCode(*save)(struct SR_Vocabulary_t* self, const LCHAR* filename);
-  
+
   /**
    * Returns phonetic representation of word.
    *
@@ -58,7 +58,7 @@ typedef struct SR_Vocabulary_t
 	 *            ESR_BUFFER_OVERFLOW, the required length is returned in this variable.
    */
   ESR_ReturnCode(*getPronunciation)(struct SR_Vocabulary_t* self, const LCHAR* word, LCHAR* pronunciation, size_t* len);
-  
+
   /**
    * Returns vocabulary locale.
    *
@@ -66,7 +66,7 @@ typedef struct SR_Vocabulary_t
    * @param locale [out] Vocabulary locale
    */
   ESR_ReturnCode(*getLanguage)(struct SR_Vocabulary_t* self, ESR_Locale* locale);
-  
+
   /**
   * Destroys a Vocabulary.
   *
@@ -158,8 +158,7 @@ SREC_VOCABULARY_API ESR_ReturnCode SR_VocabularyGetPronunciation(SR_Vocabulary* 
  */
 
 /* To-Do: the following functions need to be removed.  The functions are still used in SR_NameTag.dll  */
-SREC_VOCABULARY_API ESR_ReturnCode SR_Vocabulary_etiinf_conv_multichar(ESR_Locale locale, const LCHAR* i, LCHAR* output, size_t max_len);
-SREC_VOCABULARY_API ESR_ReturnCode SR_Vocabulary_etiinf_conv_from_multichar(ESR_Locale locale, LCHAR* input, LCHAR* output);
-SREC_VOCABULARY_API ESR_ReturnCode SR_Vocabulary_etiinf_init_multichar(ESR_Locale locale);
+SREC_VOCABULARY_API ESR_ReturnCode SR_Vocabulary_etiinf_conv_multichar(ESR_Locale locale, const LCHAR* input, LCHAR* output, size_t max_len);
+SREC_VOCABULARY_API ESR_ReturnCode SR_Vocabulary_etiinf_conv_from_multichar(ESR_Locale locale, const LCHAR* input, LCHAR* output);
 
 #endif /* __SR_VOCABULARY_H */

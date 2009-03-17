@@ -32,7 +32,7 @@ typedef struct
   int    shift;
   int    scale;
   unsigned long mask;
-  int    *table;
+  const int *table;
 }
 log_table_info;
 

@@ -119,7 +119,7 @@ typedef struct PFile_t
    *              an error occurs.
    * @return ESR_INVALID_ARGUMENT if self is null; ESR_WRITE_ERROR if a writing error occurs
    */
-  ESR_ReturnCode(*write)(struct PFile_t* self, void* buffer, size_t size, size_t* count);
+  ESR_ReturnCode(*write)(struct PFile_t* self, const void* buffer, size_t size, size_t* count);
 
   /**
    * Flushes a PFile.
@@ -464,7 +464,7 @@ PORTABLE_API size_t pfread(void* buffer, size_t size, size_t count, PFile* strea
  * @param stream See fwrite()
  * @return see fwrite()
  */
-PORTABLE_API size_t pfwrite(void* buffer, size_t size, size_t count, PFile* stream);
+PORTABLE_API size_t pfwrite(const void* buffer, size_t size, size_t count, PFile* stream);
 
 /**
  * Backwards compatible fclose().

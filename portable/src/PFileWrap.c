@@ -70,7 +70,7 @@ ESR_ReturnCode PFileRead ( PFile *self, void *buffer, size_t size, size_t *count
 
 
 
-ESR_ReturnCode PFileWrite ( PFile *self, void *buffer, size_t size, size_t *count )
+ESR_ReturnCode PFileWrite ( PFile *self, const void *buffer, size_t size, size_t *count )
     {
     ESR_ReturnCode  write_status;
     size_t          items_written;
@@ -301,7 +301,7 @@ size_t pfread ( void *buffer, size_t size, size_t count, PFile *stream )
 
 
 
-size_t pfwrite ( void *buffer, size_t size, size_t count, PFile *stream )
+size_t pfwrite ( const void *buffer, size_t size, size_t count, PFile *stream )
     {
     ESR_ReturnCode rc;
 

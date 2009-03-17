@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*
- *  srec_context.c  *
+ *  srec_context.c                                                           *
  *                                                                           *
- *  Copyright 2007, 2008 Nuance Communciations, Inc.                               *
+ *  Copyright 2007, 2008 Nuance Communciations, Inc.                         *
  *                                                                           *
  *  Licensed under the Apache License, Version 2.0 (the 'License');          *
  *  you may not use this file except in compliance with the License.         *
@@ -86,7 +86,7 @@ EXAMPLE: We need to cast a memory address to a (wordmap*)
 #define DATA_ALIGN(x, y, z)
 #endif
 
-int do_minimize = 1;
+static const int do_minimize = 1;
 #define PTR_TO_IDX(ptr, base) ((asr_uint32_t) (ptr == NULL ? 0xFFFFFFFFu : (asr_uint32_t)(ptr - base)))
 #define IDX_TO_PTR(idx, base) (idx == 0xFFFFFFFFu ? NULL : base + idx)
 
@@ -298,8 +298,6 @@ modelID hmm_number(const char* hmm_Name, modelID hmm_ilabel_offset)
 
 char* hmm_name(modelID ilabel, modelID hmm_ilabel_offset, char* buf)
 {
-  static char mybuf[32];
-  if (!buf) buf = mybuf;
   if (ilabel == EPSILON_LABEL)
     sprintf(buf, "eps");
   else if (ilabel == WORD_BOUNDARY)
@@ -1156,10 +1154,11 @@ int FST_DumpGraph(srec_context* fst, PFile* fp)
     {
       for (atok = ntoken->un_ptr.first_next_arc; atok != FSMARC_NULL; atok = atoken->linkl_next_arc)
       {
+        char buf[32];
         atoken = ARC_XtoP(atok);
         into_node = NODE_XtoI(atoken->to_node);
         ilabel = fst->ilabels->num_words == 0 ?
-                 hmm_name(atoken->ilabel, fst->hmm_ilabel_offset, NULL) :
+                 hmm_name(atoken->ilabel, fst->hmm_ilabel_offset, buf) :
                  fst->ilabels->words[atoken->ilabel] ;
         olabel = fst->olabels->words[atoken->olabel];
 
