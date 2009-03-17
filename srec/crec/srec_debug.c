@@ -23,9 +23,8 @@
 #include "srec_tokens.h"
 
 
-char* sprint_altwords(srec* rec, altword_token* awtoken)
+static char* sprint_altwords(srec* rec, altword_token* awtoken, char* buf)
 {
-  static char buf[64];
   char *bufp = &buf[0];
 
   if (awtoken == AWTNULL) buf[0] = 0;
@@ -46,15 +45,15 @@ void print_fsmnode_token(srec* rec, ftokenID token_index, char* msg)
   fsmnode_token *ftoken;
   char word_backtrace_trans[512];
   char *p;
+  char buf[64];
   if (token_index == MAXftokenID)
   {
     printf("%sftoken %d\n", msg, token_index);
     return;
   }
   ftoken = &rec->fsmnode_token_array[token_index];
-#define SPRINT_ALTWORDS(rEc,aWt) sprint_altwords(rEc,aWt)
   printf("%sftoken %d rec %d@%d fsmnode %d cost %d word %d(%s) word_backtrace %d next_token_index %d ", msg, token_index, rec->id, rec->current_search_frame, ftoken->FSMnode_index, ftoken->cost, ftoken->word,
-         SPRINT_ALTWORDS(rec, ftoken->aword_backtrace),
+         sprint_altwords(rec, ftoken->aword_backtrace, buf),
          ftoken->word_backtrace, ftoken->next_token_index);         
   
   p = "null";
@@ -107,11 +106,12 @@ void print_fsmarc_token(srec* rec, stokenID token_index, char* msg)
          stoken->FSMarc_index, arc->ilabel, arc->to_node);
   for (i = 0; i < stoken->num_hmm_states; i++)
   {
+    char buf[64];
     char *p = "null";
     if (wordids[i] < context->olabels->num_words) p = context->olabels->words[wordids[i]];
     sprint_bword_token_backtrace(word_backtrace_trans, 256, rec, word_backtrace[i]);
     printf(" w%d(%s)/%s/c%d/C%d/B%d/%d(%s)", wordids[i],
-           SPRINT_ALTWORDS(rec, stoken->aword_backtrace[i]),
+           sprint_altwords(rec, stoken->aword_backtrace[i], buf),
            p, costs[i], costs[i] + cost_offset, word_backtrace[i], duration[i], word_backtrace_trans);
   }
   printf("\n");

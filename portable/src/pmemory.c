@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -28,6 +28,8 @@
 #include "passert.h"
 #include "pmemory_ext.h"
 #include "pmutex.h"
+
+#ifndef USE_STDLIB_MALLOC
 
 #undef malloc
 #undef calloc
@@ -124,14 +126,14 @@ static ESR_ReturnCode getStackTrace(LCHAR* stackTrace, size_t* len)
 {
   ESR_BOOL isInit;
   ESR_ReturnCode rc;
-  
+
   rc = PStackTraceIsInitialized(&isInit);
   if (rc == ESR_SUCCESS && isInit)
   {
     LCHAR* index;
     size_t bufferLen = *len;
     size_t i;
-    
+
     rc = PStackTraceGetValue(stackTrace, &bufferLen);
     if (rc == ESR_SUCCESS)
     {
@@ -175,7 +177,7 @@ static int getIndex(const LCHAR *key)
   unsigned int crc = ~pcrcComputeString(key);
   int initialIdx = (int)(crc % MAX_MEM_TAG);
   int idx = initialIdx;
-  
+
   for (;;)
   {
     if (gMemoryMap[idx].tag == NULL)
@@ -193,14 +195,14 @@ static int getIndex(const LCHAR *key)
 #endif
       return idx;
     }
-    
+
     if (gMemoryMap[idx].crc == crc &&
         LSTRCMP(gMemoryMap[idx].tag, key) == 0)
     {
       /* found a matching slot, return it */
       return idx;
     }
-    
+
     if (++idx == MAX_MEM_TAG)
     {
       /* Look at next slot and wrap around. */
@@ -218,7 +220,7 @@ ESR_ReturnCode PMemorySetPoolSize(size_t size)
 #if defined(PORTABLE_DINKUM_MEM_MGR) || defined(PORTABLE_FIXED_SIZE_MEM_BLOCK_SCHEME)
   if (gNbInit > 0)
     return ESR_INVALID_STATE;
-    
+
   gMemPoolSize = size;
   return ESR_SUCCESS;
 #else
@@ -244,12 +246,12 @@ ESR_ReturnCode PMemoryGetPoolSize(size_t *size)
 ESR_ReturnCode PMemInit(void)
 {
   ESR_ReturnCode init_status;
-  
+
   if (gNbInit > 0)
     return ESR_INVALID_STATE;
-    
+
   init_status = createMutex(&memMutex, ESR_FALSE);
-  
+
   if (init_status == ESR_SUCCESS)
   {
     ++gNbInit;
@@ -281,10 +283,12 @@ ESR_ReturnCode PMemInit(void)
     deleteMutex(&memMutex);
   }
 
+#ifdef PMEM_MAP_TRACE
   // Initialize global static variables
   gCurAlloc = 0;
   gMaxAlloc = 0;
-  
+#endif
+
   return (init_status);
 }
 
@@ -298,7 +302,7 @@ ESR_ReturnCode PMemShutdown(void)
 #ifdef PMEM_MAP_TRACE
   size_t i;
 #endif
-  
+
   if (gNbInit == 0)
     return ESR_INVALID_STATE;
   if (gNbInit == 1)
@@ -316,7 +320,7 @@ ESR_ReturnCode PMemShutdown(void)
     deleteMutex(&memMutex);
   }
   gNbInit--;
-  
+
   return ESR_SUCCESS;
 }
 
@@ -324,27 +328,27 @@ ESR_ReturnCode PMemSetLogFile(PFile* file)
 {
   if (gNbInit == 0)
     return ESR_INVALID_STATE;
-    
+
   lockMutex(&memMutex);
   gFile = file;
   unlockMutex(&memMutex);
-  
+
   return ESR_SUCCESS;
 }
 
 ESR_ReturnCode PMemDumpLogFile(void)
 {
   ESR_ReturnCode rc;
-  
+
   if (gNbInit == 0)
     return ESR_INVALID_STATE;
-    
+
   lockMutex(&memMutex);
   if (gFile != NULL)
   {
     /* Hide gFile from memory report */
 /*    CHK(rc, gFile->hideMemoryAllocation(gFile));*/
-    
+
     rc = PMemReport(gFile);
     if (rc != ESR_SUCCESS)
     {
@@ -375,7 +379,7 @@ ESR_ReturnCode PMemSetLogEnabled(ESR_BOOL value)
   lockMutex(&memMutex);
   isLogEnabled = value;
   unlockMutex(&memMutex);
-  
+
   return ESR_SUCCESS;
 }
 
@@ -388,12 +392,12 @@ ESR_ReturnCode PMemLogFree(void* ptr)
 #if PMEM_STACKTRACE && PMEM_LOG_LOWLEVEL
   ESR_ReturnCode rc;
 #endif
-  
+
   if (ptr == NULL || gNbInit == 0)
     return ESR_SUCCESS;
-    
+
   lockMutex(&memMutex);
-  
+
   data = (MemoryData*)(((unsigned char*) ptr) - sizeof(MemoryData));
 #ifdef PMEM_MAP_TRACE
   e = gMemoryMap + data->index;
@@ -402,10 +406,10 @@ ESR_ReturnCode PMemLogFree(void* ptr)
   {
     passert(e->curAlloc >= data->size);
     e->curAlloc -= data->size;
-    
+
     passert(gCurAlloc >= data->size);
     gCurAlloc -= data->size;
-    
+
     data->size = 0;
   }
 #if PMEM_STACKTRACE
@@ -428,7 +432,7 @@ ESR_ReturnCode PMemLogFree(void* ptr)
 #if PMEM_STACKTRACE
     LCHAR stackTrace[P_MAX_STACKTRACE];
     size_t len = P_MAX_STACKTRACE;
-    
+
     rc = getStackTrace(stackTrace, &len);
     if (rc != ESR_SUCCESS)
     {
@@ -442,7 +446,7 @@ ESR_ReturnCode PMemLogFree(void* ptr)
   }
 #endif /* PMEM_LOG_LOWLEVEL */
 #endif /* PMEM_MAP_TRACE */
-  
+
   unlockMutex(&memMutex);
   return ESR_SUCCESS;
 #if PMEM_STACKTRACE && PMEM_LOG_LOWLEVEL
@@ -469,7 +473,7 @@ ESR_ReturnCode PMemReport(PFile* file)
 #if PMEM_STACKTRACE
   MemoryData* data;
 #endif
-  
+
   if (gNbInit == 0)
     return ESR_INVALID_STATE;
   if (file == NULL)
@@ -478,7 +482,7 @@ ESR_ReturnCode PMemReport(PFile* file)
     if (file == NULL)
       return ESR_SUCCESS;
   }
-  
+
   lockMutex(&memMutex);
 #ifdef PMEM_MAP_TRACE
   if (gFile != NULL)
@@ -492,9 +496,9 @@ ESR_ReturnCode PMemReport(PFile* file)
         pfprintf(gFile, L("pmem|-|0|corrupt|%d|\n"), i);
     }
   }
-  
+
   pfprintf(file, L("%-52s %10s %15s\n"), L("Memory tag"), L("Cur. Alloc"), L("Max. Alloc"));
-  
+
   for (i = 0, e = gMemoryMap; i < MAX_MEM_TAG; ++i, ++e)
   {
     if (e->tag == NULL)
@@ -505,7 +509,7 @@ ESR_ReturnCode PMemReport(PFile* file)
     else
     {
       len = LSTRLEN(e->tag);
-      
+
       if (len > TAG_SIZE - 1)
       {
         LSTRCPY(truncatedTag, TAG_PREFIX);
@@ -524,7 +528,7 @@ ESR_ReturnCode PMemReport(PFile* file)
       {
         LCHAR stackTrace[P_MAX_STACKTRACE];
         LCHAR* index;
-        
+
         LSTRCPY(stackTrace, data->stackTrace);
         index = stackTrace;
         while (index)
@@ -547,7 +551,7 @@ ESR_ReturnCode PMemReport(PFile* file)
   /* not support */
 #endif /* PMEM_MAP_TRACE */
   unlockMutex(&memMutex);
-  
+
   return ESR_SUCCESS;
 }
 /*
@@ -579,17 +583,17 @@ void *pmalloc(size_t nbBytes)
   ESR_BOOL isInit;
   ESR_ReturnCode rc;
 #endif
-  
+
   if (gNbInit == 0)
     return NULL;
-    
+
   lockMutex(&memMutex);
-  
+
 #ifdef PMEM_MAP_TRACE
   if (tag == NULL)
     tag = file;
   passert(tag != NULL);
-  
+
   idx = getIndex(tag);
   if (idx == -1)
   {
@@ -606,7 +610,7 @@ void *pmalloc(size_t nbBytes)
   }
 #endif
   actualSize = sizeof(MemoryData) + nbBytes;
-  
+
   data = (MemoryData *) malloc(actualSize);
   if (data == NULL)
   {
@@ -616,7 +620,7 @@ void *pmalloc(size_t nbBytes)
      */
     goto CLEANUP;
   }
-  
+
 #ifdef PMEM_MAP_TRACE
   data->index = idx;
 #if PMEM_STACKTRACE
@@ -643,9 +647,9 @@ void *pmalloc(size_t nbBytes)
   else
     data->stackTrace = NULL;
 #endif
-    
+
   e = gMemoryMap + idx;
-  
+
 #if PMEM_STACKTRACE
   if (e->last != NULL)
     e->last->next = data;
@@ -656,7 +660,7 @@ void *pmalloc(size_t nbBytes)
     e->first = data;
 #endif
 #endif
-    
+
   if (isLogEnabled)
   {
     data->size = actualSize;
@@ -664,7 +668,7 @@ void *pmalloc(size_t nbBytes)
     e->curAlloc += actualSize;
     if (e->maxAlloc < e->curAlloc)
       e->maxAlloc = e->curAlloc;
-      
+
     gCurAlloc += actualSize;
     if (gMaxAlloc < gCurAlloc)
       gMaxAlloc = gCurAlloc;
@@ -672,12 +676,12 @@ void *pmalloc(size_t nbBytes)
   }
   else
     data->size = 0;
-    
+
   result = (void*)(data + 1);
-  
+
 #if PMEM_LOG_LOWLEVEL
   if (gFile != NULL && isLogEnabled)
-  
+
     if (gFile != NULL)
     {
 #if PMEM_STACKTRACE
@@ -687,7 +691,7 @@ void *pmalloc(size_t nbBytes)
 #endif /* PMEM_STACKTRACE */
     }
 #endif /* PMEM_LOG_LOWLEVEL */
-    
+
 CLEANUP:
   unlockMutex(&memMutex);
   return result;
@@ -746,10 +750,10 @@ void *prealloc(void *ptr, size_t newSize)
   MemoryData* oldLast;
 #endif
   ESR_BOOL bMalloc = ESR_FALSE;
-  
+
   if (gNbInit == 0)
     return NULL;
-    
+
   if (newSize == 0 && ptr != NULL)
   {
 #ifdef PMEM_MAP_TRACE
@@ -767,9 +771,9 @@ void *prealloc(void *ptr, size_t newSize)
     return pmalloc(newSize);
 #endif
   }
-  
+
   lockMutex(&memMutex);
-  
+
   oldData = (MemoryData *)(((unsigned char *) ptr) - sizeof(MemoryData));
   oldSize = oldData->size;
   passert(oldSize >= 0);
@@ -781,7 +785,7 @@ void *prealloc(void *ptr, size_t newSize)
 #ifdef PMEM_MAP_TRACE
   e = gMemoryMap + oldData->index;
 #endif
-  
+
   actualSize = newSize + sizeof(MemoryData);
   if (oldSize != actualSize)
   {
@@ -811,7 +815,7 @@ void *prealloc(void *ptr, size_t newSize)
   {
     newData = oldData;
   }
-  
+
 #ifdef PMEM_MAP_TRACE
   if (newData != NULL && bMalloc)
   {
@@ -820,12 +824,12 @@ void *prealloc(void *ptr, size_t newSize)
       e->curAlloc += actualSize - oldSize;
       if (e->maxAlloc < e->curAlloc)
         e->maxAlloc = e->curAlloc;
-        
+
       gCurAlloc += actualSize - oldSize;
       if (gMaxAlloc < gCurAlloc)
         gMaxAlloc = gCurAlloc;
     }
-    
+
 #if PMEM_STACKTRACE
     newData->stackTrace = oldStackTrace;
     newData->next = oldNext;
@@ -841,13 +845,13 @@ void *prealloc(void *ptr, size_t newSize)
 #endif
   }
 #endif
-  
+
   if (newData != NULL)
   {
     newData->size = actualSize;
     result = (void*)(newData + 1);
   }
-  
+
 #if PMEM_LOG_LOWLEVEL
   if (gFile != NULL && isLogEnabled)
   {
@@ -855,7 +859,7 @@ void *prealloc(void *ptr, size_t newSize)
     LCHAR stackTrace[P_MAX_STACKTRACE];
     size_t len = P_MAX_STACKTRACE;
     ESR_ReturnCode rc;
-    
+
     rc = getStackTrace(stackTrace, &len);
     if (rc != ESR_SUCCESS)
     {
@@ -868,7 +872,7 @@ void *prealloc(void *ptr, size_t newSize)
 #endif /* PMEM_STACKTRACE */
   }
 #endif /* PMEM_LOG_LOWLEVEL */
-  
+
   unlockMutex(&memMutex);
   return result;
 #if PMEM_STACKTRACE && PMEM_LOG_LOWLEVEL
@@ -890,9 +894,9 @@ void pfree(void* ptr)
 #endif
   if (ptr == NULL || gNbInit == 0)
     return;
-    
+
   lockMutex(&memMutex);
-  
+
   data = (MemoryData*)(((unsigned char*) ptr) - sizeof(MemoryData));
 #ifdef PMEM_MAP_TRACE
   passert(data->index >= 0 && data->index <= MAX_MEM_TAG);
@@ -901,7 +905,7 @@ void pfree(void* ptr)
   {
     passert(e->curAlloc >= data->size);
     e->curAlloc -= data->size;
-    
+
     passert(gCurAlloc >= data->size);
     gCurAlloc -= data->size;
   }
@@ -926,7 +930,7 @@ void pfree(void* ptr)
     LCHAR stackTrace[P_MAX_STACKTRACE];
     size_t len = P_MAX_STACKTRACE;
     ESR_ReturnCode rc;
-    
+
     rc = getStackTrace(stackTrace, &len);
     if (rc != ESR_SUCCESS)
     {
@@ -944,7 +948,7 @@ void pfree(void* ptr)
   data->stackTrace = NULL;
 #endif /* PMEM_STACKTRACE */
 #endif
-  
+
   free(data);
   unlockMutex(&memMutex);
 #if PMEM_STACKTRACE && PMEM_LOG_LOWLEVEL
@@ -952,5 +956,7 @@ CLEANUP:
   unlockMutex(&memMutex);
   return;
 #endif
-  
+
 }
+
+#endif

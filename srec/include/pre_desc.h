@@ -77,7 +77,7 @@ mul_table_info;
  */
 typedef struct
 {
-  prdata *table;
+  const prdata *table;
   prdata add_log_limit;
   prdata scale;   /* X - scale to log function */
   prdata inv_scale;

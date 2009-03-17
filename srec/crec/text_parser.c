@@ -29,7 +29,7 @@
 #define PARSE_PASS 0
 #define PARSE_FAIL 1
 
-static char copy_of_word[MAX_LOCAL_LEN]; /* save heap on recursive function */
+
 static int check_word_path(srec_context* context, arc_token* atok,
                            const char* transcription, int tlen)
 {
@@ -37,59 +37,59 @@ static int check_word_path(srec_context* context, arc_token* atok,
   char          *q;
   arc_token*    next_atok;
   wordID        wdID;
-  size_t        copy_of_word_size;
   int           q_position;
 
-  if ( strlen ( transcription ) >= MAX_LOCAL_LEN )
-    {
-      PLogError("Transcription too long [%s]\n", transcription);
-      return PARSE_FAIL;
-    }
-  copy_of_word_size = sizeof(copy_of_word) / sizeof(char);
-  
-  /* wd points to the first char of last word */
-  wd = transcription;
-  if (tlen > 0)
+  if ( strlen ( transcription ) >= MAX_LOCAL_LEN - 1)
   {
-    for (wd = transcription + tlen - 1; wd > transcription; wd--)
+    PLogError("Transcription too long [%s]\n", transcription);
+    return PARSE_FAIL;
+  }
+
+  while (1) {
+    char copy_of_word[MAX_LOCAL_LEN]; /* save heap on recursive function */
+    
+    /* wd points to the first char of last word */
+    wd = transcription;
+    if (tlen > 0)
     {
-      if (*wd == ' ')
+      for (wd = transcription + tlen - 1; wd > transcription; wd--)
       {
-        wd++;
+        if (*wd == ' ')
+        {
+          wd++;
+          break;
+        }
+      }
+    }
+    for (p = wd, q = copy_of_word; ; p++, q++)
+    {
+      q_position = q - copy_of_word;
+      if (q_position < 0 || (size_t)q_position >= MAX_LOCAL_LEN)
+      {
+        PLogError("Word too long in transcription [%s]\n", transcription);
+        return PARSE_FAIL;
+      }
+      *q = *p;
+      if (*p == ' ' || *p == '\0')
+      {
+        *q = 0;
         break;
       }
     }
-  }
-  for (p = wd, q = copy_of_word; ; p++, q++)
-  {
-    q_position = q - copy_of_word;
-    if ( ( q_position < 0 ) || ( (size_t)( q_position ) >= copy_of_word_size ) )
+    wdID = wordmap_find_index(context->olabels, copy_of_word);
+    
+    if (wdID < MAXwordID)
     {
-      PLogError("Word too long in transcription [%s]\n", transcription);
-      return PARSE_FAIL;
+      next_atok = get_arc_for_word(atok, wdID, context, context->beg_silence_word);
     }
-    *q = *p;
-    if (*p == ' ' || *p == '\0')
+    else
     {
-      *q = 0;
-      break;
+      next_atok = get_arc_for_word_without_slot_annotation(atok, wd, context, context->beg_silence_word);
+      if (!next_atok) return PARSE_FAIL;
     }
-  }
-  wdID = wordmap_find_index(context->olabels, copy_of_word);
+    
+    if (!next_atok) return PARSE_FAIL;
   
-  if (wdID < MAXwordID)
-  {
-    next_atok = get_arc_for_word(atok, wdID, context, context->beg_silence_word);
-  }
-  else
-  {
-    next_atok = get_arc_for_word_without_slot_annotation(atok, wd, context, context->beg_silence_word);
-    if (!next_atok)
-      return PARSE_FAIL;
-  }
-  
-  if (next_atok)
-  {
     int whether_final_atok = 0;
     arc_token* tmp;
     for (tmp = ARC_TOKEN_PTR(context->arc_token_list, next_atok->first_next_arc); tmp != NULL;
@@ -98,20 +98,12 @@ static int check_word_path(srec_context* context, arc_token* atok,
       if (tmp->ilabel == MAXwordID) whether_final_atok = 1;
     }
     
-    if (wd == transcription && whether_final_atok)
-      return PARSE_PASS;
-    else if (wd == transcription)
-      return PARSE_FAIL;
-    else
-    {
-      tlen--;
-      while (transcription[tlen] != ' ' && tlen > 0) tlen--;
-      return check_word_path(context, next_atok, transcription, tlen);
-    }
-  }
-  else
-  {
-    return PARSE_FAIL;
+    if (wd == transcription && whether_final_atok) return PARSE_PASS;
+    if (wd == transcription) return PARSE_FAIL;
+    tlen--;
+    while (transcription[tlen] != ' ' && tlen > 0) tlen--;
+  
+    atok = next_atok;
   }
 }
 

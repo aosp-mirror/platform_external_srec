@@ -1796,22 +1796,10 @@ void *lts_alloc(int num, int size)
 }
 #else
 
-#ifndef __SYMBIAN32__
-static int total_alloc = 0;
-#endif
 void *lts_alloc(int num, int size)
 {
   void *p;
-#ifndef __SYMBIAN32__
-  total_alloc += num * size;
-#endif
   p = CALLOC(num, size, MTAG);
-  /*  
-#ifndef __SYMBIAN32__
-  pfprintf(PSTDOUT,"LTS Alloc %d X %d p %x tot %d\n", num, size, p, total_alloc);
-#endif  
-  */
-
   return p;
 }
 #endif /* USE_STATIC_SLTS */
