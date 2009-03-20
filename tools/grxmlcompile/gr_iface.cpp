@@ -21,6 +21,7 @@
 #include <iostream>
 #include <string>
 #include <assert.h>
+#include <cstdio>
 
 #include "grph.h"
 
