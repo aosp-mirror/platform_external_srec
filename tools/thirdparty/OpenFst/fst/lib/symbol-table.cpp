@@ -16,6 +16,7 @@
 // \file
 // Classes to provide symbol-to-integer and integer-to-symbol mappings.
 
+#include <string.h>
 #include "fst/lib/symbol-table.h"
 #include "fst/lib/util.h"
 

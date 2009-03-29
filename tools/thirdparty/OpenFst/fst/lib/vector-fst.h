@@ -20,6 +20,7 @@
 #ifndef FST_LIB_VECTOR_FST_H__
 #define FST_LIB_VECTOR_FST_H__
 
+#include <string.h>
 #include "fst/lib/mutable-fst.h"
 #include "fst/lib/test-properties.h"
 
