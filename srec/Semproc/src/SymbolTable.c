@@ -24,8 +24,6 @@
 
 static const char* MTAG = __FILE__;
 
-static LCHAR undefined_symbol[] = UNDEFINED_SYMBOL;
-
 ESR_ReturnCode ST_Init(SymbolTable **ptr)
 {
   ESR_ReturnCode rc;
@@ -78,7 +76,7 @@ CLEANUP:
   return rc;
 }
 
-ESR_ReturnCode ST_putKeyValue(SymbolTable* self, LCHAR* key, LCHAR* value)
+ESR_ReturnCode ST_putKeyValue(SymbolTable* self, const LCHAR* key, const LCHAR* value)
 {
   Symbol* symbol;
   LCHAR* buf;
@@ -148,7 +146,7 @@ ESR_ReturnCode ST_Copy(SymbolTable* self, HashMap* dst)
   return ESR_SUCCESS;
 }
 
-ESR_ReturnCode ST_getKeyValue(SymbolTable* self, LCHAR* key, LCHAR** value)
+ESR_ReturnCode ST_getKeyValue(SymbolTable* self, const LCHAR* key, LCHAR** value)
 {
   ESR_ReturnCode rc;
   LCHAR *dot;
@@ -191,7 +189,7 @@ ESR_ReturnCode ST_getKeyValue(SymbolTable* self, LCHAR* key, LCHAR** value)
     }
   }
   
-  *value = undefined_symbol;
+  *value = UNDEFINED_SYMBOL;
   return ESR_SUCCESS;
 }
 

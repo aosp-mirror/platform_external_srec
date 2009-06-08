@@ -17,13 +17,6 @@
  *                                                                           *
  *---------------------------------------------------------------------------*/
 
-/*#define SREC_MEASURE_LATENCY    1*/
-
-#ifdef SREC_MEASURE_LATENCY
-#include <sys/time.h>
-
-struct timeval latency_start;
-#endif
 
 #include "ESR_Session.h"
 #include "ESR_SessionTypeImpl.h"
@@ -61,49 +54,6 @@ struct timeval latency_start;
 #define PREFIX_WORD_LEN 5
 #define SUFFIX_WORD     "-pau2-"
 #define SUFFIX_WORD_LEN 6
-
-#ifdef MEASURE_SAMPLE_TIMES
-#include <sys/time.h>
-#include <stdio.h>
-
-#define MAX_SAMPLES_TO_MEASURE      500
-
-static long sample_buffers_received = 0;
-static long total_samples_received = 0;
-static long samples_in_buffer [MAX_SAMPLES_TO_MEASURE];
-static long seconds_buffer_received [MAX_SAMPLES_TO_MEASURE];
-static long micro_seconds_buffer_received [MAX_SAMPLES_TO_MEASURE];
-static struct timeval buffer_received_time;
-
-static void SR_Recognizer_Log_Samples_Received ( void );
-
-static void SR_Recognizer_Log_Samples_Received ( void )
-{
-    FILE *log_file;
-    char file_name [256];
-    char log_buffer [256];
-    long loop_counter;
-
-    if ( sample_buffers_received > 0 )
-        {
-        gettimeofday ( &buffer_received_time, NULL );
-        sprintf ( file_name, "reco_recvd_%ld_%ld.txt", buffer_received_time.tv_sec, buffer_received_time.tv_usec );
-        log_file = fopen ( file_name, "w" );
-
-        if ( log_file != NULL )
-            {
-            for ( loop_counter = 0; loop_counter < sample_buffers_received; loop_counter++ )
-                {
-                sprintf ( log_buffer, "%ld %ld  %ld  %ld\n", loop_counter + 1, samples_in_buffer [loop_counter],
-                seconds_buffer_received [loop_counter], micro_seconds_buffer_received [loop_counter] );
-                fwrite ( log_buffer, 1, strlen ( log_buffer ), log_file );
-                }
-            fclose ( log_file );
-	    }
-	sample_buffers_received = 0;
-        }
-    }
-#endif
 
 
 static ESR_ReturnCode SR_Recognizer_Reset_Buffers ( SR_RecognizerImpl *impl );
@@ -1115,10 +1065,6 @@ ESR_ReturnCode SR_RecognizerStopImpl(SR_Recognizer* self)
   SR_AcousticModelsImpl* modelsImpl;
   ESR_ReturnCode rc;
 
-#ifdef MEASURE_SAMPLE_TIMES
-    SR_Recognizer_Log_Samples_Received ( );
-#endif
-
   PLOG_DBG_API_ENTER();
   if (!impl->isStarted)
   {
@@ -1774,18 +1720,6 @@ ESR_ReturnCode SR_RecognizerPutAudioImpl(SR_Recognizer* self, asr_int16_t* buffe
   ESR_ReturnCode rc;
   int    rcBufWrite;
   size_t nbWritten;
-
-#ifdef MEASURE_SAMPLE_TIMES
-    if ( sample_buffers_received < MAX_SAMPLES_TO_MEASURE )
-        {
-        gettimeofday ( &buffer_received_time, NULL );
-        seconds_buffer_received [sample_buffers_received] = buffer_received_time.tv_sec;
-        micro_seconds_buffer_received [sample_buffers_received] = buffer_received_time.tv_usec;
-        samples_in_buffer [sample_buffers_received] = *bufferSize;
-        total_samples_received += *bufferSize;
-        sample_buffers_received++;
-        }
-#endif
 
   if (isLast == ESR_FALSE && (buffer == NULL || bufferSize == NULL))
   {
@@ -3422,11 +3356,6 @@ MOVE_TO_NEXT_STATE:
       rc = detectEndOfSpeech(impl, status, type, impl->result);
       if (rc != ESR_CONTINUE_PROCESSING)
       {
-#ifdef SREC_MEASURE_LATENCY
-        gettimeofday ( &latency_start, NULL );
-        printf ( "Start Time :  %ld Seconds  %ld Microseconds\n", latency_start.tv_sec, latency_start.tv_usec );
-#endif
-
         /* End of speech detected */
         return rc;
       }
@@ -3448,10 +3377,6 @@ MOVE_TO_NEXT_STATE:
       rc = detectEndOfSpeech(impl, status, type, impl->result);
       if (rc != ESR_CONTINUE_PROCESSING)
       {
-#ifdef SREC_MEASURE_LATENCY
-        gettimeofday ( &latency_start, NULL );
-        printf ( "Start Time :  %ld Seconds  %ld Microseconds\n", latency_start.tv_sec, latency_start.tv_usec );
-#endif
         /* End of speech detected */
         return rc;
       }

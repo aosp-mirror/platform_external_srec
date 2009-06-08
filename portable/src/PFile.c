@@ -366,7 +366,7 @@ size_t pfread(void* buffer, size_t size, size_t count, PFile* stream)
   return count;
 }
 
-size_t pfwrite(void* buffer, size_t size, size_t count, PFile* stream)
+size_t pfwrite(const void* buffer, size_t size, size_t count, PFile* stream)
 {
   ESR_ReturnCode rc;
   

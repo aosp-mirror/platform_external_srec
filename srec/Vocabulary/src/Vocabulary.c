@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*
- *  Vocabulary.c  *
+ *  Vocabulary.c                                                             *
  *                                                                           *
- *  Copyright 2007, 2008 Nuance Communciations, Inc.                               *
+ *  Copyright 2007, 2008 Nuance Communciations, Inc.                         *
  *                                                                           *
  *  Licensed under the Apache License, Version 2.0 (the 'License');          *
  *  you may not use this file except in compliance with the License.         *
@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -36,7 +36,7 @@ ESR_ReturnCode SR_VocabularyCreate(ESR_Locale locale, SR_Vocabulary** self)
 #ifdef USE_TTP
      /* impl->ttp_lang should be set to the current language before G2P is created */
      rc = SR_CreateG2P(Interface);
-     if (rc != ESR_SUCCESS) 
+     if (rc != ESR_SUCCESS)
      {
           SR_VocabularyDestroyImpl(Interface);
           goto CLEANUP;
@@ -105,69 +105,14 @@ ESR_ReturnCode SR_VocabularyGetPronunciation(SR_Vocabulary* self, const LCHAR* w
 /****************************
  * ETI to INFINITIVE Phoneme conversion stuff
  */
-#define DICTIONARY_HANDLE void
-#define MAX_ESR_LOCALES 16
-#define MAX_LENGTH P_PATH_MAX
-static SR_Vocabulary* g_etiinf_pronguesser[MAX_ESR_LOCALES];
-const char*    g_etiinf_multichar[MAX_ESR_LOCALES][256];
-static int initted = 0;
-static int portable_initted = 0;
 
-ESR_ReturnCode SR_Vocabulary_etiinf_conv_multichar(ESR_Locale locale, const LCHAR* i, LCHAR* output, size_t max_len)
+static const int CH_MAX = 128;
+
+static ESR_ReturnCode getTable(ESR_Locale locale, const LCHAR* m[])
 {
-     const LCHAR** m;
+     int i;
+     for(i = 0; i< CH_MAX; i++) m[i] = "";
 
-     //if (locale < 0) 
-     //     return ESR_INVALID_ARGUMENT;
-  
-     m = g_etiinf_multichar[locale];
-
-     for (*output='\0'; *i; ++i)
-     {
-          strcat(output, m[(int)*i]);
-          if (*(i+1)) 
-               strcat(output, " ");
-     }
-     return ESR_SUCCESS;
-}
-
-ESR_ReturnCode SR_Vocabulary_etiinf_conv_from_multichar(ESR_Locale locale, LCHAR* input, LCHAR* output)
-{
-
-     ESR_ReturnCode rc;
-     size_t i;
-     const LCHAR** m;
-
-     //if (locale < 0) 
-     //     return 1;
-
-     CHKLOG(rc, SR_Vocabulary_etiinf_init_multichar(locale));
-     m = g_etiinf_multichar[locale];
-
-     for (i=0; i<256; ++i)
-     {
-          if (m[i] && !LSTRCMP(m[i], input))
-          {
-               *output = (LCHAR) i;
-               return ESR_SUCCESS;
-          }
-     }
-     return ESR_NO_MATCH_ERROR;
- CLEANUP:
-     return rc;
-}
-
-ESR_ReturnCode SR_Vocabulary_etiinf_init_multichar(ESR_Locale locale)
-{
-     size_t i;
-     const LCHAR** m;
-
-     //if (locale<0) 
-     //     return 1;
-  
-     m = &g_etiinf_multichar[locale][0];
-     for(i=0;i<255;i++)    m[i] = "";
-  
      switch (locale)
      {
      case ESR_LOCALE_EN_US:
@@ -221,15 +166,15 @@ ESR_ReturnCode SR_Vocabulary_etiinf_init_multichar(ESR_Locale locale)
           m['6']="ii";  m['t']="t";   m['u']="UU";  m['w']="w";   m['y']="y";
           break;
      case ESR_LOCALE_NL_NL:
-          m['S']="S";   m['a']="a";   m['N']="nK";  m['d']="d";   m['E']="E";   
-          m['2']="ep";  m['j']="j";   m['y']="y";   m['Z']="Z";   m['u']="u";   
-          m['1']="AA";  m['k']="k";   m['g']="g";   m['t']="t";   m['e']="e";   
-          m['J']="jnk"; m['v']="v";   m['s']="s";   m['^']="ENV"; m['b']="b";   
-          m['I']="I";   m['G']="G";   m['z']="z";   m['w']="w";   m['$']="$";   
-          m['r']="r";   m['x']="x";   m['h']="h";   m['f']="f";   m['i']="i";   
-          m['A']="A";   m['6']="A%t"; m['O']="O";   m['n']="n";   m['3']="Ei";  
-          m['#']="sil"; m['m']="m";   m['8']="O%t"; m['l']="l";   m['4']="yy";  
-          m['p']="p";   m['5']="Au";  m['o']="o";   
+          m['S']="S";   m['a']="a";   m['N']="nK";  m['d']="d";   m['E']="E";
+          m['2']="ep";  m['j']="j";   m['y']="y";   m['Z']="Z";   m['u']="u";
+          m['1']="AA";  m['k']="k";   m['g']="g";   m['t']="t";   m['e']="e";
+          m['J']="jnk"; m['v']="v";   m['s']="s";   m['^']="ENV"; m['b']="b";
+          m['I']="I";   m['G']="G";   m['z']="z";   m['w']="w";   m['$']="$";
+          m['r']="r";   m['x']="x";   m['h']="h";   m['f']="f";   m['i']="i";
+          m['A']="A";   m['6']="A%t"; m['O']="O";   m['n']="n";   m['3']="Ei";
+          m['#']="sil"; m['m']="m";   m['8']="O%t"; m['l']="l";   m['4']="yy";
+          m['p']="p";   m['5']="Au";  m['o']="o";
           break;
      case ESR_LOCALE_IT_IT:
           m['@']="uu";  m['A']="AI";  m['C']="ci";  m['E']="EI";  m['J']="jnk";
@@ -259,126 +204,38 @@ ESR_ReturnCode SR_Vocabulary_etiinf_init_multichar(ESR_Locale locale)
           break;
      }
      m['#']="iwt"; m['&']="&";
-  
+
      return ESR_SUCCESS;
 }
 
-ESR_Locale SR_Vocabulary_etiinf_get_locale_or_exit(const LCHAR* language)
+ESR_ReturnCode SR_Vocabulary_etiinf_conv_multichar(ESR_Locale locale, const LCHAR* single, LCHAR* multi, size_t max_len)
+{
+    const LCHAR* m[CH_MAX];
+
+    ESR_ReturnCode rc = getTable(locale, m);
+    if (rc != ESR_SUCCESS) return rc;
+
+    for (*multi='\0'; *single; ++single)
     {
-    LCHAR local_chars[4];
+        LSTRCAT(multi, m[(int)*single]);
+        if (*(single+1)) LSTRCAT(multi, " ");
+    }
+    return ESR_SUCCESS;
+}
 
-    /* language string comes from userdict/language.c, eg: en.us */
-    local_chars [0] = (char)tolower(language[0]);
-    local_chars [1] = (char)tolower(language[1]);
-    local_chars [2] = (char)tolower(language[2]);
-    local_chars [3] = (char)tolower(language[3]);
+ESR_ReturnCode SR_Vocabulary_etiinf_conv_from_multichar(ESR_Locale locale, const LCHAR* multi, LCHAR* single)
+{
+    const LCHAR* m[CH_MAX];
+    int i;
 
-    if ( memcmp ( local_chars, "enus", 4 ) == 0 )
-        return ESR_LOCALE_EN_US;
-    else if ( ( memcmp ( local_chars, "enuk", 4 ) == 0 ) || ( memcmp ( local_chars, "engb", 4 ) == 0 ) )
-        return ESR_LOCALE_EN_GB;
-    else if ( memcmp ( local_chars, "frfr", 4 ) == 0 )
-        return ESR_LOCALE_FR_FR;
-    else if ( memcmp ( local_chars, "dede", 4 ) == 0 )
-        return ESR_LOCALE_DE_DE;
-    else if ( memcmp ( local_chars, "ptpt", 4 ) == 0 )
-        return ESR_LOCALE_PT_PT;
-    else if ( memcmp ( local_chars, "nlnl", 4 ) == 0 )
-        return ESR_LOCALE_NL_NL;
-    else if ( memcmp ( local_chars, "itit", 4 ) == 0 )
-        return ESR_LOCALE_IT_IT;
-    else if ( memcmp ( local_chars, "eses", 4 ) == 0 )
-        return ESR_LOCALE_ES_ES;
-    else
-        {
-        PLogError(L("ESR_NOT_IMPLEMENTED (error getting locale for language '%s')"), language);
-        return ESR_NOT_IMPLEMENTED;
+    ESR_ReturnCode rc = getTable(locale, m);
+    if (rc != ESR_SUCCESS) return rc;
+
+    for (i = 0; i < CH_MAX; i++) {
+        if (!LSTRCMP(m[i], multi)) {
+            *single = (LCHAR)i;
+            return ESR_SUCCESS;
         }
     }
-
-ESR_ReturnCode SR_Vocabulary_etiinf_get_phonemes(const char *input, /* word to generate pronunciations for */
-                                                 const char* language,
-                                                 DICTIONARY_HANDLE *h,  	/* dictionary to search, in addition to table above */
-                                                 char **output_array, 		/* buffer to store pronunciations */
-                                                 unsigned int *num_prons, 	/* number of prounciations to be returned */
-                                                 unsigned int max_len, 	/* the length of each buffer line */
-                                                 unsigned int max_prons,	/* maximum number of pronunciations allowed */
-                                                 void *text_to_phoneme_data)	/* text to phoneme data */			  
-{
-     LCHAR raw_output[MAX_LENGTH];
-     size_t len;
-     int stat;
-     LCHAR *output = output_array[0]; /* will only generate one pronunciation from the rules */
-     ESR_ReturnCode rc;
-     ESR_Locale locale;
-  
-     locale = SR_Vocabulary_etiinf_get_locale_or_exit(language);
-
-     raw_output[0] = '\0';
-     *num_prons = 1;
-
-     if (initted == 0)
-     {
-          PLogError(L("DICT: NAV rules called but not initialized"));
-          *output = '\0';
-          return ESR_FATAL_ERROR;
-     }
-
-     /*PTHREAD_INIT_PRIVATE( pthread_key, pglobals, sizeof (GLOBALS), NULL );*/
-
-     len = MAX_LENGTH;
-     stat = (int)SR_VocabularyGetPronunciation( g_etiinf_pronguesser[locale], input, 
-                                                raw_output, &len);
-     if(stat != 0)
-     {
-          PLogError(L("DICT: SR_VocabularyGetPronunciation() failed"));
-          return ESR_FATAL_ERROR;
-     }
-     else 
-     {
-          /* convert the phoneme to multi char representation */
-          rc = SR_Vocabulary_etiinf_conv_multichar(locale, raw_output, output, max_len);
-          if (rc!=ESR_SUCCESS)
-          {
-               PLogError(L("DICT: failed to multichar output of SR_VocabularyGetPronounciation() %s"), raw_output);
-               return rc;
-          }
-     }
-     return ESR_SUCCESS;
-}
-
-ESR_ReturnCode SR_Vocabulary_etiinf_destroy_pronguesser( const char* language) 
-{
-     if (portable_initted == 1) 
-          PMemShutdown();
-     portable_initted = 0;
-     return ESR_SUCCESS;
-}
-
-ESR_ReturnCode SR_Vocabulary_etiinf_init_pronguesser( const char* language)
-{
-     size_t i,j;
-     ESR_ReturnCode rc;
-     ESR_Locale locale;
-
-     if (!portable_initted)
-     {
-          rc = PMemInit();
-          if (rc!=ESR_SUCCESS)
-               return rc;
-          for (i=0; i<MAX_ESR_LOCALES; ++i)
-               g_etiinf_pronguesser[i] = 0;
-          for (i=0; i<MAX_ESR_LOCALES; ++i)
-               for (j=0; j<255; ++j)
-                    g_etiinf_multichar[i][j] = 0;
-          portable_initted = 1;
-     }
-  
-     locale = SR_Vocabulary_etiinf_get_locale_or_exit(language);
-  
-     CHKLOG(rc, SR_VocabularyCreate(locale, &g_etiinf_pronguesser[locale]));
-     CHKLOG(rc, SR_Vocabulary_etiinf_init_multichar(locale));
-     return ESR_SUCCESS;
- CLEANUP:
-     return rc;
+    return ESR_NO_MATCH_ERROR;
 }

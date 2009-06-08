@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -21,123 +21,37 @@
 
 #include "ESR_ReturnCode.h"
 
-#define RETURNCODE_COUNT 28
-static LCHAR* rcStringMapping[RETURNCODE_COUNT+1] =
-  {
-    L("ESR_SUCCESS"),
-    L("ESR_CONTINUE_PROCESSING"),
-    L("ESR_FATAL_ERROR"),
-    L("ESR_BUFFER_OVERFLOW"),
-    L("ESR_OPEN_ERROR"),
-    L("ESR_ALREADY_OPEN"),
-    L("ESR_CLOSE_ERROR"),
-    L("ESR_ALREADY_CLOSED"),
-    L("ESR_READ_ERROR"),
-    L("ESR_WRITE_ERROR"),
-    L("ESR_FLUSH_ERROR"),
-    L("ESR_SEEK_ERROR"),
-    L("ESR_OUT_OF_MEMORY"),
-    L("ESR_ARGUMENT_OUT_OF_BOUNDS"),
-    L("ESR_NO_MATCH_ERROR"),
-    L("ESR_INVALID_ARGUMENT"),
-    L("ESR_NOT_SUPPORTED"),
-    L("ESR_INVALID_STATE"),
-    L("ESR_THREAD_CREATION_ERROR"),
-    L("ESR_IDENTIFIER_COLLISION"),
-    L("ESR_TIMED_OUT"),
-    L("ESR_INVALID_RESULT_TYPE"),
-    L("ESR_NOT_IMPLEMENTED"),
-    L("ESR_CONNECTION_RESET_BY_PEER"),
-    L("ESR_PROCESS_CREATE_ERROR"),
-    L("ESR_TTS_NO_ENGINE"),
-    L("ESR_MUTEX_CREATION_ERROR"),
-    L("ESR_DEADLOCK"),
-    L("invalid return code") /* must remain last element for ESR_rc2str() to function */
-  };
-  
 const LCHAR* ESR_rc2str(const ESR_ReturnCode rc)
 {
-  if (rc >= RETURNCODE_COUNT)
-    return rcStringMapping[RETURNCODE_COUNT];
-  return rcStringMapping[rc];
+    switch (rc) {
+        case ESR_SUCCESS:                  return L("ESR_SUCCESS");
+        case ESR_CONTINUE_PROCESSING:      return L("ESR_CONTINUE_PROCESSING");
+        case ESR_FATAL_ERROR:              return L("ESR_FATAL_ERROR");
+        case ESR_BUFFER_OVERFLOW:          return L("ESR_BUFFER_OVERFLOW");
+        case ESR_OPEN_ERROR:               return L("ESR_OPEN_ERROR");
+        case ESR_ALREADY_OPEN:             return L("ESR_ALREADY_OPEN");
+        case ESR_CLOSE_ERROR:              return L("ESR_CLOSE_ERROR");
+        case ESR_ALREADY_CLOSED:           return L("ESR_ALREADY_CLOSED");
+        case ESR_READ_ERROR:               return L("ESR_READ_ERROR");
+        case ESR_WRITE_ERROR:              return L("ESR_WRITE_ERROR");
+        case ESR_FLUSH_ERROR:              return L("ESR_FLUSH_ERROR");
+        case ESR_SEEK_ERROR:               return L("ESR_SEEK_ERROR");
+        case ESR_OUT_OF_MEMORY:            return L("ESR_OUT_OF_MEMORY");
+        case ESR_ARGUMENT_OUT_OF_BOUNDS:   return L("ESR_ARGUMENT_OUT_OF_BOUNDS");
+        case ESR_NO_MATCH_ERROR:           return L("ESR_NO_MATCH_ERROR");
+        case ESR_INVALID_ARGUMENT:         return L("ESR_INVALID_ARGUMENT");
+        case ESR_NOT_SUPPORTED:            return L("ESR_NOT_SUPPORTED");
+        case ESR_INVALID_STATE:            return L("ESR_INVALID_STATE");
+        case ESR_THREAD_CREATION_ERROR:    return L("ESR_THREAD_CREATION_ERROR");
+        case ESR_IDENTIFIER_COLLISION:     return L("ESR_IDENTIFIER_COLLISION");
+        case ESR_TIMED_OUT:                return L("ESR_TIMED_OUT");
+        case ESR_INVALID_RESULT_TYPE:      return L("ESR_INVALID_RESULT_TYPE");
+        case ESR_NOT_IMPLEMENTED:          return L("ESR_NOT_IMPLEMENTED");
+        case ESR_CONNECTION_RESET_BY_PEER: return L("ESR_CONNECTION_RESET_BY_PEER");
+        case ESR_PROCESS_CREATE_ERROR:     return L("ESR_PROCESS_CREATE_ERROR");
+        case ESR_TTS_NO_ENGINE:            return L("ESR_TTS_NO_ENGINE");
+        case ESR_MUTEX_CREATION_ERROR:     return L("ESR_MUTEX_CREATION_ERROR");
+        case ESR_DEADLOCK:                 return L("ESR_DEADLOCK");
+    };
+    return L("invalid return code");
 }
-
-
-#ifdef _WIN32
-__declspec(thread) unsigned long stackEnd = 0;
-__declspec(thread) unsigned long stackBeginMin = LONG_MAX;
-
-#include "plog.h"
-
-#ifdef __cplusplus
-extern "C"
-#endif
-
-  void __declspec(naked) _cdecl _penter(void)
-{
-  _asm
-  {
-    pushad
-    mov ebp, esp
-  }
-  
-  {
-    unsigned long espBuffer;
-    
-    _asm
-    {
-      mov espBuffer, esp
-    }
-    if (espBuffer > stackEnd)
-      stackEnd = espBuffer;
-    //printf("\nThread=%d,-addressStack-begin=%lu\n", GetCurrentThreadId(), espBuffer);
-  }
-  
-  _asm
-  {
-    popad
-    ret
-  }
-}
-
-void __declspec(naked) _cdecl _pexit(void)
-{
-  _asm
-  {
-    pushad
-    mov ebp, esp
-  }
-  
-  {
-    unsigned long stackBegin;
-    
-    _asm
-    {
-      sub esp, 4
-      mov stackBegin, esp
-    }
-    
-    if (stackBegin < stackBeginMin)
-    {
-      stackBeginMin = stackBegin;
-      if (stackEnd - stackBegin > 20*1000)
-        printf("*****************************\nThread %d, Maximum stack usage=%lu\n*******************************\n", GetCurrentThreadId(), (stackEnd - stackBeginMin));
-    }
-    /*
-    if (stackEnd - stackBegin > 15*1000)
-     printf("\nThread=%d,Stack-size=%lu\n", GetCurrentThreadId(), (stackEnd - stackBegin));
-    */
-    
-    _asm
-    {
-      add esp, 4
-      }
-    }
-    
-  _asm
-  {
-    popad
-    ret
-  }
-}
-#endif

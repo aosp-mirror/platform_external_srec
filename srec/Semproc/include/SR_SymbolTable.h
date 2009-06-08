@@ -114,7 +114,7 @@ ESR_ReturnCode ST_Copy(SymbolTable* self, HashMap* dst);
  * @param key the key for the entry
  * @param value the value for the entry (associated with key)
  */
-SREC_SEMPROC_API ESR_ReturnCode ST_putKeyValue(SymbolTable* self, LCHAR* key, LCHAR* value);
+SREC_SEMPROC_API ESR_ReturnCode ST_putKeyValue(SymbolTable* self, const LCHAR* key, const LCHAR* value);
 
 /**
  * Retrieve a value associated with the key
@@ -122,7 +122,7 @@ SREC_SEMPROC_API ESR_ReturnCode ST_putKeyValue(SymbolTable* self, LCHAR* key, LC
  * @param key the key for the entry
  * @param value pointer to buffer for the storing result
  */
-SREC_SEMPROC_API ESR_ReturnCode ST_getKeyValue(SymbolTable* self, LCHAR* key, LCHAR** value);
+SREC_SEMPROC_API ESR_ReturnCode ST_getKeyValue(SymbolTable* self, const LCHAR* key, LCHAR** value);
 
 /**
  * Ask for a new sot in the symbol table
@@ -145,7 +145,7 @@ SREC_SEMPROC_API ESR_ReturnCode ST_reset_all(SymbolTable* self);
  * @param key the key for the entry
  * @param value the value for the entry (associated with key)
  */
-SREC_SEMPROC_API ESR_ReturnCode ST_putSpecialKeyValue(SymbolTable* self, const LCHAR* key, const LCHAR* value);
+SREC_SEMPROC_API ESR_ReturnCode ST_putSpecialKeyValue(SymbolTable* self, const const LCHAR* key, const LCHAR* value);
 
 
 #endif /* __SYMBOL_TABLE_H */

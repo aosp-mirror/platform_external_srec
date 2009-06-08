@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*
- *  swicms.c  *
+ *  swicms.c                                                                 *
  *                                                                           *
- *  Copyright 2007, 2008 Nuance Communciations, Inc.                               *
+ *  Copyright 2007, 2008 Nuance Communciations, Inc.                         *
  *                                                                           *
  *  Licensed under the Apache License, Version 2.0 (the 'License');          *
  *  you may not use this file except in compliance with the License.         *
@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -34,16 +34,16 @@
    We try to normalize the speech frames before they get to the recognizer.
    The speech frames are LDA-processed mfcc-with-dynamic feature vectors.
    We collect these speech frames during recognition. At the end of
-   recognition we exclude the silence frames from the collected data, and 
+   recognition we exclude the silence frames from the collected data, and
    generate a new channel average based on the previous average and the new
-   data, using an exponential decay formula.  
+   data, using an exponential decay formula.
 
    In-utterance CMN calculation:
    A new short-term average mechanism was introduced, with faster update,
    to improve recognition on the very first recognition after init or reset.
-   We wait for a minimum number of new data frames to apply this. We also 
-   disable the fast updater after some frames, because we assume the 
-   cross-utterance estimator to be more reliable, particularly in its 
+   We wait for a minimum number of new data frames to apply this. We also
+   disable the fast updater after some frames, because we assume the
+   cross-utterance estimator to be more reliable, particularly in its
    ability to exclude silence frames from the calculation.
 */
 
@@ -57,9 +57,9 @@
 #define SWICMS_INUTT_FORGET_FACTOR2_DISABLE 65535 /* any large number */
 #define SWICMS_INUTT_FORGET_FACTOR2_DEFAULT SWICMS_INUTT_FORGET_FACTOR2_DISABLE
 /* disable this when cross-utt become more reliable */
-#define SWICMS_INUTT_DISABLE_AFTER_FRAMES   200 
+#define SWICMS_INUTT_DISABLE_AFTER_FRAMES   200
 /* wait while the estimate is poor */
-#define SWICMS_INUTT_ENABLE_AFTER_FRAMES    10  
+#define SWICMS_INUTT_ENABLE_AFTER_FRAMES    10
 
 /**
  * Logging Stuff
@@ -72,35 +72,30 @@ static const char *rcsid = 0 ? (const char *) &rcsid :
                            "$Id: swicms.c,v 1.21.6.16 2008/06/05 19:00:55 stever Exp $";
 
 static ESR_BOOL SWICMS_DEBUG = ESR_FALSE;
-#define INT_STRING_MAX			11	/* 10 digits plus - sign */
-/* Delim per int string */
-#define CHAN_NORM_PARAMS_STRING_MAX	( MAX_CHAN_DIM * ( INT_STRING_MAX+1) )
-
-static char chan_norm_params [CHAN_NORM_PARAMS_STRING_MAX];
 
 /* these are good values from cmn/tmn files */
-static imeldata gswicms_cmn1_8 [MAX_CHAN_DIM] =
+static const imeldata gswicms_cmn1_8 [MAX_CHAN_DIM] =
   {
     158, 141,  99, 125, 101, 162, 113, 138, 128, 143, 123, 141,
     127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
     127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127
   };
 
-static imeldata gswicms_cmn1_11 [MAX_CHAN_DIM] =
+static const imeldata gswicms_cmn1_11 [MAX_CHAN_DIM] =
   {
     163, 121, 120, 114, 124, 139, 144, 108, 150, 119, 146, 124,
     127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
     127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127
   };
 
-static imeldata gswicms_tmn1_8 [MAX_CHAN_DIM] =
+static const imeldata gswicms_tmn1_8 [MAX_CHAN_DIM] =
   {
     108, 138, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
     127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
     127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127
   };
 
-static imeldata gswicms_tmn1_11 [MAX_CHAN_DIM] =
+static const imeldata gswicms_tmn1_11 [MAX_CHAN_DIM] =
   {
     108, 138, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
     127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
@@ -113,7 +108,7 @@ static ESR_ReturnCode GetSomeIntsIfAny( const LCHAR* parname, imeldata* parvalue
   ESR_ReturnCode rc;
   ESR_BOOL exists;
   IntArrayList* intList = 0;
-  
+
   CHKLOG(rc, ESR_SessionContains(parname, &exists));
   if (exists) {
     rc = ESR_SessionGetProperty(parname, (void**)&intList, TYPES_INTARRAYLIST);
@@ -127,7 +122,7 @@ static ESR_ReturnCode GetSomeIntsIfAny( const LCHAR* parname, imeldata* parvalue
       if(size != reqSize) {
 	PLogError(L("Error reading %s from session, expected len %d: %s"), parname, reqSize, ESR_rc2str(rc));
 	return ESR_FATAL_ERROR;
-      } 
+      }
       if(reqSize == 1)
 	CHKLOG(rc, IntArrayListGet(intList, 0, parvalue));
       else {
@@ -157,7 +152,7 @@ int swicms_init(swicms_norm_info* swicms)
 
   CHKLOG(rc, ESR_SessionExists(&sessionExists));
 
-  if (sessionExists) 
+  if (sessionExists)
   {  /* We'll assume this rate is valid or someone else will be complaining.   SteveR */
     rc = ESR_SessionGetSize_t ( L ( "CREC.Frontend.samplerate" ), &sample_rate );
 
@@ -192,7 +187,7 @@ int swicms_init(swicms_norm_info* swicms)
   }
   CHKLOG(rc, ESR_SessionExists(&sessionExists));
 
-  if (sessionExists) 
+  if (sessionExists)
   {
     const LCHAR* parname = L("CREC.Frontend.swicms.debug");
     CHKLOG(rc, ESR_SessionContains(parname, &exists));
@@ -203,19 +198,19 @@ int swicms_init(swicms_norm_info* swicms)
         return rc;
       }
     }
-    
-    rc = GetSomeIntsIfAny( L("CREC.Frontend.swicms.forget_factor"), 
+
+    rc = GetSomeIntsIfAny( L("CREC.Frontend.swicms.forget_factor"),
 			   &swicms->forget_factor, 1);
     if(rc != ESR_SUCCESS) return rc;
-    
-    rc = GetSomeIntsIfAny( L("CREC.Frontend.swicms.sbindex"), 
+
+    rc = GetSomeIntsIfAny( L("CREC.Frontend.swicms.sbindex"),
 			   &swicms->sbindex, 1);
     if(rc != ESR_SUCCESS) return rc;
-    
-    rc = GetSomeIntsIfAny( L("CREC.Frontend.swicms.cmn"), 
+
+    rc = GetSomeIntsIfAny( L("CREC.Frontend.swicms.cmn"),
 			   &swicms->cmn[0], MAX_CHAN_DIM);
     if(rc != ESR_SUCCESS) return rc;
-    
+
     if ( sample_rate == 8000 )
     {
       rc = GetSomeIntsIfAny( L("CREC.Frontend.swicms.cmn8"), &swicms->cmn[0], MAX_CHAN_DIM);
@@ -231,43 +226,43 @@ int swicms_init(swicms_norm_info* swicms)
         return rc;
     }
 
-    rc = GetSomeIntsIfAny( L("CREC.Frontend.swicms.tmn"), 
+    rc = GetSomeIntsIfAny( L("CREC.Frontend.swicms.tmn"),
 			   &swicms->tmn[0], MAX_CHAN_DIM);
     if(rc != ESR_SUCCESS) return rc;
   }
-  
+
   swicms->is_valid = 0;
   for (i = 0; i < MAX_CHAN_DIM; i++)
     swicms->adjust[i] = 255;
-  
+
 #ifdef SREC_ENGINE_VERBOSE_LOGGING
   PLogMessage("swicms->forget_factor    = %d\n", swicms->forget_factor);
   PLogMessage("swicms->cache_resolution = %d\n", swicms->cache_resolution);
   PLogMessage("swicms->sbindex          = %d\n", swicms->sbindex);
 #endif
-  
+
   /* in-utt cms parameters */
-  swicms->inutt.forget_factor2 = SWICMS_INUTT_FORGET_FACTOR2_DEFAULT; 
-  swicms->inutt.disable_after  = 200;   
+  swicms->inutt.forget_factor2 = SWICMS_INUTT_FORGET_FACTOR2_DEFAULT;
+  swicms->inutt.disable_after  = 200;
   swicms->inutt.enable_after   = 10;    /* in-utt is less reliable       */
   swicms->inutt.num_bou_frames_to_skip = 20; /* silence frames! see windback */
-  swicms->inutt.num_frames_since_bou = 0; 
+  swicms->inutt.num_frames_since_bou = 0;
   swicms->inutt.num_frames_in_accum = 0;
   for(i=0; i<MAX_CHAN_DIM; i++) swicms->inutt.accum[i] = 0;
 
   if (sessionExists) {
-    rc = GetSomeIntsIfAny(L("CREC.Frontend.swicms.inutt.forget_factor2"), 
+    rc = GetSomeIntsIfAny(L("CREC.Frontend.swicms.inutt.forget_factor2"),
 			  &swicms->inutt.forget_factor2, 1);
     if(rc != ESR_SUCCESS) return rc;
-    
-    rc = GetSomeIntsIfAny(L("CREC.Frontend.swicms.inutt.disable_after"), 
+
+    rc = GetSomeIntsIfAny(L("CREC.Frontend.swicms.inutt.disable_after"),
 			  &swicms->inutt.disable_after, 1);
     if(rc != ESR_SUCCESS) return rc;
-    
-    rc = GetSomeIntsIfAny(L("CREC.Frontend.swicms.inutt.enable_after"), 
+
+    rc = GetSomeIntsIfAny(L("CREC.Frontend.swicms.inutt.enable_after"),
 			  &swicms->inutt.enable_after, 1);
     if(rc != ESR_SUCCESS) return rc;
-    
+
     /* we need to estimate the in-utt cmn from speech frames only! so let's
        make sure to skip some frames before collecting data, */
     ESR_SessionContains(L("CREC.Frontend.start_windback"), &exists);
@@ -275,7 +270,7 @@ int swicms_init(swicms_norm_info* swicms)
       ESR_BOOL do_skip_even_frames = ESR_TRUE;
       ESR_SessionGetBool(L("CREC.Frontend.do_skip_even_frames"), &do_skip_even_frames);
       ESR_SessionGetInt(L("CREC.Frontend.start_windback"), &swicms->inutt.num_bou_frames_to_skip);
-      if( do_skip_even_frames) 
+      if( do_skip_even_frames)
 	swicms->inutt.num_bou_frames_to_skip /= 2;
       swicms->inutt.num_bou_frames_to_skip -= 5; /* ensure spch frames only */
     }
@@ -287,15 +282,12 @@ int swicms_init(swicms_norm_info* swicms)
 }
 
 
-ESR_ReturnCode swicms_get_cmn ( swicms_norm_info* swicms, const char **cmn_params )
+ESR_ReturnCode swicms_get_cmn ( swicms_norm_info* swicms, LCHAR *cmn_params, size_t* len )
 {
-  ESR_ReturnCode    get_status;
-  int               dim_count;
-  int               current_params_position;
-  int               bytes_printed;
-  imeldata          temp[MAX_CHAN_DIM];
-
-  get_status = ESR_SUCCESS;
+  int dim_count;
+  int i;
+  imeldata temp[MAX_CHAN_DIM];
+  const size_t INT_LENGTH = 12;
 
   if (  swicms->_prep != NULL )	/* lda exists give them transformed lda. */
   {
@@ -308,19 +300,17 @@ ESR_ReturnCode swicms_get_cmn ( swicms_norm_info* swicms, const char **cmn_param
     for ( dim_count = 0; dim_count < MAX_CHAN_DIM; dim_count++ )
       temp [dim_count] = swicms->cmn [dim_count];
   }
-  current_params_position = 0;
-  
-  for ( dim_count = 0; dim_count < MAX_CHAN_DIM; dim_count++ )
-  {
-    if ( dim_count < ( MAX_CHAN_DIM - 1 ) )
-      bytes_printed = sprintf ( chan_norm_params + current_params_position, "%d,", temp [dim_count] );
-    else
-      bytes_printed = sprintf ( chan_norm_params + current_params_position, "%d", temp [dim_count] );
-    current_params_position += bytes_printed;
-  }
-  *cmn_params = chan_norm_params;
 
-  return ( get_status );
+  for ( dim_count = 0, i = 0; dim_count < MAX_CHAN_DIM; dim_count++ )
+  {
+    i += sprintf( cmn_params + i, dim_count==0 ? "%d" : ",%d", temp [dim_count] );
+    if (i + INT_LENGTH >= *len) {
+        *len = MAX_CHAN_DIM * (INT_LENGTH + 2) * sizeof(LCHAR);
+        return ESR_BUFFER_OVERFLOW;
+    }
+  }
+
+  return ESR_SUCCESS;
 }
 
 
@@ -368,7 +358,7 @@ ESR_ReturnCode swicms_set_cmn ( swicms_norm_info* swicms, const char *cmn_params
             set_status = ESR_INVALID_ARGUMENT;
           }
           break;
- 
+
         case ',':
           if ( got_word == 1 )
           {
@@ -385,7 +375,7 @@ ESR_ReturnCode swicms_set_cmn ( swicms_norm_info* swicms, const char *cmn_params
               }
               parsed_strings [dim_count] = copy_of_params + current_position;
               got_word = 0;
-            } 
+            }
             else
             {
               PLogError ( "Channel Normalization : Too Many Params Must Contain %d Params\n", MAX_CHAN_DIM );
@@ -487,7 +477,7 @@ int apply_channel_normalization_in_swicms(swicms_norm_info *swicms,
 {
   int ii;
   ASSERT(dimen == MAX_CHAN_DIM);
-  
+
   /* IF inutt is activated at all */
   if(swicms->inutt.forget_factor2 != SWICMS_INUTT_FORGET_FACTOR2_DISABLE) {
     /* AND IF we have not disabled it (due to x-utt more reliable) */
@@ -497,7 +487,7 @@ int apply_channel_normalization_in_swicms(swicms_norm_info *swicms,
 	swicms->inutt.num_frames_in_accum++;
 	for(ii=0;ii<dimen;ii++) swicms->inutt.accum[ii] += iframe[ii];
 	/* AND IF we've already seen at least 10 frames (presumably) of speech */
-	if(swicms->inutt.num_frames_in_accum>swicms->inutt.enable_after) { 
+	if(swicms->inutt.num_frames_in_accum>swicms->inutt.enable_after) {
 	  /* THEN we update the adjustment in-line with the current utterance! */
 	  for(ii=0;ii<dimen;ii++) {
 	    imeldata denom = ( swicms->inutt.forget_factor2
@@ -513,7 +503,7 @@ int apply_channel_normalization_in_swicms(swicms_norm_info *swicms,
     }
     swicms->inutt.num_frames_since_bou++;
   }
-  
+
   for (ii = 0; ii < dimen; ii++)
     oframe[ii] = MAKEBYTE(iframe[ii] + swicms->adjust[ii]);
   return 0;
@@ -628,12 +618,12 @@ int swicms_update(swicms_norm_info* swicms, int speech_start, int speech_end)
     {
       imeldata temp[MAX_CHAN_DIM];
       PLogMessage("swicms_update() used %d frames (%d-%d)", nn, speech_start, speech_end);
-      
+
       for(i=0;i<MAX_CHAN_DIM;i++) temp[i]=swicms->lda_cmn[i];
       inverse_transform_frame( swicms->_prep, temp, 1 /*do_shift*/);
       /* use this dump, to put back into CREC.Frontend.swicms.cmn */
       printf_vector("swicms.cmn(r)  ", " %d", temp, MAX_CHAN_DIM);
-      
+
       //printf_vector("swicms.lda_cmn   ", " %d", &swicms.lda_cmn [0], MAX_CHAN_DIM);
       //printf_vector("swicms.lda_tmn   ", " %d", &swicms.lda_tmn [0], MAX_CHAN_DIM);
       //printf_vector("swicms->adjust", " %d", swicms->adjust, MAX_CHAN_DIM);
@@ -668,19 +658,19 @@ int swicms_lda_process(swicms_norm_info* swicms, preprocessed* prep)
 #endif
   swicms->is_valid = 1;
   swicms->_prep = prep;
-  
-  if(SWICMS_DEBUG) { 
+
+  if(SWICMS_DEBUG) {
     imeldata temp[MAX_CHAN_DIM];
     printf_vector("swicms->cmn     ", " %d", swicms->cmn,     MAX_CHAN_DIM);
     printf_vector("swicms->lda_cmn ", " %d", swicms->lda_cmn, MAX_CHAN_DIM);
     //printf_vector("swicms->tmn     ", " %d", swicms->tmn,     MAX_CHAN_DIM);
     //printf_vector("swicms->lda_tmn ", " %d", swicms->lda_tmn, MAX_CHAN_DIM);
     //printf_vector("swicms->adjust  ", " %d", swicms->adjust,  MAX_CHAN_DIM);
-    
+
     //for(i=0;i<MAX_CHAN_DIM;i++) temp[i]=swicms->lda_tmn[i];
     //inverse_transform_frame( swicms->_prep, temp, 1 /*do_shift*/);
     //printf_vector("swicms->tmn(r)  ", " %d", temp, MAX_CHAN_DIM);
-    
+
     for(i=0;i<MAX_CHAN_DIM;i++) temp[i]=swicms->lda_cmn[i];
     inverse_transform_frame( swicms->_prep, temp, 1 /*do_shift*/);
     printf_vector("swicms->cmn(r)  ", " %d", temp, MAX_CHAN_DIM);
