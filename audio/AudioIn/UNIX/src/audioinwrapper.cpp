@@ -47,54 +47,6 @@ static struct timeval buffer_save_audio;
 #endif
 
 
-// #define MEASURE_SAMPLE_TIMES        1
- 
-#ifdef MEASURE_SAMPLE_TIMES
-#include <sys/time.h>
-#include <stdio.h>
-#include <string.h>
- 
- 
-#define MAX_SAMPLES_TO_MEASURE      500
-
-static long sample_buffers_received = 0;
-static long total_samples_received = 0;
-static long samples_in_buffer [MAX_SAMPLES_TO_MEASURE];
-static long seconds_buffer_received [MAX_SAMPLES_TO_MEASURE];
-static long micro_seconds_buffer_received [MAX_SAMPLES_TO_MEASURE];
-static struct timeval buffer_received_time;
- 
-static void AudioIn_Log_Samples_Received ( void );
- 
-static void AudioIn_Log_Samples_Received ( void )
-    {
-    FILE *log_file;
-    char file_name [256];
-    char log_buffer [256];
-    long loop_counter;
-
-    if ( sample_buffers_received > 0 )
-        {
-        gettimeofday ( &buffer_received_time, NULL );
-        sprintf ( file_name, "aud_in_%ld_%ld.txt", buffer_received_time.tv_sec, buffer_received_time.tv_usec );
-        log_file = fopen ( file_name, "w" );
-						 
-        if ( log_file != NULL )
-            {
-            for ( loop_counter = 0; loop_counter < sample_buffers_received; loop_counter++ )
-                {
-                sprintf ( log_buffer, "%ld %ld  %ld  %ld\n", loop_counter + 1, samples_in_buffer [loop_counter],
-                    seconds_buffer_received [loop_counter], micro_seconds_buffer_received [loop_counter] );
-                fwrite ( log_buffer, 1, strlen ( log_buffer ), log_file );
-                }
-            fclose ( log_file );
-            }
-        sample_buffers_received = 0;
-        }
-    }
-#endif
-
-
 extern "C" 
 {
 
@@ -157,9 +109,6 @@ int AudioClose(void)
 #if defined(USE_DEV_EAC_FILE)
   return close(audiofd);
 #else
-    #ifdef MEASURE_SAMPLE_TIMES
-        AudioIn_Log_Samples_Received ( );
-    #endif
   record->stop();
   delete record;
     #ifdef SAVE_RAW_AUDIO
@@ -185,18 +134,6 @@ int AudioRead(short *buffer, int frame_count)
     }
     n /= sizeof(short);
   }
-    #ifdef MEASURE_SAMPLE_TIMES
-        if ( sample_buffers_received < MAX_SAMPLES_TO_MEASURE )
-            {
-            gettimeofday ( &buffer_received_time, NULL );
-            seconds_buffer_received [sample_buffers_received] = buffer_received_time.tv_sec;
-            micro_seconds_buffer_received [sample_buffers_received] = buffer_received_time.tv_usec;
-            samples_in_buffer [sample_buffers_received] = n;
-            total_samples_received += n;
-            sample_buffers_received++;
-            }
-    #endif
-
     #ifdef SAVE_RAW_AUDIO
         if ( n > 0 )
             fwrite ( buffer, 2, n, audio_data );

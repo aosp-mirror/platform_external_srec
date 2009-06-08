@@ -52,14 +52,14 @@ typedef struct SLTS_PhoneMap_t{
 
 #define INF_SILENCE_OPTIONAL         (const char *)"&"
 
-const int g_numPhones = 5;
-const SLTS_PhoneMap g_aPhoneMap[] = {
+static const SLTS_PhoneMap g_aPhoneMap[] = {
      {"PS", "&"},
      {"SS0", ""},
      {"SS1", ""},
      {"SS2", ""},
      {"WS", "&"}
 };
+static const int g_numPhones = sizeof(g_aPhoneMap) / sizeof(g_aPhoneMap[0]);
 
 #ifdef USE_STATIC_SLTS 
 #define MAX_INPUT_LEN 255
@@ -184,7 +184,7 @@ SWISLTS_FNEXPORT SWIsltsResult SWIsltsClose(SWIsltsHand hLts)
 /* send phones to internal buffer */
 SWISLTS_FNEXPORT SWIsltsResult SWIsltsTextToPhone(SWIsltsHand hLts, 
                                                const char *text, 
-                                               char **output_phone_string,
+                                               char *output_phone_string[],
                                                int *output_phone_len,
                                                int max_phone_len)
 {
@@ -265,15 +265,14 @@ SWISLTS_FNEXPORT SWIsltsResult SWIsltsTextToPhone(SWIsltsHand hLts,
   return nRes;
 }
 
-static LCHAR g_PHONE_STRING[MAX_PRON_LEN][MAX_PHONE_LEN];
-
 SWISLTS_FNEXPORT SWIsltsResult SWIsltsG2PGetWordTranscriptions(SWIsltsHand hLts, 
                                                                const char *text, 
                                                                SWIsltsTranscription **ppTranscriptions,
                                                                int *pnNbrOfTranscriptions)
 {
   SWIsltsResult          nRes = SWIsltsSuccess;
-  LCHAR                * phone_string[MAX_PRON_LEN];   
+  char                  PHONE_STRING[MAX_PRON_LEN][MAX_PHONE_LEN];
+  char                * phone_string[MAX_PRON_LEN];   
   SLTS_Engine          * pEng = (SLTS_Engine *)hLts;
   int                    i;
   int                    num_phones = 0;
@@ -283,7 +282,7 @@ SWISLTS_FNEXPORT SWIsltsResult SWIsltsG2PGetWordTranscriptions(SWIsltsHand hLts,
   LCHAR                * pBlock = NULL;
 
   for( i = 0; i < MAX_PRON_LEN; i++ ) {
-    phone_string[i] = g_PHONE_STRING[i]; 
+    phone_string[i] = PHONE_STRING[i]; 
   }
 
   nRes = SWIsltsTextToPhone(hLts, text, phone_string, &num_phones, MAX_PRON_LEN);
@@ -330,12 +329,6 @@ SWISLTS_FNEXPORT SWIsltsResult SWIsltsG2PGetWordTranscriptions(SWIsltsHand hLts,
   return SWIsltsSuccess;
 
  CLEAN_UP:
-
-  for( i = 0; i < MAX_PRON_LEN; i++ ) {
-    if( phone_string[i] != NULL ) {
-      FREE(phone_string[i]);
-    }
-  }
 
   *ppTranscriptions = NULL;
   *pnNbrOfTranscriptions = 0;  

@@ -455,11 +455,11 @@ ESR_ReturnCode logIt(SR_EventLogImpl *impl, LCHAR* evtt, LCHAR* log_record, size
   struct tm *ct, ct_r;
   LCHAR header[128], header2[64];
   PTimeStamp timestamp;
-  static size_t sizeof_LCHAR = sizeof(LCHAR);
-  static LCHAR* bar = "|";
-  static LCHAR* nl = "\n";
+  const size_t sizeof_LCHAR = sizeof(LCHAR);
+  const LCHAR* bar = "|";
+  const LCHAR* nl = "\n";
   size_t i, len;
-  LCHAR* toWrite[5];
+  const LCHAR* toWrite[5];
 
   toWrite[0] = header;
   toWrite[1] = bar;

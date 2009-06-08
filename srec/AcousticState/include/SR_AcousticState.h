@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*
- *  SR_AcousticState.h  *
+ *  SR_AcousticState.h                                                       *
  *                                                                           *
- *  Copyright 2007, 2008 Nuance Communciations, Inc.                               *
+ *  Copyright 2007, 2008 Nuance Communciations, Inc.                         *
  *                                                                           *
  *  Licensed under the Apache License, Version 2.0 (the 'License');          *
  *  you may not use this file except in compliance with the License.         *
@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -77,7 +77,7 @@ typedef struct SR_AcousticState_t
    * @param param_string contains data from the recognizer
    * @return ESR_INVALID_ARGUMENT if recognizer is null
    */
-  ESR_ReturnCode(*get)(SR_Recognizer* recognizer, const LCHAR **param_string );
+  ESR_ReturnCode(*get)(SR_Recognizer* recognizer, LCHAR *param_string, size_t* len );
   /**
    * Sets an AcousticState from a string.
    *
@@ -147,7 +147,7 @@ SREC_ACOUSTICSTATE_API ESR_ReturnCode SR_AcousticStateSave(SR_Recognizer* recogn
  */
 SREC_ACOUSTICSTATE_API ESR_ReturnCode SR_AcousticStateReset(SR_Recognizer* recognizer);
 SREC_ACOUSTICSTATE_API ESR_ReturnCode SR_AcousticStateSet ( SR_Recognizer* recognizer, const LCHAR *param_string );
-SREC_ACOUSTICSTATE_API ESR_ReturnCode SR_AcousticStateGet ( SR_Recognizer* recognizer, const LCHAR **param_string );
+SREC_ACOUSTICSTATE_API ESR_ReturnCode SR_AcousticStateGet ( SR_Recognizer* recognizer, LCHAR *param_string, size_t* len );
 /**
  * @}
  */

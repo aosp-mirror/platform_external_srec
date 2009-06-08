@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*
- *  frontapi.h  *
+ *  frontapi.h                                                               *
  *                                                                           *
- *  Copyright 2007, 2008 Nuance Communciations, Inc.                               *
+ *  Copyright 2007, 2008 Nuance Communciations, Inc.                         *
  *                                                                           *
  *  Licensed under the Apache License, Version 2.0 (the 'License');          *
  *  you may not use this file except in compliance with the License.         *
@@ -11,7 +11,7 @@
  *                                                                           *
  *  Unless required by applicable law or agreed to in writing, software      *
  *  distributed under the License is distributed on an 'AS IS' BASIS,        *
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * 
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. *
  *  See the License for the specific language governing permissions and      *
  *  limitations under the License.                                           *
  *                                                                           *
@@ -48,9 +48,9 @@ extern "C"
    ************************************************************************
    */
 #include "mutualob.h"
-  
+
 #ifndef SWIGBUILD
-  
+
   typedef struct
   {
     int                 ca_rtti;
@@ -62,7 +62,7 @@ extern "C"
     voicing_info        voice;
   }
   CA_Wave;
-  
+
   typedef struct
   {
     int                 ca_rtti;
@@ -76,19 +76,19 @@ extern "C"
     front_config        *config;
   }
   CA_Frontend;
-  
+
 #endif
-  
+
   /**
    ************************************************************************
    * SwigImageEnd         <- DO NOT MOVE THIS LINE !
    ************************************************************************
    */
-  
+
   /*
   **  Frontend
   */
-  
+
   CA_Frontend* CA_AllocateFrontend(float srcscale,
                                    int offset,
                                    float sinkscale);
@@ -106,8 +106,8 @@ extern "C"
    * Allocates a front-end object
    ************************************************************************
    */
-  
-  
+
+
   void CA_FreeFrontend(CA_Frontend* hFrontend);
   /**
    *
@@ -121,8 +121,8 @@ extern "C"
    * Deletes a front-end object
    ************************************************************************
    */
-  
-  
+
+
   void CA_ConfigureFrontend(CA_Frontend *hFrontend,
                             CA_FrontendInputParams *hFrontArgs);
   /**
@@ -140,8 +140,8 @@ extern "C"
    * create and setup functions.
    ************************************************************************
    */
-  
-  
+
+
   void CA_SetWarpScale(CA_Frontend *hFrontend, float wscale);
   /**
    *
@@ -155,7 +155,7 @@ extern "C"
    ************************************************************************
    ************************************************************************
    */
-  
+
   void CA_UnconfigureFrontend(CA_Frontend *hFrontend);
   /**
    *
@@ -169,8 +169,8 @@ extern "C"
    * Undo all of the front end configurations
    ************************************************************************
    */
-  
-  
+
+
   int  CA_MakeFrame(CA_Frontend* hFrontend,
                     CA_Utterance* hUtt,
                     CA_Wave* hWave);
@@ -191,8 +191,8 @@ extern "C"
    * this method returns zero to the caller.
    ************************************************************************
    */
-  
-  
+
+
   int  CA_GetFrontendFramesPerValidFrame(CA_Frontend *hFrontend);
   int  CA_GetFrontendSampleRate(CA_Frontend *hFrontend);
   /**
@@ -207,8 +207,8 @@ extern "C"
    * Gets the sample rate from the front end object
    ************************************************************************
    */
-  
-  
+
+
   int  CA_GetFrontendUtteranceDimension(CA_Frontend *hFrontend);
   /**
    *
@@ -224,8 +224,8 @@ extern "C"
    * Returns the number of items in an utterance.
    ************************************************************************
    */
-  
-  
+
+
   int  CA_GetRecognitionHoldoff(CA_FrontendInputParams *hFrontPar);
   /**
    *
@@ -239,20 +239,20 @@ extern "C"
    * a par file is unnecessary if this function is used.
    ************************************************************************
    */
-  
-  
+
+
   /*
   **  Channel normalization
   */
-ESR_ReturnCode CA_GetCMSParameters ( CA_Wave *hWave, const LCHAR **param_string );
+ESR_ReturnCode CA_GetCMSParameters ( CA_Wave *hWave, LCHAR *param_string, size_t* len );
 ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string );
 
 
   void CA_ReLoadCMSParameters(CA_Wave *hWave,
                               const char *basename);
-                              
+
   void CA_LoadCMSParameters(CA_Wave *hWave,
-                            char *basename,
+                            const char *basename,
                             CA_FrontendInputParams
                             *hFrontArgs);
   /**
@@ -272,8 +272,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * The .cmn and .tmn files must obviously have the same basename.
    ************************************************************************
    */
-  
-  
+
+
   void CA_SaveCMSParameters(CA_Wave *hWave,
                             const char *basename);
   /**
@@ -296,8 +296,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * The .cmn and .tmn files will obviously have the same basename.
    ************************************************************************
    */
-  
-  
+
+
   void CA_ClearCMSParameters(CA_Wave *hWave);
   /**
    *
@@ -315,7 +315,7 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * has been called.
    ************************************************************************
    */
-  
+
   void CA_AttachCMStoUtterance(CA_Wave *hWave,
                                CA_Utterance *hUtt);
   /**
@@ -335,7 +335,7 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    *  CA_Wave object.
    ************************************************************************
    */
-  
+
   /**
    * Returns true if CMS is attached to utterance.
    *
@@ -343,7 +343,7 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * @param isAttached [out] True if attached
    */
   ESR_ReturnCode CA_IsCMSAttachedtoUtterance(CA_Wave* hWave, ESR_BOOL* isAttached);
-  
+
   /**
    * Returns true if CA_Wave is configured for Agc.
    *
@@ -351,7 +351,7 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * @param isAttached [out] True if attached
    */
   ESR_ReturnCode CA_IsConfiguredForAgc(CA_Wave* hWave, ESR_BOOL* isConfigured);
-  
+
   void CA_DetachCMSfromUtterance(CA_Wave *hWave,
                                  CA_Utterance *hUtt);
   /**
@@ -372,8 +372,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    *  CA_Wave object.
    ************************************************************************
    */
-  
-  
+
+
   void CA_CalculateCMSParameters(CA_Wave *hWave);
   /**
    *
@@ -392,8 +392,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * subsequently to a CA_AttachCMStoUtterance.
    ************************************************************************
    */
-  
-  
+
+
   void CA_DiscardCMSAccumulates(CA_Wave *hWave);
   /**
    *
@@ -411,9 +411,9 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * CMS parameters must have been loaded and attached to the wave.
    ************************************************************************
    */
-  
-  
-  
+
+
+
   /*
   **  Wave
   */
@@ -429,7 +429,7 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * a physical device is external to CREC-API.
    ************************************************************************
    */
-  
+
   CA_Wave* CA_AllocateWave(char typ);
   /**
    *
@@ -453,8 +453,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * to CA_ConfigureWave().
    ************************************************************************
    */
-  
-  
+
+
   void CA_ConfigureWave(CA_Wave *hWave,
                         CA_Frontend *hFrontend);
   /**
@@ -472,8 +472,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * This should be called before any other Wave methods.
    ************************************************************************
    */
-  
-  
+
+
   void CA_ConfigureVoicingAnalysis(CA_Wave *hWave,
                                    CA_FrontendInputParams *hFrontPar);
   /**
@@ -487,8 +487,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * Initializes a Wave's voicin analysis module.
    ************************************************************************
    */
-  
-  
+
+
   void CA_ResetWave(CA_Wave *hWave);
   /**
    *
@@ -503,8 +503,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    *
    ************************************************************************
    */
-  
-  
+
+
   void CA_UnconfigureWave(CA_Wave *hWave);
   /**
    *
@@ -518,8 +518,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * Uninitializes a Wave structure.
    ************************************************************************
    */
-  
-  
+
+
   void CA_FreeWave(CA_Wave *hWave);
   /**
    *
@@ -533,8 +533,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * Removes a previously allocated Wave structure
    ************************************************************************
    */
-  
-  
+
+
   int  CA_OpenWaveFromFile(CA_Wave *hWave,
                            char* filename,
                            char typ,
@@ -566,8 +566,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * It is an error to call this function without first configuring hWave
    ************************************************************************
    */
-  
-  
+
+
   void CA_CloseFile(CA_Wave *hWave);
   /**
    *
@@ -581,8 +581,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * It is an error to call this function without first configuring hWave
    ************************************************************************
    */
-  
-  
+
+
   int  CA_OpenWaveFromDevice(CA_Wave *hWave,
                              int wave_type,
                              int samplerate,
@@ -614,8 +614,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * or WAVE_DEVICE_RAW (if using the raw interface - CA_LoadSamples)
    ************************************************************************
    */
-  
-  
+
+
   void CA_CloseDevice(CA_Wave *hWave);
   /**
    *
@@ -629,8 +629,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * It is an error to call this function without first configuring hWave
    ************************************************************************
    */
-  
-  
+
+
   void CA_SetWaveBoostValue(CA_Wave *hWave,
                             int waveBoost);
   /**
@@ -648,8 +648,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * It is an error to call this function without first configuring hWave
    ************************************************************************
    */
-  
-  
+
+
   int  CA_GetWaveBoostValue(CA_Wave *hWave);
   /**
    *
@@ -661,8 +661,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * It is an error to call this function without first configuring hWave
    ************************************************************************
    */
-  
-  
+
+
   int  CA_GetSampleRate(CA_Wave *hWave);
   /**
    *
@@ -677,8 +677,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * It is an error to call this function without first configuring hWave
    ************************************************************************
    */
-  
-  
+
+
   void CA_CopyWaveSegment(CA_Wave *source,
                           CA_Wave *sink,
                           unsigned long offset,
@@ -702,8 +702,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * the 'source' and 'sink' wave objects.
    ************************************************************************
    */
-  
-  
+
+
   int  CA_GetBufferSize(CA_Wave *hWave);
   /**
    *
@@ -724,8 +724,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * It is an error to call this function without first configuring hWave
    ************************************************************************
    */
-  
-  
+
+
 #ifndef SWIGBUILD
   int  CA_LoadSamples(CA_Wave *hWave,
                       samdata *pPCMData,
@@ -759,8 +759,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * It is an error to call this function without first configuring hWave
    ************************************************************************
    */
-  
-  
+
+
   int  CA_ReadSamplesForFrame(CA_Wave *hWave);
   /**
    *
@@ -774,8 +774,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * It is an error to call this function without first configuring hWave
    ************************************************************************
    */
-  
-  
+
+
   int  CA_SaveSamplesForFrame(CA_Wave *hWave);
   /**
    *
@@ -789,8 +789,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * It is an error to call this function without first configuring hWave
    ************************************************************************
    */
-  
-  
+
+
   void CA_ConditionSamples(CA_Wave *hWave);
   /**
    *
@@ -806,8 +806,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * It is an error to call this function without first configuring hWave
    ************************************************************************
    */
-  
-  
+
+
   void CA_CopyWaveSamples(CA_Wave *hWaveIn,
                           CA_Wave *hWaveOut);
   /**
@@ -829,8 +829,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * the 'hWaveIn' and 'hWaveOut' wave objects.
    ************************************************************************
    */
-  
-  
+
+
   int  CA_WaveIsOutput(CA_Wave *hWave);
   /**
    *
@@ -845,8 +845,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * and setting it up as a device or a file
    ************************************************************************
    */
-  
-  
+
+
   int  CA_WaveIsInput(CA_Wave *hWave);
   /**
    *
@@ -861,8 +861,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * and setting it up as a device or a file
    ************************************************************************
    */
-  
-  
+
+
   int  CA_WaveIsADevice(CA_Wave *hWave);
   /**
    *
@@ -877,8 +877,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * and setting it up as a device or a file
    ************************************************************************
    */
-  
-  
+
+
   int  CA_WaveIsAFile(CA_Wave *hWave);
   /**
    *
@@ -893,7 +893,7 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * and setting it up as a device or a file
    ************************************************************************
    */
-  
+
   void CA_StartSigCheck(CA_Wave *hWave);
   void CA_StopSigCheck(CA_Wave *hWave);
   void CA_ResetSigCheck(CA_Wave *hWave);
@@ -903,9 +903,9 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
   ESR_BOOL CA_DoSignalCheck(CA_Wave *hWave, ESR_BOOL *clipping, ESR_BOOL *dcoffset,
                         ESR_BOOL *highnoise, ESR_BOOL *quietspeech, ESR_BOOL *too_few_samples,
                         ESR_BOOL *too_many_samples);
-                        
-                        
-                        
+
+
+
   /*  Frontend parameter API
   */
   /**
@@ -921,9 +921,9 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * used to read a given parameter file.
    ************************************************************************
    */
-  
-  
-  
+
+
+
   CA_FrontendInputParams* CA_AllocateFrontendParameters(void);
   /**
    *
@@ -938,8 +938,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * Creates a new front-end input paramater onject
    ************************************************************************
    */
-  
-  
+
+
   void CA_LoadFrontendParameters(CA_FrontendInputParams* hFrontpar,
                                  const char* parfile);
   /**
@@ -957,8 +957,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * The file is a .par file
    ************************************************************************
    */
-  
-  
+
+
   void CA_FreeFrontendParameters(CA_FrontendInputParams* hFrontpar);
   /**
    *
@@ -972,8 +972,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * Removes a previously allocated parameter object
    ************************************************************************
    */
-  
-  
+
+
   void CA_SaveFrontendParameters(CA_FrontendInputParams* hFrontpar,
                                  const char* parfile);
   /**
@@ -993,8 +993,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * front-end input parameters.
    ************************************************************************
    */
-  
-  
+
+
   int  CA_SetFrontendParameter(CA_FrontendInputParams *hFrontpar,
                                char *key,
                                char *value);
@@ -1018,8 +1018,8 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * front-end input parameters.
    ************************************************************************
    */
-  
-  
+
+
   int  CA_GetFrontendParameter(CA_FrontendInputParams *hFrontpar,
                                char *key,
                                void *value);
@@ -1042,7 +1042,7 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * front-end input parameters.
    ************************************************************************
    */
-  
+
   int  CA_GetFrontendStringParameter(CA_FrontendInputParams *hFrontpar,
                                      char *key,
                                      char *value,
@@ -1068,7 +1068,7 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * front-end input parameters.
    ************************************************************************
    */
-  
+
   int CA_LoadSpectrumFilter(CA_Frontend *hFrontend, char *basename);
   /**
    *
@@ -1088,7 +1088,7 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * front-end input parameters.
    ************************************************************************
    */
-  
+
   void CA_ClearSpectrumFilter(CA_Frontend *hFrontend);
   /**
    *
@@ -1105,7 +1105,7 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    * front-end input parameters.
    ************************************************************************
    */
-  
+
   int CA_IsSpectrumFilterLoaded(CA_Frontend *hFrontend);
   /**
    *
@@ -1119,12 +1119,12 @@ ESR_ReturnCode CA_SetCMSParameters ( CA_Wave *hWave, const LCHAR *param_string )
    *
    ************************************************************************
    */
-  
+
   void CA_EnableNonlinearFilter(CA_Frontend *hFrontend);
   void CA_DisableNonlinearFilter(CA_Frontend *hFrontend);
   void CA_EnableSpectrumFilter(CA_Frontend *hFrontend);
   void CA_DisableSpectrumFilter(CA_Frontend *hFrontend);
-  
+
 #ifdef __cplusplus
 }
 #endif
