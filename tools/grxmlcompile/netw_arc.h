@@ -23,7 +23,7 @@
 
 #undef assert
 #define assert(X)
-
+#include <cstdio>
 
 class GRXMLDoc;
 class NUANArc
