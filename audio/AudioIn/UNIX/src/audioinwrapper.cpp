@@ -27,7 +27,7 @@
 #define N_CHANNELS 1
 #else
 #include <media/AudioRecord.h>
-#include <media/AudioSystem.h>
+#include <media/mediarecorder.h>
 using namespace android;
 #endif
 
@@ -95,8 +95,12 @@ int AudioOpen(void)
     #endif
 // TODO: get record buffer size from hardware.
     record = new android::AudioRecord(
-    android::AudioRecord::DEFAULT_INPUT, sampleRate,
-    android::AudioSystem::PCM_16_BIT, numChannels, 8*1024, 0);
+                            android::AUDIO_SOURCE_DEFAULT,
+                            sampleRate,
+                            android::AudioSystem::PCM_16_BIT,
+                            (numChannels > 1) ? android::AudioSystem::CHANNEL_IN_STEREO : android::AudioSystem::CHANNEL_IN_MONO,
+                            8*1024,
+                            0);
   
   if (!record) return -1;
   
@@ -147,7 +151,7 @@ int AudioSetVolume(int stream_type, int volume)
 #if defined(USE_DEV_EAC_FILE)
   return 0;
 #else
-  return AudioSystem::setStreamVolume(stream_type, (float)volume/100.0f);
+  return AudioSystem::setStreamVolume(stream_type, volume, 0);
 #endif
 }
 
@@ -157,7 +161,7 @@ int AudioGetVolume(int stream_type)
   return 0;
 #else
   float v = 0;
-  AudioSystem::getStreamVolume(stream_type, &v);
+  AudioSystem::getStreamVolume(stream_type, &v, 0);
   return int(v * 100.0f);
 #endif
 }
