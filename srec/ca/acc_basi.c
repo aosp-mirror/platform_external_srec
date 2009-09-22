@@ -75,6 +75,11 @@ int CA_LoadAcousticSub(CA_Acoustic *hAcoust, char *subname, CA_AcoustInputParams
   {
     /* SpeechWorks image format! */
     hAcoust->swimodel = load_swimodel(subname);
+    if (hAcoust->swimodel == NULL)
+    {
+        // failed to load, load_swimodel will have printed an error to the log
+        return 0;
+    }
     hAcoust->is_loaded = ESR_TRUE;
     return 1; 
   }
