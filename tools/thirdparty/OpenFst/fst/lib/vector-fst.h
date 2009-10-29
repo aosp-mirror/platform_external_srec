@@ -23,6 +23,9 @@
 #include "fst/lib/mutable-fst.h"
 #include "fst/lib/test-properties.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 namespace fst {
 
 template <class A> class VectorFst;
