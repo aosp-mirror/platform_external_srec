@@ -38,7 +38,7 @@
 /*                  frame size which is now automatically selected          */
 /*--------------------------------------------------------------------------*/
 
-#if !defined(ANDROID) || defined(__ARM_ARCH_5__)
+#if !defined(ANDROID) || defined(__ARM_ARCH_5__) || defined(__ARM_ARCH_4__)
 
 
 
