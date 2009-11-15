@@ -33,7 +33,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <string.h>
 
 // exact size types
 typedef short int16;

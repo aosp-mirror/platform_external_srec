@@ -26,7 +26,7 @@
 #include <utils/Log.h>
 
 #include <media/AudioRecord.h>
-#include <media/AudioSystem.h>
+#include <media/mediarecorder.h>
 
 #include <jni.h>
 
@@ -55,8 +55,8 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordNew
         (JNIEnv *env, jclass clazz, jint sampleRate, jint fifoFrames) {
 
     android::AudioRecord* ar = new android::AudioRecord(
-            android::AudioRecord::DEFAULT_INPUT, sampleRate,
-            android::AudioSystem::PCM_16_BIT, 1,
+            android::AUDIO_SOURCE_VOICE_RECOGNITION, sampleRate,
+            android::AudioSystem::PCM_16_BIT, android::AudioSystem::CHANNEL_IN_MONO,
             fifoFrames, 0);
     if (ar == NULL) {
         LOGE("Error creating AudioRecord");
