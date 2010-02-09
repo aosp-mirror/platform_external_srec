@@ -45,7 +45,8 @@ srec_grammars : \
 	$(G2G_INSTALL_PATH)/ipaq_commands.g2g \
 	$(G2G_INSTALL_PATH)/lookup.g2g \
 
-ALL_PREBUILT += $(G2G_INSTALL_PATH)/VoiceDialer.g2g
+ALL_PREBUILT += $(G2G_INSTALL_PATH)/VoiceDialer.g2g \
+	$(G2G_INSTALL_PATH)/boolean.g2g
 
 #---------------------------------------------------------------------------------
 # Explicit rules.
