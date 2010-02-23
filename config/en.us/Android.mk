@@ -46,7 +46,8 @@ srec_grammars : \
 	$(G2G_INSTALL_PATH)/lookup.g2g \
 
 ALL_PREBUILT += $(G2G_INSTALL_PATH)/VoiceDialer.g2g \
-	$(G2G_INSTALL_PATH)/boolean.g2g
+	$(G2G_INSTALL_PATH)/boolean.g2g \
+	$(G2G_INSTALL_PATH)/phone_type_choice.g2g
 
 #---------------------------------------------------------------------------------
 # Explicit rules.

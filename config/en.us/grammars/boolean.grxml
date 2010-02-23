@@ -10,13 +10,8 @@
     <one-of>
       <item>yes <tag>MEANING='1'</tag></item>
       <item>no <tag>MEANING='0'</tag></item>
-      <item> <ruleref uri="#ROOT"/> </item> 
     </one-of>
  </rule>
-
-<rule id="ROOT" scope="public">
-<item>__ROOT__</item>
-</rule>
 
 </grammar>
 
