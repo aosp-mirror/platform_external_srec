@@ -11,6 +11,7 @@
       <item>work <tag>MEANING='W'</tag></item>
       <item>other <tag>MEANING='O'</tag></item>
       <item>exit <tag>MEANING='X'</tag></item>
+      <item>cancel <tag>MEANING='X'</tag></item>
       <item>try again <tag>MEANING='R'</tag></item>
       <item>retry <tag>MEANING='R'</tag></item>
     </one-of>

@@ -11,6 +11,8 @@
     <item> <ruleref uri="#CALL"/> <tag>meaning=CALL.CMD;</tag> </item>
     <item> Call Voice Mail <tag>meaning='voicemail'</tag> </item>
     <item> Redial <tag>meaning='redial'</tag> </item>
+    <item> Exit <tag>meaning='X'</tag> </item>
+    <item> Cancel <tag>meaning='X'</tag> </item>
     <item> <ruleref uri="#OPEN"/> <tag>meaning=OPEN.CMD;</tag> </item>
   </one-of>
 </rule>
@@ -158,6 +160,5 @@
 <rule id="Opens" scope="public">
   <item>__Opens__</item>
 </rule>
-
 
 </grammar>
