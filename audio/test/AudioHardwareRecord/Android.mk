@@ -20,9 +20,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libmedia \
 	libutils \
 	libhardware_legacy \
-
-LOCAL_STATIC_LIBRARIES := \
-	libSR_AudioIn
+        libSR_AudioIn \
 
 LOCAL_MODULE:= AudioHardwareRecord
 
