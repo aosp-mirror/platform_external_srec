@@ -25,7 +25,8 @@ LOCAL_STATIC_LIBRARIES := \
         libESR_Portable
 
 LOCAL_SHARED_LIBRARIES := \
-        libmedia
+        libmedia \
+        liblog
 
 LOCAL_PRELINK_MODULE:= false
 
