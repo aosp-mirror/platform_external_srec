@@ -49,7 +49,7 @@
 /**
  * Maximum size of strings
  */
-#define MAX_STRING_LEN        350
+#define MAX_STRING_LEN        700
 
 /**
  * Maximum length of accumulated scripts
