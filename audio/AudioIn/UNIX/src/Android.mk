@@ -28,8 +28,6 @@ LOCAL_SHARED_LIBRARIES := \
         libmedia \
         liblog
 
-LOCAL_PRELINK_MODULE:= false
-
 LOCAL_MODULE:= libSR_AudioIn
 
 include $(BUILD_SHARED_LIBRARY)
