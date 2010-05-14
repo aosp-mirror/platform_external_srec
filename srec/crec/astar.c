@@ -980,7 +980,7 @@ void print_partial_paths(partial_path** parps, int num_parps,
 {
   int i;
   char buf[32];
-  printf(msg);
+  printf("%s", msg);
   for (i = 0; i < num_parps; i++)
   {
     sprintf(buf, "%.3d ", i);

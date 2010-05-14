@@ -65,7 +65,7 @@ void print_fsmnode_token(srec* rec, ftokenID token_index, char* msg)
 
 void print_fsmnode_token_list(srec* rec, stokenID token_index, char* msg)
 {
-  printf(msg);
+  printf("%s", msg);
   
   while (token_index != MAXftokenID)
   {
@@ -119,7 +119,7 @@ void print_fsmarc_token(srec* rec, stokenID token_index, char* msg)
 
 void print_fsmarc_token_list(srec* rec, stokenID token_index, char* msg)
 {
-  printf(msg);
+  printf("%s", msg);
   while (token_index != MAXstokenID)
   {
     fsmarc_token* stoken = &rec->fsmarc_token_array[token_index];
