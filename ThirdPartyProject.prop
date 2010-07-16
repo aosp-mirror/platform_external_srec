@@ -1,0 +1,9 @@
+# Copyright 2010 Google Inc. All Rights Reserved.
+#Fri Jul 16 10:03:09 PDT 2010
+currentVersion=Unknown
+version=rc3
+isNative=true
+name=srec
+keywords=srec
+onDevice=true
+homepage=http\://source.android.com/
