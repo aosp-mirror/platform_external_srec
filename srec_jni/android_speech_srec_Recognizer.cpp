@@ -503,7 +503,7 @@ static JNIEXPORT jobjectArray JNICALL Java_android_speech_srec_Recognizer_SR_1Re
     }
 
     // create String[] of keys
-    jclass stringClass = env->FindClass("[Ljava/lang/String;");
+    jclass stringClass = env->FindClass("java/lang/String");
     if (!stringClass) return NULL;
     jobjectArray array = env->NewObjectArray(listSize, stringClass, NULL);
     if (!array) return NULL;
