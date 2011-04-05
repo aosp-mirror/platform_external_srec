@@ -26,6 +26,7 @@
 #include <fcntl.h>
 #define N_CHANNELS 1
 #else
+#include <hardware/audio.h>
 #include <media/AudioRecord.h>
 #include <media/mediarecorder.h>
 using namespace android;
@@ -95,10 +96,10 @@ int AudioOpen(void)
     #endif
 // TODO: get record buffer size from hardware.
     record = new android::AudioRecord(
-                            android::AUDIO_SOURCE_DEFAULT,
+                            AUDIO_SOURCE_DEFAULT,
                             sampleRate,
-                            android::AudioSystem::PCM_16_BIT,
-                            (numChannels > 1) ? android::AudioSystem::CHANNEL_IN_STEREO : android::AudioSystem::CHANNEL_IN_MONO,
+                            AUDIO_FORMAT_PCM_16_BIT,
+                            (numChannels > 1) ? AUDIO_CHANNEL_IN_STEREO : AUDIO_CHANNEL_IN_MONO,
                             8*1024,
                             0);
   
