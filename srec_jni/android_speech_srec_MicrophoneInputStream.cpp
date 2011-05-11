@@ -28,7 +28,7 @@
 #include <media/AudioRecord.h>
 #include <media/mediarecorder.h>
 
-#include <hardware/audio.h>
+#include <system/audio.h>
 
 #include <jni.h>
 

@@ -26,7 +26,7 @@
 #include <fcntl.h>
 #define N_CHANNELS 1
 #else
-#include <hardware/audio.h>
+#include <system/audio.h>
 #include <media/AudioRecord.h>
 #include <media/mediarecorder.h>
 using namespace android;
