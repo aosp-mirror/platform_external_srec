@@ -61,14 +61,14 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordNew
             AUDIO_FORMAT_PCM_16_BIT, AUDIO_CHANNEL_IN_MONO,
             fifoFrames, 0);
     if (ar == NULL) {
-        LOGE("Error creating AudioRecord");
+        ALOGE("Error creating AudioRecord");
     }
     else {
         status_t s = ar->initCheck();
         if (s != NO_ERROR) {
             delete ar;
             ar = NULL;
-            LOGE("initCheck error %d ", s);
+            ALOGE("initCheck error %d ", s);
         }
     }
     return (int)ar;
@@ -129,19 +129,19 @@ jint register_android_speech_srec_MicrophoneInputStream(JavaVM* vm, void* reserv
     const char* className = "android/speech/srec/MicrophoneInputStream";
 
     if (vm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK) {
-        LOGE("ERROR: GetEnv failed\n");
+        ALOGE("ERROR: GetEnv failed\n");
         return -1;
     }
     assert(env != NULL);
 
     clazz = env->FindClass(className);
     if (clazz == NULL) {
-        LOGE("Native registration unable to find class '%s'\n", className);
+        ALOGE("Native registration unable to find class '%s'\n", className);
         return -1;
     }
     if (env->RegisterNatives(clazz, gMethods,
             sizeof(gMethods) / sizeof(gMethods[0])) < 0) {
-        LOGE("RegisterNatives failed for '%s'\n", className);
+        ALOGE("RegisterNatives failed for '%s'\n", className);
         return -1;
     }
 

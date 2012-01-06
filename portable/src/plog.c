@@ -492,7 +492,7 @@ ESR_ReturnCode PLogError(const char* msg, ...)
   if ( ( strncmp ( log_text, FILTER_MSG_1, FILTER_MSG_1_SIZE ) != 0 ) &&
     ( strncmp ( log_text, FILTER_MSG_2, FILTER_MSG_2_SIZE ) != 0 ) )
   {
-    LOGE ("%s", log_text );
+    ALOGE ("%s", log_text );
   }
   rc = 0;
 #else
