@@ -197,9 +197,9 @@ class VectorFstImpl : public VectorFstBaseImpl< VectorState<A> > {
 
   static VectorFstImpl<A> *Read(istream &strm, const FstReadOptions &opts);
 
-  size_t NumInputEpsilons(StateId s) const { return GetState(s)->niepsilons; }
+  size_t NumInputEpsilons(StateId s) const { return this->GetState(s)->niepsilons; }
 
-  size_t NumOutputEpsilons(StateId s) const { return GetState(s)->noepsilons; }
+  size_t NumOutputEpsilons(StateId s) const { return this->GetState(s)->noepsilons; }
 
   bool Write(ostream &strm, const FstWriteOptions &opts) const;
 
@@ -211,7 +211,7 @@ class VectorFstImpl : public VectorFstBaseImpl< VectorState<A> > {
   }
 
   void SetFinal(StateId s, Weight w) {
-    Weight ow = Final(s);
+    Weight ow = this->Final(s);
     if (ow != Weight::Zero() && ow != Weight::One())
       SetProperties(Properties() & ~kWeighted);
     BaseImpl::SetFinal(s, w);
@@ -230,7 +230,7 @@ class VectorFstImpl : public VectorFstBaseImpl< VectorState<A> > {
   }
 
   void AddArc(StateId s, const A &arc) {
-    VectorState<A> *state = GetState(s);
+    VectorState<A> *state = this->GetState(s);
     if (arc.ilabel != arc.olabel) {
       SetProperties(Properties() | kNotAcceptor);
       SetProperties(Properties() & ~kAcceptor);
@@ -288,21 +288,21 @@ class VectorFstImpl : public VectorFstBaseImpl< VectorState<A> > {
   }
 
   void DeleteArcs(StateId s, size_t n) {
-    const vector<A> &arcs = GetState(s)->arcs;
+    const vector<A> &arcs = this->GetState(s)->arcs;
     for (size_t i = 0; i < n; ++i) {
       size_t j = arcs.size() - i - 1;
       if (arcs[j].ilabel == 0)
-        --GetState(s)->niepsilons;
+        --this->GetState(s)->niepsilons;
       if (arcs[j].olabel == 0)
-        --GetState(s)->noepsilons;
+        --this->GetState(s)->noepsilons;
     }
     BaseImpl::DeleteArcs(s, n);
     SetProperties(Properties() & kDeleteArcsProperties);
   }
 
   void DeleteArcs(StateId s) {
-    GetState(s)->niepsilons = 0;
-    GetState(s)->noepsilons = 0;
+    this->GetState(s)->niepsilons = 0;
+    this->GetState(s)->noepsilons = 0;
     BaseImpl::DeleteArcs(s);
     SetProperties(Properties() & kDeleteArcsProperties);
   }
@@ -322,8 +322,8 @@ template <class A>
 VectorFstImpl<A>::VectorFstImpl(const Fst<A> &fst) {
   SetType("vector");
   SetProperties(fst.Properties(kCopyProperties, false) | kStaticProperties);
-  SetInputSymbols(fst.InputSymbols());
-  SetOutputSymbols(fst.OutputSymbols());
+  this->SetInputSymbols(fst.InputSymbols());
+  this->SetOutputSymbols(fst.OutputSymbols());
   BaseImpl::SetStart(fst.Start());
 
   for (StateIterator< Fst<A> > siter(fst);
@@ -332,16 +332,16 @@ VectorFstImpl<A>::VectorFstImpl(const Fst<A> &fst) {
     StateId s = siter.Value();
     BaseImpl::AddState();
     BaseImpl::SetFinal(s, fst.Final(s));
-    ReserveArcs(s, fst.NumArcs(s));
+    this->ReserveArcs(s, fst.NumArcs(s));
     for (ArcIterator< Fst<A> > aiter(fst, s);
          !aiter.Done();
          aiter.Next()) {
       const A &arc = aiter.Value();
       BaseImpl::AddArc(s, arc);
       if (arc.ilabel == 0)
-        ++GetState(s)->niepsilons;
+        ++this->GetState(s)->niepsilons;
       if (arc.olabel == 0)
-        ++GetState(s)->noepsilons;
+        ++this->GetState(s)->noepsilons;
     }
   }
 }
@@ -427,7 +427,7 @@ bool VectorFstImpl<A>::Write(ostream &strm,
     return false;
 
   for (StateId s = 0; s < NumStates(); ++s) {
-    const VectorState<A> *state = GetState(s);
+    const VectorState<A> *state = this->GetState(s);
     state->final.Write(strm);
     int64 narcs = state->arcs.size();
     WriteType(strm, narcs);

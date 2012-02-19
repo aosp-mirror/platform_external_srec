@@ -128,7 +128,7 @@ class ComposeFstImplBase : public CacheImpl<A> {
     if (!HasStart()) {
       StateId start = ComputeStart();
       if (start != kNoStateId) {
-        SetStart(start);
+        this->SetStart(start);
       }
     }
     return CacheImpl<A>::Start();
@@ -137,7 +137,7 @@ class ComposeFstImplBase : public CacheImpl<A> {
   Weight Final(StateId s) {
     if (!HasFinal(s)) {
       Weight final = ComputeFinal(s);
-      SetFinal(s, final);
+      this->SetFinal(s, final);
     }
     return CacheImpl<A>::Final(s);
   }
@@ -583,7 +583,7 @@ class ComposeFstImpl : public ComposeFstImplBase<A> {
         AddArc(s, earca, arcb, numepsa > 0, find_input);  // move on epsilon
       }
     }
-    SetArcs(s);
+    this->SetArcs(s);
    }
 
 
