@@ -117,6 +117,15 @@
 #endif
 
 /**
+ * inlining causes problems for the Xcode 4.3 and 4.4 command line tools,
+ * so this is needed to ensure the methods aren't inlined on those compilers
+ */
+
+#if __APPLE_CC__ >= 5621
+#define PINLINE
+#endif
+
+/**
  * @}
  */
 
