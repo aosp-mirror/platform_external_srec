@@ -59,7 +59,7 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordNew
     android::AudioRecord* ar = new android::AudioRecord(
             AUDIO_SOURCE_VOICE_RECOGNITION, sampleRate,
             AUDIO_FORMAT_PCM_16_BIT, AUDIO_CHANNEL_IN_MONO,
-            fifoFrames, 0);
+            fifoFrames, (android::AudioRecord::record_flags) 0);
     if (ar == NULL) {
         ALOGE("Error creating AudioRecord");
     }

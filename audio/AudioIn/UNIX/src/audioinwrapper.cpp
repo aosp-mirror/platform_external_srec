@@ -101,7 +101,7 @@ int AudioOpen(void)
                             AUDIO_FORMAT_PCM_16_BIT,
                             (numChannels > 1) ? AUDIO_CHANNEL_IN_STEREO : AUDIO_CHANNEL_IN_MONO,
                             8*1024,
-                            0);
+                            (android::AudioRecord::record_flags) 0);
   
   if (!record) return -1;
   
