@@ -44,6 +44,7 @@ LOCAL_SHARED_LIBRARIES := \
   libhardware_legacy \
   libcutils \
   libmedia \
+  libmedia_native
 
 
 LOCAL_STATIC_LIBRARIES := \

@@ -17,7 +17,6 @@ LOCAL_CFLAGS := \
 
 LOCAL_SHARED_LIBRARIES := \
 	libsrec_jni \
-	libmedia \
 	libutils \
 	libhardware_legacy \
         libSR_AudioIn \

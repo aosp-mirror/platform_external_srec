@@ -68,7 +68,7 @@ LOCAL_SRC_FILES := $(common_SRC_FILES)
 LOCAL_C_INCLUDES := $(common_C_INCLUDES)
 LOCAL_CFLAGS += $(common_CFLAGS)
 
-LOCAL_SHARED_LIBRARIES := libcutils libmedia
+LOCAL_SHARED_LIBRARIES := libcutils
 
 LOCAL_MODULE := $(common_TARGET)
 
