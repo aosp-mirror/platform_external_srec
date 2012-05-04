@@ -129,11 +129,11 @@ class CacheBaseImpl : public VectorFstBaseImpl<S> {
       while (NumStates() <= s)                     // Add state to main cache
         AddState(0);
       if (!VectorFstBaseImpl<S>::GetState(s)) {
-        SetState(s, new S);
+        this->SetState(s, new S);
         if (cache_first_state_id_ != kNoStateId) {  // Forget 1st cached state
           while (NumStates() <= cache_first_state_id_)
             AddState(0);
-          SetState(cache_first_state_id_, cache_first_state_);
+          this->SetState(cache_first_state_id_, cache_first_state_);
           if (cache_gc_) {
             cache_states_.push_back(cache_first_state_id_);
             cache_size_ += sizeof(S) +
@@ -287,7 +287,7 @@ class CacheBaseImpl : public VectorFstBaseImpl<S> {
           (free_recent || !(state->flags & kCacheRecent)) && s != current) {
         cache_size_ -= sizeof(S) + state->arcs.capacity() * sizeof(Arc);
         delete state;
-        SetState(s, 0);
+        this->SetState(s, 0);
         cache_states_.erase(siter++);
       } else {
         state->flags &= ~kCacheRecent;
