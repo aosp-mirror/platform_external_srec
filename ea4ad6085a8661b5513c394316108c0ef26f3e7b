@@ -1,0 +1,8 @@
+Change-Id: Iea4ad6085a8661b5513c394316108c0ef26f3e7b
+Code-Review+2: Jean-Baptiste Queru <jbq@google.com>
+Verified+1: Jean-Baptiste Queru <jbq@google.com>
+Submitted-by: Jean-Baptiste Queru <jbq@google.com>
+Submitted-at: Thu, 03 May 2012 18:41:28 -0700
+Reviewed-on: https://android-review.googlesource.com/32824
+Project: platform/external/srec
+Branch: refs/heads/master
