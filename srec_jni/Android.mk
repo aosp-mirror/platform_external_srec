@@ -71,5 +71,6 @@ LOCAL_LDLIBS += -lpthread
 
 LOCAL_MODULE := libsrec_jni
 
-include $(BUILD_SHARED_LIBRARY)
+LOCAL_MODULE_TAGS := optional
 
+include $(BUILD_SHARED_LIBRARY)
