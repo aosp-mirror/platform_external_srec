@@ -1,6 +1,6 @@
 
 LOCAL_PATH:= $(call my-dir)
-include $(CLEAR_VARS)
+########################################
 
 copy_from :=                     \
     baseline11k.par              \
@@ -23,7 +23,8 @@ copy_to := $(addprefix $(TARGET_OUT)/usr/srec/config/en.us/,$(copy_from))
 $(copy_to) : $(TARGET_OUT)/usr/srec/config/en.us/% : $(LOCAL_PATH)/% | $(ACP)
 	$(transform-prebuilt-to-target)
 
-ALL_PREBUILT += $(copy_to)
+# ALL_PREBUILT is deprecated. Moved to config.mk
+# ALL_PREBUILT += $(copy_to)
 
 
 # define paths to some grammar tools
@@ -45,9 +46,10 @@ srec_grammars : \
 	$(G2G_INSTALL_PATH)/ipaq_commands.g2g \
 	$(G2G_INSTALL_PATH)/lookup.g2g \
 
-ALL_PREBUILT += $(G2G_INSTALL_PATH)/VoiceDialer.g2g \
-	$(G2G_INSTALL_PATH)/boolean.g2g \
-	$(G2G_INSTALL_PATH)/phone_type_choice.g2g
+# ALL_PREBUILT is deprecated. Moved to config.mk
+# ALL_PREBUILT += $(G2G_INSTALL_PATH)/VoiceDialer.g2g \
+#	$(G2G_INSTALL_PATH)/boolean.g2g \
+#	$(G2G_INSTALL_PATH)/phone_type_choice.g2g
 
 #---------------------------------------------------------------------------------
 # Explicit rules.
@@ -71,7 +73,6 @@ $(G2G_INSTALL_PATH)/%.g2g: $(LOCAL_PATH)/grammars/%.grxml $(GRXML) $(MAKE_G2G) $
 	$(GRXML) -par $(DEFAULT_PAR) -grxml $< -outdir $(G2G_INSTALL_PATH)
 	$(MAKE_G2G) -base $(G2G_INSTALL_PATH)/$*,addWords=0 -out $@
 	(cd $(G2G_INSTALL_PATH); rm -f $*.Grev2.det.txt $*.map $*.omap $*.P.txt $*.params $*.PCLG.txt $*.script)
-
 
 #-----------------------------------------------------------------
 # this rule generates cmu6plus.ok.zip, which is built manually and checked in.
@@ -97,14 +98,12 @@ cmu6plus.ok.zip: $(CMU2NUANCE) $(DICT_DIR)/c0.6 $(DICT_DIR)/numbers.ok $(DICT_DI
           echo -e "\n+++ advzip not installed; fell back to zip\n    cmu6plus.ok.zip (`du -h cmu6plus.ok.zip | cut -f 1`) could be ~10% smaller with advzip\n"))
 
 
-
 #-----------------------------------------------------------------
 # build cmu2nuance dictionary conversion program, to prevent bitrot
 #-----------------------------------------------------------------
-
-LOCAL_SRC_FILES:= dictionary/cmu2nuance.cpp
-
-LOCAL_MODULE:= cmu2nuance
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := dictionary/cmu2nuance.cpp
+LOCAL_MODULE := cmu2nuance
+LOCAL_MODULE_TAGS := optional
 
 include $(BUILD_HOST_EXECUTABLE)
-
