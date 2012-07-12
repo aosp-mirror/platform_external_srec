@@ -94,9 +94,7 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordRea
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_AudioRecordStop
         (JNIEnv *env, jclass clazz, jint audioRecord) {
-    if (int rtn = ((AudioRecord*)audioRecord)->stop()) {
-        throwException(env, "java/io/IOException", "AudioRecord::stop failed %d", rtn);
-    }
+    ((AudioRecord*)audioRecord)->stop();
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_AudioRecordDelete
