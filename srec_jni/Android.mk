@@ -43,9 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
   libutils \
   libhardware_legacy \
   libcutils \
-  libmedia \
-  libmedia_native
-
+  libmedia
 
 LOCAL_STATIC_LIBRARIES := \
   libzipfile \
