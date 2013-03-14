@@ -109,119 +109,119 @@ static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1SessionDes
 //////////////////////////////////////////////////////////////////////////
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerStart
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     checkEsrError(env, SR_RecognizerStart((SR_Recognizer*)recognizer));
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerStop
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     checkEsrError(env, SR_RecognizerStop((SR_Recognizer*)recognizer));
 }
 
-static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerCreate
+static JNIEXPORT jlong JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerCreate
         (JNIEnv *env, jclass clazz) {
     SR_Recognizer* recognizer = NULL;
     // TODO: do we need to clean up the recognizer if this fails?
     checkEsrError(env, SR_RecognizerCreate(&recognizer));
-    return (jint)recognizer;
+    return (jlong)recognizer;
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerDestroy
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     checkEsrError(env, SR_RecognizerDestroy((SR_Recognizer*)recognizer));
     return;
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerSetup
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     checkEsrError(env, SR_RecognizerSetup((SR_Recognizer*)recognizer));
     return;
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerUnsetup
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     checkEsrError(env, SR_RecognizerUnsetup((SR_Recognizer*)recognizer));
     return;
 }
 
 static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerIsSetup
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     ESR_BOOL rtn = ESR_FALSE;
     checkEsrError(env, SR_RecognizerIsSetup((SR_Recognizer*)recognizer, &rtn));
     return rtn;
 }
 
 static JNIEXPORT jstring JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerGetParameter
-  (JNIEnv *env, jclass clazz, jint recognizer, jstring key) {
+  (JNIEnv *env, jclass clazz, jlong recognizer, jstring key) {
     unimplemented(env);
     return 0;
 }
 
 static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerGetSize_1tParameter
-  (JNIEnv *env, jclass clazz, jint recognizer, jstring key) {
+  (JNIEnv *env, jclass clazz, jlong recognizer, jstring key) {
     unimplemented(env);
     return 0;
 }
 
 static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerGetBoolParameter
-  (JNIEnv *env, jclass clazz, jint recognizer, jstring key) {
+  (JNIEnv *env, jclass clazz, jlong recognizer, jstring key) {
     unimplemented(env);
     return JNI_FALSE;
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerSetParameter
-  (JNIEnv *env, jclass clazz, jint recognizer, jstring key, jstring value) {
+  (JNIEnv *env, jclass clazz, jlong recognizer, jstring key, jstring value) {
     unimplemented(env);
     return;
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerSetSize_1tParameter
-  (JNIEnv *env, jclass clazz, jint recognizer, jstring key, jint value) {
+  (JNIEnv *env, jclass clazz, jlong recognizer, jstring key, jint value) {
     unimplemented(env);
     return;
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerSetBoolParameter
-  (JNIEnv *env, jclass clazz, jint recognizer, jstring key , jboolean value) {
+  (JNIEnv *env, jclass clazz, jlong recognizer, jstring key , jboolean value) {
     unimplemented(env);
     return;
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerSetupRule
-        (JNIEnv *env, jclass clazz, jint recognizer, jint grammar, jstring ruleName) {
+        (JNIEnv *env, jclass clazz, jlong recognizer, jlong grammar, jstring ruleName) {
     const char* rn = env->GetStringUTFChars(ruleName, 0);
     checkEsrError(env, SR_RecognizerSetupRule((SR_Recognizer*)recognizer, (SR_Grammar*)grammar, rn));
     env->ReleaseStringUTFChars(ruleName, rn);
 }
 
 static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerHasSetupRules
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     ESR_BOOL rtn = ESR_FALSE;
     checkEsrError(env, SR_RecognizerHasSetupRules((SR_Recognizer*)recognizer, &rtn));
     return rtn;
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerActivateRule
-        (JNIEnv *env, jclass clazz, jint recognizer, jint grammar, jstring ruleName, jint weight) {
+        (JNIEnv *env, jclass clazz, jlong recognizer, jlong grammar, jstring ruleName, jint weight) {
     const char* rn = env->GetStringUTFChars(ruleName, 0);
     checkEsrError(env, SR_RecognizerActivateRule((SR_Recognizer*)recognizer, (SR_Grammar*)grammar, rn, weight));
     env->ReleaseStringUTFChars(ruleName, rn);
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerDeactivateRule
-        (JNIEnv *env, jclass clazz, jint recognizer, jint grammar, jstring ruleName) {
+        (JNIEnv *env, jclass clazz, jlong recognizer, jlong grammar, jstring ruleName) {
     const char* rn = env->GetStringUTFChars(ruleName, 0);
     checkEsrError(env, SR_RecognizerDeactivateRule((SR_Recognizer*)recognizer, (SR_Grammar*)grammar, rn));
     env->ReleaseStringUTFChars(ruleName, rn);
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerDeactivateAllRules
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     checkEsrError(env, SR_RecognizerDeactivateAllRules((SR_Recognizer*)recognizer));
 }
 
 static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerIsActiveRule
-        (JNIEnv *env, jclass clazz, jint recognizer, jint grammar, jstring ruleName) {
+        (JNIEnv *env, jclass clazz, jlong recognizer, jlong grammar, jstring ruleName) {
     ESR_BOOL rtn = ESR_FALSE;
     const char* rn = env->GetStringUTFChars(ruleName, 0);
     checkEsrError(env, SR_RecognizerIsActiveRule((SR_Recognizer*)recognizer, (SR_Grammar*)grammar, rn, &rtn));
@@ -230,14 +230,14 @@ static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1Recogn
 }
 
 static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerCheckGrammarConsistency
-        (JNIEnv *env, jclass clazz, jint recognizer, jint grammar) {
+        (JNIEnv *env, jclass clazz, jlong recognizer, jlong grammar) {
     ESR_BOOL rtn = ESR_FALSE;
     checkEsrError(env, SR_RecognizerCheckGrammarConsistency((SR_Recognizer*)recognizer, (SR_Grammar*)grammar, &rtn));
     return rtn;
 }
 
 static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerPutAudio
-        (JNIEnv *env, jclass clazz, jint recognizer, jbyteArray audio, jint offset, jint length, jboolean isLast) {
+        (JNIEnv *env, jclass clazz, jlong recognizer, jbyteArray audio, jint offset, jint length, jboolean isLast) {
     // set the length
     jbyte buffer[1024];
     if (length > (int)sizeof(buffer)) length = sizeof(buffer);
@@ -259,7 +259,7 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1Recognizer
 }
 
 static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerAdvance
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     SR_RecognizerStatus status = SR_RECOGNIZER_EVENT_INVALID;
     SR_RecognizerResultType type = SR_RECOGNIZER_RESULT_TYPE_INVALID;
     SR_RecognizerResult* recognizerResult = NULL;
@@ -268,42 +268,42 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1Recognizer
 }
 
 static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalClipping
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     ESR_BOOL rtn = ESR_FALSE;
     checkEsrError(env, SR_RecognizerIsSignalClipping((SR_Recognizer*)recognizer, &rtn));
     return rtn;
 }
 
 static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalDCOffset
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     ESR_BOOL rtn = ESR_FALSE;
     checkEsrError(env, SR_RecognizerIsSignalDCOffset((SR_Recognizer*)recognizer, &rtn));
     return rtn;
 }
 
 static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalNoisy
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     ESR_BOOL rtn = ESR_FALSE;
     checkEsrError(env, SR_RecognizerIsSignalNoisy((SR_Recognizer*)recognizer, &rtn));
     return rtn;
 }
 
 static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalTooQuiet
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     ESR_BOOL rtn = ESR_FALSE;
     checkEsrError(env, SR_RecognizerIsSignalTooQuiet((SR_Recognizer*)recognizer, &rtn));
     return rtn;
 }
 
 static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalTooFewSamples
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     ESR_BOOL rtn = ESR_FALSE;
     checkEsrError(env, SR_RecognizerIsSignalTooFewSamples((SR_Recognizer*)recognizer, &rtn));
     return rtn;
 }
 
 static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalTooManySamples
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     ESR_BOOL rtn = ESR_FALSE;
     checkEsrError(env, SR_RecognizerIsSignalTooManySamples((SR_Recognizer*)recognizer, &rtn));
     return rtn;
@@ -315,19 +315,19 @@ static JNIEXPORT jboolean JNICALL Java_android_speech_srec_Recognizer_SR_1Recogn
 //////////////////////////////////////////////////////////////////////////
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1AcousticStateReset
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     checkEsrError(env, SR_AcousticStateReset((SR_Recognizer*)recognizer));
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1AcousticStateSet
-        (JNIEnv *env, jclass clazz, jint recognizer, jstring state) {
+        (JNIEnv *env, jclass clazz, jlong recognizer, jstring state) {
     const char* st = env->GetStringUTFChars(state, 0);
     checkEsrError(env, SR_AcousticStateSet((SR_Recognizer*)recognizer, st));
     env->ReleaseStringUTFChars(state, st);
 }
 
 static JNIEXPORT jstring JNICALL Java_android_speech_srec_Recognizer_SR_1AcousticStateGet
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     char rtn[1000];
     size_t rtnLength = sizeof(rtn) - 1;
     ESR_ReturnCode esr_status = SR_AcousticStateGet((SR_Recognizer*)recognizer, rtn, &rtnLength);
@@ -345,12 +345,12 @@ static JNIEXPORT jstring JNICALL Java_android_speech_srec_Recognizer_SR_1Acousti
 //////////////////////////////////////////////////////////////////////////
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarCompile
-        (JNIEnv *env, jclass clazz, jint grammar) {
+        (JNIEnv *env, jclass clazz, jlong grammar) {
     checkEsrError(env, SR_GrammarCompile((SR_Grammar*)grammar));
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarAddWordToSlot
-        (JNIEnv *env, jclass clazz, jint grammar, jstring slot, jstring word, jstring pronunciation, jint weight, jstring tag) {
+        (JNIEnv *env, jclass clazz, jlong grammar, jstring slot, jstring word, jstring pronunciation, jint weight, jstring tag) {
     const char* sl = 0;
     const char* wo = 0;
     const char* pr = 0;
@@ -368,63 +368,63 @@ static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarAdd
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarResetAllSlots
-        (JNIEnv *env, jclass clazz, jint grammar) {
+        (JNIEnv *env, jclass clazz, jlong grammar) {
     checkEsrError(env, SR_GrammarResetAllSlots((SR_Grammar*)grammar));
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarSetupVocabulary
-        (JNIEnv *env, jclass clazz, jint grammar, jint vocabulary) {
+        (JNIEnv *env, jclass clazz, jlong grammar, jlong vocabulary) {
     checkEsrError(env, SR_GrammarSetupVocabulary((SR_Grammar*)grammar, (SR_Vocabulary*)vocabulary));
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarSetupRecognizer
-        (JNIEnv *env, jclass clazz, jint grammar, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong grammar, jlong recognizer) {
     checkEsrError(env, SR_GrammarSetupRecognizer((SR_Grammar*)grammar, (SR_Recognizer*)recognizer));
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarUnsetupRecognizer
-        (JNIEnv *env, jclass clazz, jint grammar) {
+        (JNIEnv *env, jclass clazz, jlong grammar) {
     checkEsrError(env, SR_GrammarUnsetupRecognizer((SR_Grammar*)grammar));
 }
 
-static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarCreate
+static JNIEXPORT jlong JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarCreate
         (JNIEnv *env, jclass clazz) {
     SR_Grammar* grammar = 0;
     checkEsrError(env, SR_GrammarCreate(&grammar));
-    return (jint)grammar;
+    return (jlong)grammar;
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarDestroy
-        (JNIEnv *env, jclass clazz, jint grammar) {
+        (JNIEnv *env, jclass clazz, jlong grammar) {
     checkEsrError(env, SR_GrammarDestroy((SR_Grammar*)grammar));
 }
 
-static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarLoad
+static JNIEXPORT jlong JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarLoad
         (JNIEnv *env, jclass clazz, jstring fileName) {
     // TODO: check for fileName NPE
     SR_Grammar* grammar = 0;
     const char* fn = env->GetStringUTFChars(fileName, 0);
     checkEsrError(env, SR_GrammarLoad(fn, &grammar));
     env->ReleaseStringUTFChars(fileName, fn);
-    return (jint)grammar;
+    return (jlong)grammar;
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarSave
-        (JNIEnv *env, jclass clazz, jint grammar, jstring fileName) {
+        (JNIEnv *env, jclass clazz, jlong grammar, jstring fileName) {
     const char* fn = env->GetStringUTFChars(fileName, 0);
     checkEsrError(env, SR_GrammarSave((SR_Grammar*)grammar, fn));
     env->ReleaseStringUTFChars(fileName, fn);
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarAllowOnly
-        (JNIEnv *env, jclass clazz, jint grammar, jstring transcription) {
+        (JNIEnv *env, jclass clazz, jlong grammar, jstring transcription) {
     const char* tr = env->GetStringUTFChars(transcription, 0);
     checkEsrError(env, SR_GrammarSave((SR_Grammar*)grammar, tr));
     env->ReleaseStringUTFChars(transcription, tr);
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarAllowAll
-        (JNIEnv *env, jclass clazz, jint grammar) {
+        (JNIEnv *env, jclass clazz, jlong grammar) {
     checkEsrError(env, SR_GrammarAllowAll((SR_Grammar*)grammar));
 }
 
@@ -433,7 +433,7 @@ static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1GrammarAll
 // SR_Vocabulary JNI implementations
 //////////////////////////////////////////////////////////////////////////
 
-static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1VocabularyLoad
+static JNIEXPORT jlong JNICALL Java_android_speech_srec_Recognizer_SR_1VocabularyLoad
         (JNIEnv *env, jclass clazz) {
     char filename[P_PATH_MAX];
     size_t flen = sizeof(filename) - 1;
@@ -442,17 +442,17 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1Vocabulary
     // TODO: do we need to clean up the recognizer if this fails?
     SR_Vocabulary* vocabulary = NULL;
     checkEsrError(env, SR_VocabularyLoad(filename, &vocabulary));
-    return (jint)vocabulary;
+    return (jlong)vocabulary;
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_SR_1VocabularyDestroy
-        (JNIEnv *env, jclass clazz, jint vocabulary) {
+        (JNIEnv *env, jclass clazz, jlong vocabulary) {
     // TODO: do we need to clean up the recognizer if this fails?
     checkEsrError(env, SR_VocabularyDestroy((SR_Vocabulary*)vocabulary));
 }
 
 static JNIEXPORT jstring JNICALL Java_android_speech_srec_Recognizer_SR_1VocabularyGetPronunciation
-        (JNIEnv *env, jclass clazz, jint vocabulary, jstring word) {
+        (JNIEnv *env, jclass clazz, jlong vocabulary, jstring word) {
     char rtn[1000];
     size_t rtnLength = sizeof(rtn) - 1;
     const char* wo = env->GetStringUTFChars(word, 0);
@@ -472,27 +472,27 @@ static JNIEXPORT jstring JNICALL Java_android_speech_srec_Recognizer_SR_1Vocabul
 //////////////////////////////////////////////////////////////////////////
 
 static JNIEXPORT jbyteArray JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetWaveform
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     unimplemented(env);
     return 0;
 }
 
 static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetSize
-        (JNIEnv *env, jclass clazz, jint recognizer) {
+        (JNIEnv *env, jclass clazz, jlong recognizer) {
     size_t size = 0;
     checkEsrError(env, SR_RecognizerResultGetSize(((SR_RecognizerImpl*)recognizer)->result, &size));
     return size;
 }
 
 static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetKeyCount
-        (JNIEnv *env, jclass clazz, jint recognizer, jint nbest) {
+        (JNIEnv *env, jclass clazz, jlong recognizer, jint nbest) {
     size_t size = 0;
     checkEsrError(env, SR_RecognizerResultGetKeyCount(((SR_RecognizerImpl*)recognizer)->result, nbest, &size));
     return size;
 }
 
 static JNIEXPORT jobjectArray JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetKeyList
-        (JNIEnv *env, jclass clazz, jint recognizer, jint nbest) {
+        (JNIEnv *env, jclass clazz, jlong recognizer, jint nbest) {
     // fetch list
     LCHAR* list[200];
     size_t listSize = sizeof(list) / sizeof(list[0]);
@@ -522,7 +522,7 @@ static JNIEXPORT jobjectArray JNICALL Java_android_speech_srec_Recognizer_SR_1Re
 }
 
 static JNIEXPORT jstring JNICALL Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetValue
-        (JNIEnv *env, jclass clazz, jint recognizer, jint nbest, jstring key) {
+        (JNIEnv *env, jclass clazz, jlong recognizer, jint nbest, jstring key) {
     char rtn[1000];
     size_t rtnLength = sizeof(rtn) - 1;
     const char* ke = env->GetStringUTFChars(key, 0);
@@ -549,61 +549,61 @@ static JNINativeMethod gMethods[] = {
     {"SR_SessionCreate",                   "(Ljava/lang/String;)V",   (void*)Java_android_speech_srec_Recognizer_SR_1SessionCreate},
     {"SR_SessionDestroy",                  "()V",                     (void*)Java_android_speech_srec_Recognizer_SR_1SessionDestroy},
     // SR_Recognizer
-    {"SR_RecognizerStart",                 "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerStart},
-    {"SR_RecognizerStop",                  "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerStop},
-    {"SR_RecognizerCreate",                "()I",                     (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerCreate},
-    {"SR_RecognizerDestroy",               "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerDestroy},
-    {"SR_RecognizerSetup",                 "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerSetup},
-    {"SR_RecognizerUnsetup",               "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerUnsetup},
-    {"SR_RecognizerIsSetup",               "(I)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSetup},
-    {"SR_RecognizerGetParameter",          "(ILjava/lang/String;)Ljava/lang/String;", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerGetParameter},
-    {"SR_RecognizerGetSize_tParameter",    "(ILjava/lang/String;)I",  (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerGetSize_1tParameter},
-    {"SR_RecognizerGetBoolParameter",      "(ILjava/lang/String;)Z",  (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerGetBoolParameter},
-    {"SR_RecognizerSetParameter",          "(ILjava/lang/String;Ljava/lang/String;)V", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerSetParameter},
-    {"SR_RecognizerSetSize_tParameter",    "(ILjava/lang/String;I)V", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerSetSize_1tParameter},
-    {"SR_RecognizerSetBoolParameter",      "(ILjava/lang/String;Z)V", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerSetBoolParameter},
-    {"SR_RecognizerSetupRule",             "(IILjava/lang/String;)V", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerSetupRule},
-    {"SR_RecognizerHasSetupRules",         "(I)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerHasSetupRules},
-    {"SR_RecognizerActivateRule",          "(IILjava/lang/String;I)V", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerActivateRule},
-    {"SR_RecognizerDeactivateRule",        "(IILjava/lang/String;)V", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerDeactivateRule},
-    {"SR_RecognizerDeactivateAllRules",    "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerDeactivateAllRules},
-    {"SR_RecognizerIsActiveRule",          "(IILjava/lang/String;)Z", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsActiveRule},
-    {"SR_RecognizerCheckGrammarConsistency", "(II)Z",                 (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerCheckGrammarConsistency},
-    {"SR_RecognizerPutAudio",              "(I[BIIZ)I",               (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerPutAudio},
-    {"SR_RecognizerAdvance",               "(I)I",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerAdvance},
-    {"SR_RecognizerIsSignalClipping",      "(I)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalClipping},
-    {"SR_RecognizerIsSignalDCOffset",      "(I)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalDCOffset},
-    {"SR_RecognizerIsSignalNoisy",         "(I)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalNoisy},
-    {"SR_RecognizerIsSignalTooQuiet",      "(I)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalTooQuiet},
-    {"SR_RecognizerIsSignalTooFewSamples", "(I)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalTooFewSamples},
-    {"SR_RecognizerIsSignalTooManySamples", "(I)Z",                   (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalTooManySamples},
+    {"SR_RecognizerStart",                 "(J)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerStart},
+    {"SR_RecognizerStop",                  "(J)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerStop},
+    {"SR_RecognizerCreate",                "()J",                     (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerCreate},
+    {"SR_RecognizerDestroy",               "(J)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerDestroy},
+    {"SR_RecognizerSetup",                 "(J)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerSetup},
+    {"SR_RecognizerUnsetup",               "(J)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerUnsetup},
+    {"SR_RecognizerIsSetup",               "(J)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSetup},
+    {"SR_RecognizerGetParameter",          "(JLjava/lang/String;)Ljava/lang/String;", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerGetParameter},
+    {"SR_RecognizerGetSize_tParameter",    "(JLjava/lang/String;)I",  (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerGetSize_1tParameter},
+    {"SR_RecognizerGetBoolParameter",      "(JLjava/lang/String;)Z",  (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerGetBoolParameter},
+    {"SR_RecognizerSetParameter",          "(JLjava/lang/String;Ljava/lang/String;)V", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerSetParameter},
+    {"SR_RecognizerSetSize_tParameter",    "(JLjava/lang/String;I)V", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerSetSize_1tParameter},
+    {"SR_RecognizerSetBoolParameter",      "(JLjava/lang/String;Z)V", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerSetBoolParameter},
+    {"SR_RecognizerSetupRule",             "(JJLjava/lang/String;)V", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerSetupRule},
+    {"SR_RecognizerHasSetupRules",         "(J)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerHasSetupRules},
+    {"SR_RecognizerActivateRule",          "(JJLjava/lang/String;I)V", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerActivateRule},
+    {"SR_RecognizerDeactivateRule",        "(JJLjava/lang/String;)V", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerDeactivateRule},
+    {"SR_RecognizerDeactivateAllRules",    "(J)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerDeactivateAllRules},
+    {"SR_RecognizerIsActiveRule",          "(JJLjava/lang/String;)Z", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsActiveRule},
+    {"SR_RecognizerCheckGrammarConsistency", "(JJ)Z",                 (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerCheckGrammarConsistency},
+    {"SR_RecognizerPutAudio",              "(J[BIIZ)I",               (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerPutAudio},
+    {"SR_RecognizerAdvance",               "(J)I",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerAdvance},
+    {"SR_RecognizerIsSignalClipping",      "(J)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalClipping},
+    {"SR_RecognizerIsSignalDCOffset",      "(J)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalDCOffset},
+    {"SR_RecognizerIsSignalNoisy",         "(J)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalNoisy},
+    {"SR_RecognizerIsSignalTooQuiet",      "(J)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalTooQuiet},
+    {"SR_RecognizerIsSignalTooFewSamples", "(J)Z",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalTooFewSamples},
+    {"SR_RecognizerIsSignalTooManySamples", "(J)Z",                   (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerIsSignalTooManySamples},
     // SR_AcousticState
-    {"SR_AcousticStateReset",               "(I)V",                   (void*)Java_android_speech_srec_Recognizer_SR_1AcousticStateReset},
-    {"SR_AcousticStateSet",                 "(ILjava/lang/String;)V", (void*)Java_android_speech_srec_Recognizer_SR_1AcousticStateSet},
-    {"SR_AcousticStateGet",                 "(I)Ljava/lang/String;",  (void*)Java_android_speech_srec_Recognizer_SR_1AcousticStateGet},
+    {"SR_AcousticStateReset",               "(J)V",                   (void*)Java_android_speech_srec_Recognizer_SR_1AcousticStateReset},
+    {"SR_AcousticStateSet",                 "(JLjava/lang/String;)V", (void*)Java_android_speech_srec_Recognizer_SR_1AcousticStateSet},
+    {"SR_AcousticStateGet",                 "(J)Ljava/lang/String;",  (void*)Java_android_speech_srec_Recognizer_SR_1AcousticStateGet},
     // SR_Grammar
-    {"SR_GrammarCompile",                  "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1GrammarCompile},
-    {"SR_GrammarAddWordToSlot",            "(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;)V", (void*)Java_android_speech_srec_Recognizer_SR_1GrammarAddWordToSlot},
-    {"SR_GrammarResetAllSlots",            "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1GrammarResetAllSlots},
-    {"SR_GrammarSetupVocabulary",          "(II)V",                   (void*)Java_android_speech_srec_Recognizer_SR_1GrammarSetupVocabulary},
-    {"SR_GrammarSetupRecognizer",          "(II)V",                   (void*)Java_android_speech_srec_Recognizer_SR_1GrammarSetupRecognizer},
-    {"SR_GrammarUnsetupRecognizer",        "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1GrammarUnsetupRecognizer},
-    {"SR_GrammarCreate",                   "()I",                     (void*)Java_android_speech_srec_Recognizer_SR_1GrammarCreate},
-    {"SR_GrammarDestroy",                  "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1GrammarDestroy},
-    {"SR_GrammarLoad",                     "(Ljava/lang/String;)I",   (void*)Java_android_speech_srec_Recognizer_SR_1GrammarLoad},
-    {"SR_GrammarSave",                     "(ILjava/lang/String;)V",  (void*)Java_android_speech_srec_Recognizer_SR_1GrammarSave},
-    {"SR_GrammarAllowOnly",                "(ILjava/lang/String;)V",  (void*)Java_android_speech_srec_Recognizer_SR_1GrammarAllowOnly},
-    {"SR_GrammarAllowAll",                 "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1GrammarAllowAll},
+    {"SR_GrammarCompile",                  "(J)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1GrammarCompile},
+    {"SR_GrammarAddWordToSlot",            "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;)V", (void*)Java_android_speech_srec_Recognizer_SR_1GrammarAddWordToSlot},
+    {"SR_GrammarResetAllSlots",            "(J)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1GrammarResetAllSlots},
+    {"SR_GrammarSetupVocabulary",          "(JJ)V",                   (void*)Java_android_speech_srec_Recognizer_SR_1GrammarSetupVocabulary},
+    {"SR_GrammarSetupRecognizer",          "(JJ)V",                   (void*)Java_android_speech_srec_Recognizer_SR_1GrammarSetupRecognizer},
+    {"SR_GrammarUnsetupRecognizer",        "(J)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1GrammarUnsetupRecognizer},
+    {"SR_GrammarCreate",                   "()J",                     (void*)Java_android_speech_srec_Recognizer_SR_1GrammarCreate},
+    {"SR_GrammarDestroy",                  "(J)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1GrammarDestroy},
+    {"SR_GrammarLoad",                     "(Ljava/lang/String;)J",   (void*)Java_android_speech_srec_Recognizer_SR_1GrammarLoad},
+    {"SR_GrammarSave",                     "(JLjava/lang/String;)V",  (void*)Java_android_speech_srec_Recognizer_SR_1GrammarSave},
+    {"SR_GrammarAllowOnly",                "(JLjava/lang/String;)V",  (void*)Java_android_speech_srec_Recognizer_SR_1GrammarAllowOnly},
+    {"SR_GrammarAllowAll",                 "(J)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1GrammarAllowAll},
     // SR_Vocabulary
-    {"SR_VocabularyLoad",                  "()I",                     (void*)Java_android_speech_srec_Recognizer_SR_1VocabularyLoad},
-    {"SR_VocabularyDestroy",               "(I)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1VocabularyDestroy},
-    {"SR_VocabularyGetPronunciation",      "(ILjava/lang/String;)Ljava/lang/String;",  (void*)Java_android_speech_srec_Recognizer_SR_1VocabularyGetPronunciation},
+    {"SR_VocabularyLoad",                  "()J",                     (void*)Java_android_speech_srec_Recognizer_SR_1VocabularyLoad},
+    {"SR_VocabularyDestroy",               "(J)V",                    (void*)Java_android_speech_srec_Recognizer_SR_1VocabularyDestroy},
+    {"SR_VocabularyGetPronunciation",      "(JLjava/lang/String;)Ljava/lang/String;",  (void*)Java_android_speech_srec_Recognizer_SR_1VocabularyGetPronunciation},
     // SR_RecognizerResult
-    {"SR_RecognizerResultGetWaveform",     "(I)[B",                   (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetWaveform},
-    {"SR_RecognizerResultGetSize",         "(I)I",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetSize},
-    {"SR_RecognizerResultGetKeyCount",     "(II)I",                   (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetKeyCount},
-    {"SR_RecognizerResultGetKeyList",      "(II)[Ljava/lang/String;", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetKeyList},
-    {"SR_RecognizerResultGetValue",        "(IILjava/lang/String;)Ljava/lang/String;", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetValue},
+    {"SR_RecognizerResultGetWaveform",     "(J)[B",                   (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetWaveform},
+    {"SR_RecognizerResultGetSize",         "(J)I",                    (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetSize},
+    {"SR_RecognizerResultGetKeyCount",     "(JI)I",                   (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetKeyCount},
+    {"SR_RecognizerResultGetKeyList",      "(JI)[Ljava/lang/String;", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetKeyList},
+    {"SR_RecognizerResultGetValue",        "(JILjava/lang/String;)Ljava/lang/String;", (void*)Java_android_speech_srec_Recognizer_SR_1RecognizerResultGetValue},
 };
 
 /*

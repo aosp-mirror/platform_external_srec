@@ -228,7 +228,7 @@ ESR_ReturnCode SR_Grammar_AddWordToSlot(SR_Grammar* self, const LCHAR* slot, con
    */
   if (impl->eventLog != NULL)
   {
-    CHKLOG(logrc, SR_EventLogTokenInt_BASIC(impl->eventLog, impl->logLevel, L("igrm"), (int)impl));
+    CHKLOG(logrc, SR_EventLogTokenPointer_BASIC(impl->eventLog, impl->logLevel, L("igrm"), impl));
     CHKLOG(logrc, SR_EventLogToken_BASIC(impl->eventLog, impl->logLevel, L("SLOT"), slot));
     CHKLOG(logrc, SR_EventLogToken_BASIC(impl->eventLog, impl->logLevel, L("WORD"), word));
     if (input_pronunciation)
@@ -313,7 +313,7 @@ ESR_ReturnCode SR_Grammar_ResetAllSlots(SR_Grammar* self)
   
   if (impl->eventLog != NULL)
   {
-    CHKLOG(rc, SR_EventLogTokenInt_BASIC(impl->eventLog, impl->logLevel, L("igrm"), (int)impl));
+    CHKLOG(rc, SR_EventLogTokenPointer_BASIC(impl->eventLog, impl->logLevel, L("igrm"), impl));
     if (rc == ESR_SUCCESS)
       CHKLOG(logrc, SR_EventLogToken_BASIC(impl->eventLog, impl->logLevel, L("RSLT"), L("ok")));
     else
@@ -445,7 +445,7 @@ ESR_ReturnCode SR_GrammarLoad(const LCHAR* grammar, SR_Grammar** self)
   *self = Interface;
   if (impl->eventLog)
   {
-    CHKLOG(rc, SR_EventLogTokenInt_BASIC(impl->eventLog, impl->logLevel, L("igrm"), (int)impl));
+    CHKLOG(rc, SR_EventLogTokenPointer_BASIC(impl->eventLog, impl->logLevel, L("igrm"), impl));
     CHKLOG(rc, SR_EventLogToken_BASIC(impl->eventLog, impl->logLevel, L("name"), filename));
     CHKLOG(rc, SR_EventLogEvent_BASIC(impl->eventLog, impl->logLevel, L("ESRldgrm")));
   }
@@ -583,7 +583,7 @@ ESR_ReturnCode SR_Grammar_Destroy(SR_Grammar* self)
   
   if (impl->eventLog)
   {
-    CHKLOG(rc, SR_EventLogTokenInt_BASIC(impl->eventLog, impl->logLevel, L("igrm"), (int)impl));
+    CHKLOG(rc, SR_EventLogTokenPointer_BASIC(impl->eventLog, impl->logLevel, L("igrm"), impl));
     CHKLOG(rc, SR_EventLogEvent_BASIC(impl->eventLog, impl->logLevel, L("ESRklgrm")));
   }
   

@@ -155,7 +155,7 @@ void* my_PHashTableCreate_FromStrings( const char* strings[], int num_strings,
     /* formerly the code used linear lookup, so let's avoid dups to match up */
     rc = PHashTableGetValue( table, strings[i], (void**)&old);
     if(rc != ESR_SUCCESS) {
-      rc = PHashTablePutValue( table, strings[i], (const void *)i, NULL );
+      rc = PHashTablePutValue( table, strings[i], (const void *)(intptr_t) i, NULL );
     }
   }
   return table;

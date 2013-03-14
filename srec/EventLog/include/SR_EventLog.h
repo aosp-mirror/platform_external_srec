@@ -66,6 +66,13 @@
    log->tokenInt(log, tokenName, value) : ESR_SUCCESS ) \
 
 /**
+ * Log a pointer token using the basic logging level.
+ */
+#define SR_EventLogTokenPointer_BASIC(log, loglevel, tokenName, value)  \
+  ((loglevel & OSI_LOG_LEVEL_BASIC) ? \
+   log->tokenPointer(log, tokenName, value) : ESR_SUCCESS ) \
+
+/**
  * Log a uint16 token using the basic logging level.
  */
 #define SR_EventLogTokenUint16_t_BASIC(log, loglevel, tokenName, value)  \
@@ -150,6 +157,15 @@ typedef struct SR_EventLog_t
 	 * @param value Token value
 	 */
 	ESR_ReturnCode(*tokenInt)(struct SR_EventLog_t* self, const LCHAR* token, int value);
+
+	/**
+	 * Logs an OSI log token.
+	 *
+	 * @param self SR_EventLog handle
+	 * @param token Token name
+	 * @param value Token value
+	 */
+	ESR_ReturnCode(*tokenPointer)(struct SR_EventLog_t* self, const LCHAR* token, void* value);
 
 	/**
 	 * Logs an OSI log token.
@@ -273,6 +289,15 @@ SREC_EVENTLOG_API ESR_ReturnCode SR_EventLogToken(SR_EventLog* self, const LCHAR
  * @param value Token value
  */
 SREC_EVENTLOG_API ESR_ReturnCode SR_EventLogTokenInt(SR_EventLog* self, const LCHAR* token, int value);
+
+/**
+ * Logs an OSI log token.
+ *
+ * @param self SR_EventLog handle
+ * @param token Token name
+ * @param value Token value
+ */
+SREC_EVENTLOG_API ESR_ReturnCode SR_EventLogTokenPointer(SR_EventLog* self, const LCHAR* token, void* value);
 
 /**
  * Logs an OSI log token.

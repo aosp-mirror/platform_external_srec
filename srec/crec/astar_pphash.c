@@ -63,7 +63,7 @@ int compare_parp(partial_path* parp1, partial_path* parp2, srec* rec)
       parp1 = parp1->next;
       parp2 = parp2->next;
     }
-    diff = (int)parp1->next - (int)parp2->next;
+    diff = (intptr_t)parp1->next - (intptr_t)parp2->next;
   }
 CPE:
   if (diff)

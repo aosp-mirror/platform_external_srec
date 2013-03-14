@@ -84,6 +84,16 @@ PORTABLE_API ESR_ReturnCode lstrtoi(const LCHAR* text, int* result, int base);
 PORTABLE_API ESR_ReturnCode lstrtoui(const LCHAR* text, unsigned int* result, int base);
 
 /**
+ * Converts string to size_t.
+ *
+ * @param text String to parse
+ * @param result [out] Resulting value
+ * @param base Number base to use
+ * @return ESR_INVALID_ARGUMENT is text is null or does not represent a number
+ */
+PORTABLE_API ESR_ReturnCode lstrtosize_t(const LCHAR* text, size_t* result, int base);
+
+/**
  * Converts string to float.
  *
  * @param text String to parse
