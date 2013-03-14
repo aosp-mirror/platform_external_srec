@@ -79,13 +79,13 @@ static PINLINE int fixed_point_convert(float xx, int shift)
   ASSERT(shift >= 0);
   scaled_val = xx * (0x01 << shift);
   if (scaled_val >= 0)
-    if (scaled_val > LONG_MAX)
-      return (LONG_MAX);
+    if (scaled_val > INT_MAX)
+      return (INT_MAX);
     else
       return ((int)(scaled_val + 0.5));
   else
-    if (scaled_val < -LONG_MAX)
-      return (-LONG_MAX);
+    if (scaled_val < -INT_MAX)
+      return (-INT_MAX);
     else
       return ((int)(scaled_val - 0.5));
 }

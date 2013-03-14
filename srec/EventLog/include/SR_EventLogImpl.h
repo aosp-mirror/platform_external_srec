@@ -77,6 +77,8 @@ SREC_EVENTLOG_API ESR_ReturnCode SR_EventLog_Token(SR_EventLog* self, const LCHA
 
 SREC_EVENTLOG_API ESR_ReturnCode SR_EventLog_TokenInt(SR_EventLog* self, const LCHAR* token, int value);
 
+SREC_EVENTLOG_API ESR_ReturnCode SR_EventLog_TokenPointer(SR_EventLog* self, const LCHAR* token, void* value);
+
 SREC_EVENTLOG_API ESR_ReturnCode SR_EventLog_TokenUint16_t(SR_EventLog* self, const LCHAR* token, asr_uint16_t value);
 
 SREC_EVENTLOG_API ESR_ReturnCode SR_EventLog_TokenSize_t(SR_EventLog* self, const LCHAR* token, size_t value);

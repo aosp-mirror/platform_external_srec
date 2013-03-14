@@ -60,7 +60,7 @@ ESR_ReturnCode SR_NametagsCreate(SR_Nametags** self)
   CHKLOG(rc, ESR_SessionGetSize_t(L("SREC.Recognizer.osi_log_level"), &impl->logLevel));
   if (impl->logLevel > 0)
     CHKLOG(rc, ESR_SessionGetProperty(L("eventlog"), (void **)&impl->eventLog, TYPES_SR_EVENTLOG));
-  CHKLOG(rc, SR_EventLogTokenInt_BASIC(impl->eventLog, impl->logLevel, L("pointer"), (int) self));
+  CHKLOG(rc, SR_EventLogTokenPointer_BASIC(impl->eventLog, impl->logLevel, L("pointer"), self));
   CHKLOG(rc, SR_EventLogEvent_BASIC(impl->eventLog, impl->logLevel, L("SR_NametagsCreate")));
   *self = (SR_Nametags*) impl;
   return ESR_SUCCESS;
@@ -400,7 +400,7 @@ ESR_ReturnCode SR_NametagsDestroyImpl(SR_Nametags* self)
     list->destroy(list);
     impl->value = NULL;
   }
-  CHKLOG(rc, SR_EventLogTokenInt_BASIC(impl->eventLog, impl->logLevel, L("pointer"), (int) self));
+  CHKLOG(rc, SR_EventLogTokenPointer_BASIC(impl->eventLog, impl->logLevel, L("pointer"), self));
   CHKLOG(rc, SR_EventLogEvent_BASIC(impl->eventLog, impl->logLevel, L("SR_NametagsDestroy")));
   impl->eventLog = NULL;
   FREE(self);

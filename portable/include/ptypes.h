@@ -457,6 +457,11 @@ typedef wint_t LINT;
  */
 #define LOG_10_2 (0.30102999566398)
 
+/**
+ * Maximum number of characters used to represent a pointer as a string in
+ * hex.  The +2 is for 0x that would preceed the address.
+ */
+#define MAX_POINTER_CHARS ((size_t) ((CHAR_BIT * sizeof(void*) * 2))+2)
 
 /**
  * Maximum number of digits used to represent an unsigned int as a string in
