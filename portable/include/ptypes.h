@@ -302,6 +302,11 @@ typedef int LINT;
 #define LSTRTOUL strtoul
 
 /**
+ * LCHAR version of strtoull()
+ */
+#define LSTRTOULL strtoull
+
+/**
  * LCHAR version of isspace()
  */
 #define LISSPACE(c) isspace((unsigned char) c)
@@ -424,6 +429,7 @@ typedef wint_t LINT;
 #define LSTRTOD wcstod
 #define LSTRTOL wcstol
 #define LSTRTOUL wcstoul
+#define LSTRTOULL wcstoull
 #define LISSPACE iswspace
 #define LSTRCSPN wcscspn
 #define LISALPHA iswalpha

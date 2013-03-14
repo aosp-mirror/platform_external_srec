@@ -141,8 +141,8 @@ typedef struct ApplicationData_t
     const asr_int16_t                 *raw_waveform;  /*Points to raw waveform returned from voice enrollment */
     size_t                      raw_waveform_size;  /* Size of above wave_form */
     asr_int16_t                 audio_buffer [MAX_AUDIO_BUFFER_SIZE];
-    unsigned int                audio_buffer_requested_size;
-    unsigned int                num_samples_read;
+    size_t                      audio_buffer_requested_size;
+    size_t                      num_samples_read;
     LCHAR                       raw_waveform_filename [P_PATH_MAX];     /* Name of file of saved waveform data. */
     PFile                       *raw_waveform_file;     /* Pointer to file of saved waveform data. */
     LCHAR                       transcription [MAX_LINE_LENGTH];

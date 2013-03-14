@@ -952,7 +952,7 @@ ESR_ReturnCode beginRecognizing(SR_RecognizerImpl* impl)
   CHKLOG(rc, HashMapGetSize(impl->grammars, &grammarSize));
   for (i = 0; i < grammarSize; ++i)
   {
-    psprintf(tok, L("GURI%d"), i);
+    psprintf(tok, L("GURI%zu"), i);
     /* use the key as the grammar URI */
     CHKLOG(rc, HashMapGetKeyAtIndex(impl->grammars, i, &val));
     CHKLOG(rc, SR_EventLogToken_BASIC(impl->eventLog, impl->osi_log_level, tok, val));
@@ -1613,7 +1613,7 @@ CLEANUP:
   {
     if (failure_reason)
     {
-      SR_EventLogTokenInt(impl->eventLog, L("igrm"), (int) grammar);
+      SR_EventLogTokenInt(impl->eventLog, L("igrm"), (intptr_t) grammar);
       SR_EventLogToken(impl->eventLog, L("rule"), ruleName);
       SR_EventLogToken(impl->eventLog, L("rslt"), "fail");
       SR_EventLogToken(impl->eventLog, L("reason"), failure_reason);
@@ -1621,7 +1621,7 @@ CLEANUP:
     }
     else
     {
-      SR_EventLogTokenInt(impl->eventLog, L("igrm"), (int) grammar);
+      SR_EventLogTokenInt(impl->eventLog, L("igrm"), (intptr_t) grammar);
       SR_EventLogToken(impl->eventLog, L("rule"), ruleName);
       SR_EventLogToken(impl->eventLog, L("rslt"), "ok");
       SR_EventLogEvent(impl->eventLog, L("ESRacGrm"));
@@ -1755,7 +1755,7 @@ ESR_ReturnCode SR_RecognizerPutAudioImpl(SR_Recognizer* self, asr_int16_t* buffe
   if (rcBufWrite < 0)
   {
     rc = ESR_INVALID_STATE;
-    PLogError(L("%s: error writing to buffer (buffer=%d, available=%u)"), ESR_rc2str(rc), (int) impl->buffer, CircularBufferGetAvailable(impl->buffer));
+    PLogError(L("%s: error writing to buffer (buffer=%d, available=%u)"), ESR_rc2str(rc), (intptr_t) impl->buffer, CircularBufferGetAvailable(impl->buffer));
     goto CLEANUP;
   }
 
@@ -1926,12 +1926,12 @@ ESR_ReturnCode filter_CA_FullResultLabel(const LCHAR* label, LCHAR *filtered_lab
 
   /* set the eos signal indicated by the end pointed data */
   if (eosBuf[0] != 0)
-    CHKLOG(rc, lstrtoui(eosBuf, eoss, 10));
+    CHKLOG(rc, lstrtosize_t(eosBuf, eoss, 10));
   else
     eoss = 0;
 
   if (bosBuf[0] != 0)
-    CHKLOG(rc, lstrtoui(bosBuf, boss, 10));
+    CHKLOG(rc, lstrtosize_t(bosBuf, boss, 10));
   else
     boss = 0;
 
@@ -2270,7 +2270,7 @@ ESR_ReturnCode SR_RecognizerCreateResultImpl(SR_Recognizer* self, SR_RecognizerS
     if (semanticResultsSize > 0)
       {
         /* OSI log the grammar(s) that was used in recognizing */
-        psprintf(tok, L("GURI%d"), grammarIndex_for_iBest);
+        psprintf(tok, L("GURI%zd"), grammarIndex_for_iBest);
         CHKLOG(rc, SR_EventLogToken_BASIC(impl->eventLog, impl->osi_log_level, L("GRMR"), tok));
       }
 #else
@@ -3897,7 +3897,7 @@ ESR_ReturnCode WaveformBuffer_ParseEndPointedResultAndTrim(WaveformBuffer* wavef
 
   p = LSTRSTR( end_pointed_result, PREFIX_WORD);
   if(p) p+=PREFIX_WORD_LEN; while(p && *p == '@') p++;
-  rc = p ? lstrtoui(p, &bos_frame, 10) : ESR_INVALID_ARGUMENT;
+  rc = p ? lstrtosize_t(p, &bos_frame, 10) : ESR_INVALID_ARGUMENT;
   if (rc == ESR_INVALID_ARGUMENT)
   {
     PLogError(L("%s: extracting bos from text=%s"), ESR_rc2str(rc), end_pointed_result);
@@ -3908,7 +3908,7 @@ ESR_ReturnCode WaveformBuffer_ParseEndPointedResultAndTrim(WaveformBuffer* wavef
 
   p = LSTRSTR( end_pointed_result, SUFFIX_WORD);
   while(p && p>end_pointed_result && p[-1]!='@') --p;
-  rc = p ? lstrtoui(p, &eos_frame, 10) : ESR_INVALID_ARGUMENT;
+  rc = p ? lstrtosize_t(p, &eos_frame, 10) : ESR_INVALID_ARGUMENT;
   if (rc == ESR_INVALID_ARGUMENT)
   {
     PLogError(L("%s: extracting eos from text=%s"), ESR_rc2str(rc), end_pointed_result);
