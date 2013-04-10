@@ -43,6 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
   libutils \
   libhardware_legacy \
   libcutils \
+  liblog \
   libmedia
 
 LOCAL_STATIC_LIBRARIES := \
