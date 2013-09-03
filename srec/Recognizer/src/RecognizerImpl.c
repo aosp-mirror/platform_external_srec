@@ -2601,7 +2601,7 @@ CLEANUP:
  * INPUT STATES: SR_RECOGNIZER_INTERNAL_BOS_DETECTION, SR_RECOGNIZER_INTERNAL_EOS_DETECTION
  * OUTPUT STATES: same or SR_RECOGNIZER_INTERNAL_EOI
  */
-PINLINE ESR_ReturnCode canPushAudioIntoRecognizer(SR_RecognizerImpl* impl)
+static PINLINE ESR_ReturnCode canPushAudioIntoRecognizer(SR_RecognizerImpl* impl)
 {
   ESR_ReturnCode rc;
 
@@ -2654,7 +2654,7 @@ CLEANUP:
  * INPUT STATES: SR_RECOGNIZER_INTERNAL_BOS_DETECTION, SR_RECOGNIZER_INTERNAL_EOS_DETECTION
  * OUTPUT STATES: same
  */
-PINLINE ESR_ReturnCode pushAudioIntoRecognizer(SR_RecognizerImpl* impl, SR_RecognizerStatus* status,
+static PINLINE ESR_ReturnCode pushAudioIntoRecognizer(SR_RecognizerImpl* impl, SR_RecognizerStatus* status,
     SR_RecognizerResultType* type,
     SR_RecognizerResult* result)
 {
@@ -2714,7 +2714,7 @@ CLEANUP:
  * INPUT STATES: SR_RECOGNIZER_INTERNAL_BOS_DETECTION, SR_RECOGNIZER_INTERNAL_EOS_DETECTION
  * OUTPUT STATES: same
  */
-PINLINE ESR_ReturnCode generateFrameFromAudio(SR_RecognizerImpl* impl, SR_RecognizerStatus* status,
+static PINLINE ESR_ReturnCode generateFrameFromAudio(SR_RecognizerImpl* impl, SR_RecognizerStatus* status,
     SR_RecognizerResultType* type,
     SR_RecognizerResult* result)
 {
@@ -2757,7 +2757,7 @@ PINLINE ESR_ReturnCode generateFrameFromAudio(SR_RecognizerImpl* impl, SR_Recogn
  * INPUT STATES: SR_RECOGNIZER_INTERNAL_EOS_DETECTION
  * OUTPUT STATES: same
  */
-PINLINE ESR_ReturnCode generateFrameStats(SR_RecognizerImpl* impl, SR_RecognizerStatus* status,
+static PINLINE ESR_ReturnCode generateFrameStats(SR_RecognizerImpl* impl, SR_RecognizerStatus* status,
                            SR_RecognizerResultType* type,
                            SR_RecognizerResult* result)
 {
@@ -2780,7 +2780,7 @@ PINLINE ESR_ReturnCode generateFrameStats(SR_RecognizerImpl* impl, SR_Recognizer
  * INPUT STATES: SR_RECOGNIZER_INTERNAL_EOS_DETECTION
  * OUTPUT STATES: same or SR_RECOGNIZER_INTERNAL_EOI, SR_RECOGNIZER_INTERNAL_EOS
  */
-PINLINE ESR_ReturnCode generatePatternFromFrame(SR_RecognizerImpl* impl, SR_RecognizerStatus* status,
+static PINLINE ESR_ReturnCode generatePatternFromFrame(SR_RecognizerImpl* impl, SR_RecognizerStatus* status,
     SR_RecognizerResultType* type,
     SR_RecognizerResult* result)
 {
@@ -2889,7 +2889,7 @@ CLEANUP:
  * INPUT STATES: SR_RECOGNIZER_INTERNAL_EOI
  * OUTPUT STATES: same or SR_RECOGNIZER_INTERNAL_EOS
  */
-PINLINE ESR_ReturnCode generatePatternFromFrameEOI(SR_RecognizerImpl* impl, SR_RecognizerStatus* status,
+static PINLINE ESR_ReturnCode generatePatternFromFrameEOI(SR_RecognizerImpl* impl, SR_RecognizerStatus* status,
     SR_RecognizerResultType* type,
     SR_RecognizerResult* result)
 {
