@@ -1,0 +1,7 @@
+Code-Review+2: Nick Kralevich <nnk@google.com>
+Verified+1: Deckard Autoverifier <deckard@android.com>
+Submitted-by: Nick Kralevich <nnk@google.com>
+Submitted-at: Tue, 03 Sep 2013 16:56:45 +0000
+Reviewed-on: https://android-review.googlesource.com/46886
+Project: platform/external/srec
+Branch: refs/heads/master
