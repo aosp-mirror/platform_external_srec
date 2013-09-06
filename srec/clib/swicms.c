@@ -427,6 +427,8 @@ ESR_ReturnCode swicms_set_cmn ( swicms_norm_info* swicms, const char *cmn_params
         {
           set_status = ESR_INVALID_ARGUMENT;
         }
+
+        dim_count++;
       }
       if ( set_status == ESR_SUCCESS )
       {
