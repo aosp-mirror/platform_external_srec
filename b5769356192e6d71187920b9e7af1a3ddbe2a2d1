@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "08a847a1_4367ba82",
+        "filename": "portable/src/LCHAR.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1004395
+      },
+      "writtenOn": "2013-12-17T20:05:09Z",
+      "side": 1,
+      "message": "should this be in bionic or bionic extensions?",
+      "revId": "b5769356192e6d71187920b9e7af1a3ddbe2a2d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "08a847a1_0330926c",
+        "filename": "srec/clib/swicms.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1004395
+      },
+      "writtenOn": "2013-12-17T20:05:09Z",
+      "side": 1,
+      "message": "I\u0027ve usually seen do { ... } while (0) so that if / else work correctly",
+      "revId": "b5769356192e6d71187920b9e7af1a3ddbe2a2d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
