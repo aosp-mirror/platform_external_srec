@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "08ff67b9_0ecc4f70",
+        "filename": "portable/src/LCHAR.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2013-12-17T20:38:00Z",
+      "side": 1,
+      "message": "no. there\u0027s no equivalent standard function.",
+      "parentUuid": "08a847a1_4367ba82",
+      "revId": "b5769356192e6d71187920b9e7af1a3ddbe2a2d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "08ff67b9_2e4a6b40",
         "filename": "portable/src/LCHAR.c",
         "patchSetId": 1
