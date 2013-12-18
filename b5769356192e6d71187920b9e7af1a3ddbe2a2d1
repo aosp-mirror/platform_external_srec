@@ -60,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "08f0470e_dd96cb32",
+        "filename": "portable/src/LCHAR.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1037968
+      },
+      "writtenOn": "2013-12-18T15:07:59Z",
+      "side": 1,
+      "message": "Yes, this is always true, and this is an error on my part. This condition and the addition of the LSTROULL macro to the portable/include/ptypes.h file are unnecessary.",
+      "parentUuid": "08ff67b9_2e4a6b40",
+      "range": {
+        "startLine": 111,
+        "startChar": 6,
+        "endLine": 111,
+        "endChar": 45
+      },
+      "revId": "b5769356192e6d71187920b9e7af1a3ddbe2a2d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "08a847a1_0330926c",
         "filename": "srec/clib/swicms.c",
         "patchSetId": 1
@@ -71,6 +95,24 @@
       "writtenOn": "2013-12-17T20:05:09Z",
       "side": 1,
       "message": "I\u0027ve usually seen do { ... } while (0) so that if / else work correctly",
+      "revId": "b5769356192e6d71187920b9e7af1a3ddbe2a2d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "08f0470e_9d9c4357",
+        "filename": "srec/clib/swicms.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1037968
+      },
+      "writtenOn": "2013-12-18T15:07:59Z",
+      "side": 1,
+      "message": "All we have done here is change the format specifier for the pointer. There was no \"do {...} while (0)\" in the original and that has not caused us problems. We will happily add \"do {...} while (0)\" if required.",
+      "parentUuid": "08a847a1_0330926c",
       "revId": "b5769356192e6d71187920b9e7af1a3ddbe2a2d1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
