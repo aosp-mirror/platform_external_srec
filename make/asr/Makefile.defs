@@ -49,6 +49,7 @@
 #	$(ASR_CPU_SPARC)	Value associated with $(ASR_CPU_CHARS) = SP.
 #	$(ASR_CPU_ARM)		Value associated with $(ASR_CPU_CHARS) = AR.
 #	$(ASR_CPU_STRONGARM)Value associated with $(ASR_CPU_CHARS) = SA.
+#	$(ASR_CPU_AARCH64)  Value associated with $(ASR_CPU_CHARS) = AA.
 #	$(ASR_CPU_TMS320X)	Value associated with $(ASR_CPU_CHARS) = TI.
 #	$(ASR_CPU_SH3)		Value associated with $(ASR_CPU_CHARS) = HI.
 #	$(ASR_CPU_SH4)		Value associated with $(ASR_CPU_CHARS) = HI.
@@ -129,6 +130,7 @@ ASR_CPU_STRONGARM = 128
 ASR_CPU_TMS320X = 256
 ASR_CPU_SH3 = 512
 ASR_CPU_SH4 = 1024
+ASR_CPU_AARCH64 = 2048
 
 # Used only by TFLAGS.MAK.
 
@@ -422,6 +424,11 @@ ASR_CPU_TYPE = $(ASR_CPU_STRONGARM)
 ASR_CPU_CHARS = sa
 
 else
+ifeq ("$(ASR_CPU)","AARCH64")
+ASR_CPU_TYPE = $(ASR_CPU_AARCH64)
+ASR_CPU_CHARS = aa
+
+else
 ifeq ("$(ASR_CPU)","TMS320X")
 ASR_CPU_TYPE = $(ASR_CPU_TMS320X)
 ASR_CPU_CHARS = ti
@@ -488,6 +495,7 @@ endif
 endif
 endif
 endif
+endif
 
 ################################## HOST_CPU #################################
 
@@ -521,6 +529,10 @@ ASR_HOST_CPU_TYPE = $(ASR_CPU_ARM)
 else
 ifeq ("$(ASR_HOST_CPU)","STRONGARM")
 ASR_HOST_CPU_TYPE = $(ASR_CPU_STRONGARM)
+
+else
+ifeq ("$(ASR_HOST_CPU)","AARCH64")
+ASR_HOST_CPU_TYPE = $(ASR_CPU_AARCH64)
 
 else
 ifeq ("$(ASR_HOST_CPU)","TMS320X")
@@ -584,6 +596,7 @@ endif
 endif
 endif
 endif
+endif
 
 ################################## TARGET_CPU #################################
 
@@ -617,6 +630,10 @@ ASR_TARGET_CPU_TYPE = $(ASR_CPU_ARM)
 else
 ifeq ("$(ASR_TARGET_CPU)","STRONGARM")
 ASR_TARGET_CPU_TYPE = $(ASR_CPU_STRONGARM)
+
+else
+ifeq ("$(ASR_TARGET_CPU)","AARCH64")
+ASR_TARGET_CPU_TYPE = $(ASR_CPU_AARCH64)
 
 else
 ifeq ("$(ASR_TARGET_CPU)","TMS320X")
@@ -669,6 +686,7 @@ ERROR += \
 $(subst $(space),|,\
 'Failed to select CPU architecture with $$(ASR_TARGET_CPU) == "$(ASR_TARGET_CPU)"')
 ASR_TARGET_CPU_TYPE = ASR_BAD_CPU
+endif
 endif
 endif
 endif
@@ -849,6 +867,7 @@ ASR_GLOBAL_DEFINES = \
 	-DCPU_SPARC=$(ASR_CPU_SPARC) \
 	-DCPU_ARM=$(ASR_CPU_ARM) \
 	-DCPU_STRONGARM=$(ASR_CPU_STRONGARM) \
+	-DCPU_AARCH64=$(ASR_CPU_AARCH64) \
 	-DCPU_TMS320X=$(ASR_CPU_TMS320X) \
 	-DCPU_SH3=$(ASR_CPU_SH3) \
 	-DCPU_SH4=$(ASR_CPU_SH4) \

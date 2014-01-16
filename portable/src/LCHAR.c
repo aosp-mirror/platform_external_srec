@@ -102,6 +102,18 @@ ESR_ReturnCode lstrtoui(const LCHAR* text, unsigned int* result, int base)
   return ESR_SUCCESS;
 }
 
+ESR_ReturnCode lstrtosize_t(const LCHAR* text, size_t* result, int base)
+{
+  LCHAR* endPtr;
+
+  if (result == NULL)
+    return ESR_INVALID_ARGUMENT;
+  *result = (size_t) LSTRTOUL(text, &endPtr, base);
+  if (endPtr == text || (!LISSPACE(*endPtr) && *endPtr != L('\0')))
+    return ESR_INVALID_ARGUMENT;
+  return ESR_SUCCESS;
+}
+
 ESR_ReturnCode lstrtof(const LCHAR* text, float* result)
 {
   LCHAR* endPtr;

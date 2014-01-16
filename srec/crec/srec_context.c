@@ -41,6 +41,7 @@ static const char *rcsid = 0 ? (const char *) &rcsid :
 "$Id: srec_context.c,v 1.84.4.54 2008/05/15 20:06:39 dahan Exp $";
 #endif
 
+#include <stdint.h>
 
 /* these are constants for now, we need to figure out how to make
    this more flexible, possible ideas are:
@@ -468,7 +469,7 @@ wordID wordmap_find_index(wordmap* wmap, const char* word)
     rc = PHashTableGetValue(wmap->wordIDForWord, word, (void**)&wdID_void);
 
     if (rc == ESR_SUCCESS)
-      return (wordID)(int)wdID_void;
+      return (wordID)(uintptr_t)wdID_void;
   }
   else
   {
@@ -515,7 +516,7 @@ wordID wordmap_find_index_in_rule(wordmap* wmap, const char* word, wordID rule)
   word_dot_rule[len++] = 0;
   rc = PHashTableGetValue(wmap->wordIDForWord, word_dot_rule, (void**)&wdID_void);
   if (rc == ESR_SUCCESS)
-    return (wordID)(int)(wdID_void);
+    return (wordID)(uintptr_t)(wdID_void);
   return MAXwordID;
 }
 
@@ -600,7 +601,7 @@ static ESR_ReturnCode wordmap_populate ( wordmap *word_map, wordID num_words )
       while ( ( wdID < num_words ) && ( populate_status == ESR_SUCCESS ) )
 	{
 	  populate_status = PHashTablePutValue ( word_map->wordIDForWord, word_map->words[wdID],
-						 (const void *)(int)wdID, NULL );
+						 (const void *)(uintptr_t)wdID, NULL );
 	  if ( populate_status == ESR_SUCCESS )
 	    wdID++;
 	  else {
@@ -678,7 +679,7 @@ wordID wordmap_add_word(wordmap* wmap, const char* word)
   if (wmap->next_chars + len >= wmap->chars + wmap->max_chars)
   {
 #if defined(FST_GROW_FACTOR)
-     int i,tmp_max_chars= wmap->max_chars * FST_GROW_FACTOR;
+      uintptr_t i,tmp_max_chars= wmap->max_chars * FST_GROW_FACTOR;
 	 char* old_wmap__chars = wmap->chars;
       if(tmp_max_chars - wmap->max_chars < FST_GROW_MINCHARS)
 	tmp_max_chars +=FST_GROW_MINCHARS;
@@ -756,7 +757,7 @@ wordID wordmap_add_word(wordmap* wmap, const char* word)
     if (wmap->wordIDForWord)
     {
        ESR_ReturnCode rc = PHashTablePutValue ( wmap->wordIDForWord, wmap->words[wdID],
-                      (const void *)(int)wdID, NULL );
+                      (const void *)(uintptr_t)wdID, NULL );
     if ( rc != ESR_SUCCESS )
       goto CLEANUP;
     }
@@ -809,7 +810,7 @@ wordID wordmap_add_word_in_rule(wordmap* wmap, const char* word, wordID rule)
 	  // adjust hashtable ----- add in rulewordmap_add_word_in_rule ----
 	  if (wmap->wordIDForWord) {
 	    ESR_ReturnCode rc = PHashTablePutValue ( wmap->wordIDForWord, wmap->words[i],
-						     (void*)(int)(i), NULL );
+						     (void*)(uintptr_t)(i), NULL );
 	    if ( rc != ESR_SUCCESS )
 	      goto CLEANUP;
 	  }
@@ -863,7 +864,7 @@ wordID wordmap_add_word_in_rule(wordmap* wmap, const char* word, wordID rule)
     if (wmap->wordIDForWord)
       {
         ESR_ReturnCode rc = PHashTablePutValue ( wmap->wordIDForWord, wmap->words[wdID],
-						 (void*)(int)(wdID), NULL );
+						 (void*)(uintptr_t)(wdID), NULL );
 	if ( rc != ESR_SUCCESS )
 	  goto CLEANUP;
       }
@@ -2834,7 +2835,7 @@ ESR_ReturnCode deserializeWordMapV2(wordmap **pwordmap, PFile* fp)
 
 
   p = awordmap->chars;
-  ASSERT((int)p % 2 == 0);
+  ASSERT((uintptr_t)p % 2 == 0);
   nfields = 0;
   if (nfields < awordmap->num_words)
     awordmap->words[nfields++] = p;
@@ -2844,7 +2845,7 @@ ESR_ReturnCode deserializeWordMapV2(wordmap **pwordmap, PFile* fp)
     {
       if (nfields == awordmap->num_words) // was num_base_words
         break;
-      if (((int)p) % 2 == 0) p++; /* so that words begin on even byte bound */
+      if (((uintptr_t)p) % 2 == 0) p++; /* so that words begin on even byte bound */
       awordmap->words[nfields++] = p + 1;
     }
   }

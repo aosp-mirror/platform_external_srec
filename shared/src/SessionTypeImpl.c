@@ -757,7 +757,7 @@ ESR_ReturnCode ESR_SessionTypeConvertToSize_tImpl(ESR_SessionType* self,
     rc = ESR_OUT_OF_MEMORY;
     goto CLEANUP;
   }
-  CHKLOG(rc, lstrtoui(value, (unsigned int *)newValue, 10));
+  CHKLOG(rc, lstrtosize_t(value, newValue, 10));
   CHKLOG(rc, self->setProperty(self, key, newValue, TYPES_SIZE_T));
   FREE(value);
   return ESR_SUCCESS;
@@ -1097,7 +1097,7 @@ static ESR_ReturnCode addParMapping(ESR_SessionType* self,
         CHKLOG(rc, self->setInt(self, key, iValue));
         break;
       case TYPES_UINT16_T:
-        CHKLOG(rc, lstrtoui(value, (unsigned int *)&size_tValue, 10));
+        CHKLOG(rc, lstrtosize_t(value, &size_tValue, 10));
         passert(size_tValue >= UINT16_TMIN && size_tValue <= UINT16_TMAX);
         CHKLOG(rc, self->contains(self, key, &exists));
         if (exists)
@@ -1105,7 +1105,7 @@ static ESR_ReturnCode addParMapping(ESR_SessionType* self,
         CHKLOG(rc, self->setUint16_t(self, key, (asr_uint16_t) size_tValue));
         break;
       case TYPES_SIZE_T:
-        CHKLOG(rc, lstrtoui(value, (unsigned int *)&size_tValue, 10));
+        CHKLOG(rc, lstrtosize_t(value, &size_tValue, 10));
         CHKLOG(rc, self->contains(self, key, &exists));
         if (exists)
           CHKLOG(rc, self->removeAndFreeProperty(self, key));

@@ -53,6 +53,16 @@ ESR_ReturnCode SR_EventLogTokenInt(SR_EventLog* self, const LCHAR* token, int va
   return self->tokenInt(self, token, value);
 }
 
+ESR_ReturnCode SR_EventLogTokenPointer(SR_EventLog* self, const LCHAR* token, void* value)
+{
+  if (self == NULL)
+  {
+    PLogError(L("ESR_INVALID_ARGUMENT"));
+    return ESR_INVALID_ARGUMENT;
+  }
+  return self->tokenPointer(self, token, value);
+}
+
 ESR_ReturnCode SR_EventLogTokenUint16_t(SR_EventLog* self, const LCHAR* token, asr_uint16_t value)
 {
   if (self == NULL)

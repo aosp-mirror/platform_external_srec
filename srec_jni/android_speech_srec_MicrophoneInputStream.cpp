@@ -65,7 +65,7 @@ private:
     const sp<AudioRecord> mAudioRecord;
 };
 
-static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordNew
+static JNIEXPORT jlong JNICALL Java_android_speech_srec_Recognizer_AudioRecordNew
         (JNIEnv *env, jclass clazz, jint sampleRate, jint fifoFrames) {
 
     AudioRecordWrapper *ar = new AudioRecordWrapper(new AudioRecord(
@@ -78,16 +78,16 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordNew
         ar = NULL;
         ALOGE("initCheck error %d ", s);
     }
-    return (int)ar;
+    return (jlong)ar;
 }
 
-static JNIEXPORT int JNICALL Java_android_speech_srec_Recognizer_AudioRecordStart
-        (JNIEnv *env, jclass clazz, jint audioRecord) {
-    return (int)(((AudioRecordWrapper*)audioRecord)->get()->start());
+static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordStart
+        (JNIEnv *env, jclass clazz, jlong audioRecord) {
+    return (jint)(((AudioRecordWrapper*)audioRecord)->get()->start());
 }
 
 static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordRead
-        (JNIEnv *env, jclass clazz, jint audioRecord, jbyteArray array, jint offset, jint length) {
+        (JNIEnv *env, jclass clazz, jlong audioRecord, jbyteArray array, jint offset, jint length) {
     jbyte buffer[4096];
     if (length > (int)sizeof(buffer)) length = sizeof(buffer);
     length = ((AudioRecordWrapper*)audioRecord)->get()->read(buffer, length);
@@ -100,12 +100,12 @@ static JNIEXPORT jint JNICALL Java_android_speech_srec_Recognizer_AudioRecordRea
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_AudioRecordStop
-        (JNIEnv *env, jclass clazz, jint audioRecord) {
+        (JNIEnv *env, jclass clazz, jlong audioRecord) {
     ((AudioRecordWrapper*)audioRecord)->get()->stop();
 }
 
 static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_AudioRecordDelete
-        (JNIEnv *env, jclass clazz, jint audioRecord) {
+        (JNIEnv *env, jclass clazz, jlong audioRecord) {
     delete (AudioRecordWrapper*)audioRecord;
 }
 
@@ -115,11 +115,11 @@ static JNIEXPORT void JNICALL Java_android_speech_srec_Recognizer_AudioRecordDel
  */
 static JNINativeMethod gMethods[] = {
     /* name, signature, funcPtr */
-    {"AudioRecordNew",    "(II)I",    (void*)Java_android_speech_srec_Recognizer_AudioRecordNew},
-    {"AudioRecordStart",  "(I)I",     (void*)Java_android_speech_srec_Recognizer_AudioRecordStart},
-    {"AudioRecordRead",   "(I[BII)I", (void*)Java_android_speech_srec_Recognizer_AudioRecordRead},
-    {"AudioRecordStop",   "(I)V",     (void*)Java_android_speech_srec_Recognizer_AudioRecordStop},
-    {"AudioRecordDelete", "(I)V",     (void*)Java_android_speech_srec_Recognizer_AudioRecordDelete},
+    {"AudioRecordNew",    "(II)J",    (void*)Java_android_speech_srec_Recognizer_AudioRecordNew},
+    {"AudioRecordStart",  "(J)I",     (void*)Java_android_speech_srec_Recognizer_AudioRecordStart},
+    {"AudioRecordRead",   "(J[BII)I", (void*)Java_android_speech_srec_Recognizer_AudioRecordRead},
+    {"AudioRecordStop",   "(J)V",     (void*)Java_android_speech_srec_Recognizer_AudioRecordStop},
+    {"AudioRecordDelete", "(J)V",     (void*)Java_android_speech_srec_Recognizer_AudioRecordDelete},
 };
 
 /*

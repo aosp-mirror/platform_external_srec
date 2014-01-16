@@ -190,6 +190,7 @@ ESR_ReturnCode SR_EventLogCreate(SR_EventLog** self)
   impl->Interface.event = &SR_EventLog_Event;
   impl->Interface.token = &SR_EventLog_Token;
   impl->Interface.tokenInt = &SR_EventLog_TokenInt;
+  impl->Interface.tokenPointer = &SR_EventLog_TokenPointer;
   impl->Interface.tokenUint16_t = &SR_EventLog_TokenUint16_t;
   impl->Interface.tokenSize_t = &SR_EventLog_TokenSize_t;
   impl->Interface.tokenBool = &SR_EventLog_TokenBool;
@@ -399,6 +400,17 @@ ESR_ReturnCode SR_EventLog_TokenInt(SR_EventLog* self, const LCHAR* token, int v
   return self->token(self, token, alpha);
 CLEANUP:
   return rc;
+}
+
+ESR_ReturnCode SR_EventLog_TokenPointer(SR_EventLog* self, const LCHAR* token, void* value)
+{
+  SR_EventLogImpl *impl = (SR_EventLogImpl *)self;
+  LCHAR alpha[MAX_POINTER_CHARS+1];
+
+  if (impl->logLevel == 0)
+    return ESR_SUCCESS;
+  sprintf(alpha, "%p", value);
+  return self->token(self, token, alpha);
 }
 
 ESR_ReturnCode SR_EventLog_TokenUint16_t(SR_EventLog* self, const LCHAR* token, asr_uint16_t value)
