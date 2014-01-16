@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4d6331c4_17f0340a",
+        "filename": "seti/sltsEngine/src/run_seq_lts.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1014443
+      },
+      "writtenOn": "2014-01-16T09:08:59Z",
+      "side": 1,
+      "message": "The intptr_t cast is pointless",
+      "revId": "b3adea6f471d03c5bd728725adc7ca1cea89edfd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
