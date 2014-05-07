@@ -66,8 +66,6 @@ LOCAL_WHOLE_STATIC_LIBRARIES := \
   libSR_Vocabulary \
 
 
-LOCAL_LDLIBS += -lpthread
-
 LOCAL_MODULE := libsrec_jni
 
 LOCAL_MODULE_TAGS := optional
