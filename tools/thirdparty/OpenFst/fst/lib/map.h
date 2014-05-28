@@ -835,7 +835,7 @@ struct GallicToNewSymbolsMapper {
     }
   };
 
-  typedef hash_map<SW, Label, StringKey> Map;
+  typedef std::unordered_map<SW, Label, StringKey> Map;
 
   MutableFst<ToArc> *fst_;
   Map map_;

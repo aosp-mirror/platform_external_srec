@@ -331,7 +331,7 @@ const SWIModel* load_swimodel(const char *filename)
 {
   int i;
   SWIModel *swimodel = NULL;
-  const void* file = NULL;
+  const char* file = NULL;
 
 #ifdef SREC_ENGINE_VERBOSE_LOGGING
   PLogMessage("load_swimodel: loaded %s", filename);
@@ -366,7 +366,7 @@ const SWIModel* load_swimodel(const char *filename)
   swimodel->avg_state_durations = (const featdata*)file;
   file += sizeof(featdata) * swimodel->num_hmmstates;
 
-  if (file > swimodel->mmap_zip_data + swimodel->mmap_zip_size) {
+  if (file > (const char*)swimodel->mmap_zip_data + swimodel->mmap_zip_size) {
       PLogError("load_swimodel: not enough data in %s", filename);
       goto CLEANUP;
   }

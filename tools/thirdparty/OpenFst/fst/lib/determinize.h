@@ -23,10 +23,8 @@
 #include <algorithm>
 #include <map>
 
-#include <ext/hash_map>
-using __gnu_cxx::hash_map;
-#include <ext/slist>
-using __gnu_cxx::slist;
+#include <unordered_map>
+#include <forward_list>
 
 #include "fst/lib/cache.h"
 #include "fst/lib/factor-weight.h"
@@ -218,7 +216,7 @@ class DeterminizeFsaImpl : public DeterminizeFstImplBase<A> {
     StateId state_id;  // Input state Id
     Weight weight;     // Residual weight
   };
-  typedef slist<Element> Subset;
+  typedef std::forward_list<Element> Subset;
   typedef map<Label, Subset*> LabelMap;
 
   DeterminizeFsaImpl(const Fst<A> &fst, C common_divisor,
@@ -386,8 +384,10 @@ class DeterminizeFsaImpl : public DeterminizeFstImplBase<A> {
     // returns, elements_ will preserve that property. We keep it
     // full of NULLs so that it is ready for the next call.
     bool operator()(Subset* subset1, Subset* subset2) const {
-        if (subset1->size() != subset2->size())
-          return false;
+      size_t subset1_size = std::distance(subset1->begin(), subset1->end());
+      size_t subset2_size = std::distance(subset2->begin(), subset2->end());
+      if (subset1_size != subset2_size)
+        return false;
 
       // Loads first subset elements in element vector.
       for (typename Subset::iterator iter1 = subset1->begin();
@@ -454,7 +454,7 @@ class DeterminizeFsaImpl : public DeterminizeFstImplBase<A> {
   vector<Subset *> subsets_;
 
   // Hashes from Subset to its StateId in the output automaton.
-  typedef hash_map<Subset *, StateId, SubsetKey, SubsetEqual>
+  typedef std::unordered_map<Subset *, StateId, SubsetKey, SubsetEqual>
   SubsetHash;
 
   // Hashes from Label to Subsets corr. to destination states of current state.

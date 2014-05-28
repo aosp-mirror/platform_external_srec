@@ -21,8 +21,7 @@
 
 #include <algorithm>
 
-#include <ext/hash_map>
-using __gnu_cxx::hash_map;
+#include <unordered_map>
 
 #include "fst/lib/encode.h"
 #include "fst/lib/push.h"
@@ -162,7 +161,7 @@ bool Equivalent(const Fst<Arc> &fst1, const Fst<Arc> &fst2) {
   // representing destination states of the corresponding arcs in fst1
   // and fst2, respectively.
   typedef
-    hash_map<typename Arc::Label, pair<MappedId, MappedId> >
+    std::unordered_map<typename Arc::Label, pair<MappedId, MappedId> >
     Label2StatePairMap;
 
   Label2StatePairMap arc_pairs;

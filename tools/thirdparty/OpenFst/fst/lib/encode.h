@@ -93,10 +93,7 @@ template <class A>  class EncodeTable {
     int32 encode_flags_;
   };
 
-  typedef hash_map<const Tuple*,
-                   Label,
-                   TupleKey,
-                   TupleEqual> EncodeHash;
+  typedef std::unordered_map<const Tuple*, Label, TupleKey, TupleEqual> EncodeHash;
 
   explicit EncodeTable(uint32 encode_flags)
       : flags_(encode_flags),
@@ -174,7 +171,7 @@ template <class A>  class EncodeTable {
     return strm;
   }
 
-  const uint32 flags() const { return flags_; }
+  uint32 flags() const { return flags_; }
  private:
   uint32 flags_;
   vector<Tuple*> encode_tuples_;
@@ -271,8 +268,8 @@ template <class A> class EncodeMapper {
                    MAP_REQUIRE_SUPERFINAL : MAP_NO_SUPERFINAL;
   }
 
-  const uint32 flags() const { return flags_; }
-  const EncodeType type() const { return type_; }
+  uint32 flags() const { return flags_; }
+  EncodeType type() const { return type_; }
 
   bool Write(ostream &strm, const string& source) {
     return table_->Write(strm, source);

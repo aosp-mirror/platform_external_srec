@@ -20,10 +20,8 @@
 #ifndef FST_LIB_EPSNORMALIZE_H__
 #define FST_LIB_EPSNORMALIZE_H__
 
-#include <ext/hash_map>
-using __gnu_cxx::hash_map;
-#include <ext/slist>
-using __gnu_cxx::slist;
+#include <unordered_map>
+#include <forward_list>
 
 #include "fst/lib/factor-weight.h"
 #include "fst/lib/invert.h"

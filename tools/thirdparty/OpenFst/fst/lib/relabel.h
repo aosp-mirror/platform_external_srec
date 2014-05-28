@@ -19,8 +19,7 @@
 #ifndef FST_LIB_RELABEL_H__
 #define FST_LIB_RELABEL_H__
 
-#include <ext/hash_map>
-using __gnu_cxx::hash_map;
+#include <unordered_map>
 
 #include "fst/lib/cache.h"
 #include "fst/lib/test-properties.h"
@@ -49,12 +48,12 @@ void Relabel(
   uint64 props = fst->Properties(kFstProperties, false);
 
   // construct label to label hash. Could
-  hash_map<Label, Label> input_map;
+  std::unordered_map<Label, Label> input_map;
   for (size_t i = 0; i < ipairs.size(); ++i) {
     input_map[ipairs[i].first] = ipairs[i].second;
   }
 
-  hash_map<Label, Label> output_map;
+  std::unordered_map<Label, Label> output_map;
   for (size_t i = 0; i < opairs.size(); ++i) {
     output_map[opairs[i].first] = opairs[i].second;
   }
@@ -68,7 +67,7 @@ void Relabel(
 
       // relabel input
       // only relabel if relabel pair defined
-      typename hash_map<Label, Label>::iterator it =
+      typename std::unordered_map<Label, Label>::iterator it =
         input_map.find(arc.ilabel);
       if (it != input_map.end()) {arc.ilabel = it->second; }
 
@@ -277,14 +276,14 @@ class RelabelFstImpl : public CacheImpl<A> {
 
       // relabel input
       if (relabel_input_) {
-        typename hash_map<Label, Label>::iterator it =
+        typename std::unordered_map<Label, Label>::iterator it =
           input_map_.find(arc.ilabel);
         if (it != input_map_.end()) { arc.ilabel = it->second; }
       }
 
       // relabel output
       if (relabel_output_) {
-        typename hash_map<Label, Label>::iterator it =
+        typename std::unordered_map<Label, Label>::iterator it =
           output_map_.find(arc.olabel);
         if (it != output_map_.end()) { arc.olabel = it->second; }
       }
@@ -298,8 +297,8 @@ class RelabelFstImpl : public CacheImpl<A> {
  private:
   const Fst<A> *fst_;
 
-  hash_map<Label, Label> input_map_;
-  hash_map<Label, Label> output_map_;
+  std::unordered_map<Label, Label> input_map_;
+  std::unordered_map<Label, Label> output_map_;
   bool relabel_input_;
   bool relabel_output_;
 

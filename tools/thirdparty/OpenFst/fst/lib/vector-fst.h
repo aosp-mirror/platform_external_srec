@@ -360,7 +360,7 @@ VectorFstImpl<A> *VectorFstImpl<A>::Read(istream &strm,
     impl->BaseImpl::AddState();
     VectorState<A> *state = impl->GetState(s);
     state->final.Read(strm);
-    int64 narcs;
+    size_t narcs;
     ReadType(strm, &narcs);
     if (!strm) {
       LOG(ERROR) << "VectorFst::Read: read failed: " << opts.source;
@@ -429,7 +429,7 @@ bool VectorFstImpl<A>::Write(ostream &strm,
   for (StateId s = 0; s < NumStates(); ++s) {
     const VectorState<A> *state = this->GetState(s);
     state->final.Write(strm);
-    int64 narcs = state->arcs.size();
+    size_t narcs = state->arcs.size();
     WriteType(strm, narcs);
     for (size_t a = 0; a < narcs; ++a) {
       const A &arc = state->arcs[a];

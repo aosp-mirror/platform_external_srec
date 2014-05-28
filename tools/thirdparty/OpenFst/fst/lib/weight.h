@@ -124,7 +124,7 @@ class NaturalLess {
 
   NaturalLess() {
     uint64 props = kIdempotent | kLeftSemiring | kRightSemiring;
-    if (W::Properties() & props != props)
+    if ((W::Properties() & props) != props)
       LOG(ERROR) << "NaturalLess: Weight type is not idempotent and "
                  << "(left and right) distributive: " << W::Type();
   }
