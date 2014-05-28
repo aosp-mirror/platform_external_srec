@@ -283,7 +283,7 @@ template<class A> class ILabelCompare {
   }
 
   uint64 Properties(uint64 props) const {
-    return props & kArcSortProperties | kILabelSorted;
+    return (props & kArcSortProperties) | kILabelSorted;
   }
 };
 
@@ -296,7 +296,7 @@ template<class A> class OLabelCompare {
   }
 
   uint64 Properties(uint64 props) const {
-    return props & kArcSortProperties | kOLabelSorted;
+    return (props & kArcSortProperties) | kOLabelSorted;
   }
 };
 

@@ -224,8 +224,8 @@ namespace fst {
 	if (col.size() == 0 || col[0][0] == '\0')  // empty line
 	  continue;
 	if (col.size() > 5 ||
-	    col.size() > 4 && accep ||
-	    col.size() == 3 && !accep) {
+	    (col.size() > 4 && accep) ||
+	    (col.size() == 3 && !accep)) {
 	  LOG(ERROR) << "FstReader: Bad number of columns, source = " << source_
 		     << ", line = " << nline_;
 	  exit(1);
@@ -318,7 +318,8 @@ namespace fst {
 	return n;
       
       // remap state IDs to make dense set
-      typename hash_map<StateId, StateId>::const_iterator it = states_.find(n);
+      typename std::unordered_map<StateId, StateId>::const_iterator it =
+         states_.find(n);
       if (it == states_.end()) {
 	states_[n] = nstates_;
 	return nstates_++;
@@ -339,7 +340,7 @@ namespace fst {
       Weight w;
       istringstream strm(s);
       strm >> w;
-      if (strm.fail() || !allow_zero && w == Weight::Zero()) {
+      if (strm.fail() || (!allow_zero && w == Weight::Zero())) {
 	LOG(ERROR) << "FstReader: Bad weight = \"" << s
 		   << "\", source = " << source_ << ", line = " << nline_;
 	exit(1);
@@ -353,7 +354,7 @@ namespace fst {
     const SymbolTable *isyms_;           // ilabel symbol table
     const SymbolTable *osyms_;           // olabel symbol table
     const SymbolTable *ssyms_;           // slabel symbol table
-    hash_map<StateId, StateId> states_;  // state ID map
+    std::unordered_map<StateId, StateId> states_;  // state ID map
     StateId nstates_;                    // number of seen states
     bool keep_state_numbering_;
     DISALLOW_EVIL_CONSTRUCTORS(FstReader);

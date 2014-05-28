@@ -669,12 +669,13 @@ void AutoQueue<StateId>::SccQueueType(const Fst<A> &fst,
         QueueType &type = (*queue_type)[scc[state]];
         if (!less || ((*less)(arc.weight, Weight::One())))
           type = FIFO_QUEUE;
-        else if ((type == TRIVIAL_QUEUE) || (type == LIFO_QUEUE))
+        else if ((type == TRIVIAL_QUEUE) || (type == LIFO_QUEUE)) {
           if (!(Weight::Properties() & kIdempotent) ||
               (arc.weight != Weight::Zero() && arc.weight != Weight::One()))
             type = SHORTEST_FIRST_QUEUE;
           else
             type = LIFO_QUEUE;
+        }
         if (type != TRIVIAL_QUEUE) *all_trivial = false;
       }
       if (!(Weight::Properties() & kIdempotent) ||

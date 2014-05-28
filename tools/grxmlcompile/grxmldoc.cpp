@@ -59,7 +59,7 @@ using namespace std;
 int get_range(const std::string& s, int* minCnt, int* maxCnt)
 {
   std::string sval;
-  unsigned int p1 =s.find("-");
+  size_t p1 =s.find("-");
   if ( p1 !=string::npos ) {
     sval.assign( s, 0, p1 );
     if(strspn(sval.c_str(),"0123456789")<1) return 1;

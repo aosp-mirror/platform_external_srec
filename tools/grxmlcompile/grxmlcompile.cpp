@@ -19,7 +19,7 @@
 
 #include "ptypes.h"
 
-#include <ext/hash_map>
+#include <unordered_map>
 
 #include "fst/lib/fst.h"
 #include "fst/lib/fstlib.h"
@@ -234,7 +234,7 @@ int main(int argc, char* argv[])
     // Create grammar network files. Use prefix of input file for output.
     std::string s = filename;
     std::string grxmlbase = outdir + "/" + ExtractFileName(grxmlfile);
-    unsigned int p1 = grxmlbase.find_last_of(".");
+    size_t p1 = grxmlbase.find_last_of(".");
     if ( p1 != string::npos ) 
       grxmlbase.assign( grxmlbase, 0, p1);
 
@@ -586,7 +586,7 @@ ESR_ReturnCode make_openfst_graphs(  GRXMLDoc* pDoc,
   int stateSt, stateEn;
   size_t len;
   bool do_skip_interword_silence = false;
-  hash_map<string,int> homonym_count;
+  std::unordered_map<string,int> homonym_count;
   int word_penalty = 0;
 
   rc = SR_VocabularyLoad(vocabFilename, &vocab);
@@ -730,7 +730,7 @@ ESR_ReturnCode make_openfst_graphs(  GRXMLDoc* pDoc,
 	}
 	/* add epsilons if this is a homonym */
 	string pron_string = pron;
-	hash_map<string,int>::const_iterator it = homonym_count.find( pron_string);
+	std::unordered_map<string,int>::const_iterator it = homonym_count.find( pron_string);
 	if(it == homonym_count.end()) {
 	  homonym_count[ pron_string] = 0;
 	} else {

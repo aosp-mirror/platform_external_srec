@@ -55,11 +55,11 @@ class FstRegister {
     return register_;
   }
 
-  const Reader GetReader(const string &type) const {
+  Reader GetReader(const string &type) const {
     return GetEntry(type).reader;
   }
 
-  const Converter GetConverter(const string &type) const {
+  Converter GetConverter(const string &type) const {
     return GetEntry(type).converter;
   }
 

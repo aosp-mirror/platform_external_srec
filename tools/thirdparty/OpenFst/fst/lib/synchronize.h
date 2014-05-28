@@ -22,8 +22,8 @@
 
 #include <algorithm>
 
-#include <ext/hash_map>
-using __gnu_cxx::hash_map;
+#include <unordered_map>
+#include <unordered_set>
 
 #include "fst/lib/cache.h"
 #include "fst/lib/test-properties.h"
@@ -287,8 +287,8 @@ class SynchronizeFstImpl
   };
 
 
-  typedef hash_map<Element, StateId, ElementKey, ElementEqual> ElementMap;
-  typedef hash_set<const String*, StringKey, StringEqual> StringSet;
+  typedef std::unordered_map<Element, StateId, ElementKey, ElementEqual> ElementMap;
+  typedef std::unordered_set<const String*, StringKey, StringEqual> StringSet;
 
   const Fst<A> *fst_;
   vector<Element> elements_;  // mapping Fst state to Elements

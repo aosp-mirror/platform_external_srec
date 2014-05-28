@@ -40,7 +40,7 @@ class GRXMLDoc
 public:
     typedef TiXmlNode XMLNode;
     // Some convenience items for string comparison
-    typedef enum KeywordValues {NodeTypeGrammar, NodeTypeRule, NodeTypeRuleReference, NodeTypeOneOf, NodeTypeItem, NodeTypeTag, NodeTypeCount, NodeTypeMeta, NodeTypeBadValue};
+    enum KeywordValues {NodeTypeGrammar, NodeTypeRule, NodeTypeRuleReference, NodeTypeOneOf, NodeTypeItem, NodeTypeTag, NodeTypeCount, NodeTypeMeta, NodeTypeBadValue};
     typedef  std::map<std::string, KeywordValues> KEYWDPAIR;
 
     typedef struct {

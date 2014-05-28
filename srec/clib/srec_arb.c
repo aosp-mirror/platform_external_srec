@@ -300,7 +300,7 @@ int read_arbdata_from_stream(srec_arbdata** pallotree, char* filename, int buffe
   buffer = (char*)CALLOC_CLR(fpos, sizeof(char), "srec.arbdata");
   pfseek(fp, 0, SEEK_SET);
 
-  buffer_size = fpos;
+  /* buffer_size = fpos; */
   pbuf = buffer;
 
   allotree = (srec_arbdata*)buffer;

@@ -21,8 +21,7 @@
 
 #include <algorithm>
 
-#include <ext/hash_map>
-using __gnu_cxx::hash_map;
+#include <unordered_map>
 
 #include "fst/lib/cache.h"
 #include "fst/lib/test-properties.h"
@@ -252,10 +251,8 @@ class ComposeStateTable {
   };
 
   // Lookup table mapping state tuples to state IDs.
-  typedef hash_map<StateTuple,
-                         StateId,
-                         StateTupleKey,
-                         StateTupleEqual> StateTable;
+  typedef std::unordered_map<StateTuple, StateId, StateTupleKey,
+                             StateTupleEqual> StateTable;
  // Actual table data.
   StateTable table_;
 
@@ -369,7 +366,7 @@ class ComposeFstImpl : public ComposeFstImplBase<A> {
                      << "sorted (special symbols present)";
         break;
       case 0:
-        if (!isorted && !osorted || FLAGS_fst_verify_properties) {
+        if ((!isorted && !osorted) || FLAGS_fst_verify_properties) {
           osorted = fst1.Properties(kOLabelSorted, true);
           if (!osorted)
             isorted = fst2.Properties(kILabelSorted, true);
