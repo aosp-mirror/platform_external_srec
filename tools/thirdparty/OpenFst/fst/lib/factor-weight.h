@@ -22,10 +22,8 @@
 
 #include <algorithm>
 
-#include <ext/hash_map>
-using __gnu_cxx::hash_map;
-#include <ext/slist>
-using __gnu_cxx::slist;
+#include <unordered_map>
+#include <forward_list>
 
 #include "fst/lib/cache.h"
 #include "fst/lib/test-properties.h"
@@ -310,7 +308,7 @@ class FactorWeightFstImpl
     static const int kPrime = 7853;
   };
 
-  typedef hash_map<Element, StateId, ElementKey, ElementEqual> ElementMap;
+  typedef std::unordered_map<Element, StateId, ElementKey, ElementEqual> ElementMap;
 
   const Fst<A> *fst_;
   float delta_;

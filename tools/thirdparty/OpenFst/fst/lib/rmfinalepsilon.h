@@ -19,8 +19,7 @@
 #ifndef FST_LIB_RMFINALEPSILON_H__
 #define FST_LIB_RMFINALEPSILON_H__
 
-#include <ext/hash_set>
-using __gnu_cxx::hash_set;
+#include <unordered_set>
 
 #include "fst/lib/connect.h"
 #include "fst/lib/mutable-fst.h"
@@ -42,7 +41,7 @@ void RmFinalEpsilon(MutableFst<A>* fst) {
   // Find potential list of removable final states. These are final states
   // that have no outgoing transitions or final states that have a
   // non-coaccessible future. Complexity O(S)
-  hash_set<StateId> finals;
+  std::unordered_set<StateId> finals;
   for (StateIterator<Fst<A> > siter(*fst); !siter.Done(); siter.Next()) {
     StateId s = siter.Value();
     if (fst->Final(s) != Weight::Zero()) {

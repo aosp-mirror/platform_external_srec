@@ -27,9 +27,9 @@
 #include <string>
 #include <vector>
 
-#include <ext/hash_map>
 #include <fcntl.h>
 #include <pthread.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -293,22 +293,5 @@ class MD5 {
  private:
   DISALLOW_EVIL_CONSTRUCTORS(MD5);
 };
-
-// Hashing functions
-namespace __gnu_cxx {
-
-template<> struct hash<int64> {
-  size_t operator()(int64 x) const {
-    return x;
-  }
-};
-
-template<> struct hash<string> {
-  size_t operator()(const string &s) const {
-    return __stl_hash_string(s.c_str());
-  }
-};
-
-}  // namespace __gnu_cxx
 
 #endif  // FST_COMPAT_H__

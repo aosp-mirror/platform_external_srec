@@ -69,7 +69,7 @@ class AcousticModel
 class Pronunciation
 {
     public:
-        typedef enum PelPosition {LEFT, RIGHT, MIDDLE};
+        enum PelPosition {LEFT, RIGHT, MIDDLE};
         Pronunciation();
         //    Pronunciation( Vocabulary & vocab );
         int lookup( Vocabulary & vocab, std::string  & phrase );

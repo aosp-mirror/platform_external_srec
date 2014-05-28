@@ -20,10 +20,8 @@
 #ifndef FST_LIB_RMEPSILON_H__
 #define FST_LIB_RMEPSILON_H__
 
-#include <ext/hash_map>
-using __gnu_cxx::hash_map;
-#include <ext/slist>
-using __gnu_cxx::slist;
+#include <unordered_map>
+#include <forward_list>
 
 #include "fst/lib/arcfilter.h"
 #include "fst/lib/cache.h"
@@ -109,8 +107,8 @@ class RmEpsilonState {
   };
 
  private:
-  typedef hash_map<Element, pair<StateId, ssize_t>,
-                   ElementKey, ElementEqual> ElementMap;
+  typedef std::unordered_map<Element, pair<StateId, ssize_t>,
+                             ElementKey, ElementEqual> ElementMap;
 
   const Fst<Arc> &fst_;
   // Distance from state being expanded in epsilon-closure.
@@ -125,7 +123,7 @@ class RmEpsilonState {
   EpsilonArcFilter<Arc> eps_filter_;
   stack<StateId> eps_queue_;      // Queue used to visit the epsilon-closure
   vector<bool> visited_;          // '[i] = true' if state 'i' has been visited
-  slist<StateId> visited_states_; // List of visited states
+  std::forward_list<StateId> visited_states_; // List of visited states
   vector<Arc> arcs_;              // Arcs of state being expanded
   Weight final_;                  // Final weight of state being expanded
 

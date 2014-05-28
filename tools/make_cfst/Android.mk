@@ -24,6 +24,8 @@ LOCAL_CFLAGS += \
 	$(ASR_GLOBAL_DEFINES) \
 	$(ASR_GLOBAL_CPPFLAGS) \
 
+LOCAL_CPPFLAGS += -std=c++11
+
 LOCAL_SHARED_LIBRARIES := \
 	libESR_Shared \
 	libESR_Portable \

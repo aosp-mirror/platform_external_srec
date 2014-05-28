@@ -353,7 +353,7 @@ int CA_CheckTranscription(CA_Syntax *hSyntax, const char *transcription, int no)
 void CA_ClearSyntaxForRecognizer(CA_Syntax *hSyntax, CA_Recog *hRecog)
 {
   int rc;
-  hSyntax = NULL; /* not used */
+  (void) hSyntax; /* not used */
   rc = clear_grammars_for_recognition(hRecog->recm);
   return;
 }

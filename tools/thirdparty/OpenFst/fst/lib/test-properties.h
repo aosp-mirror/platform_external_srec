@@ -19,9 +19,7 @@
 #ifndef FST_LIB_TEST_PROPERTIES_H__
 #define FST_LIB_TEST_PROPERTIES_H__
 
-#include <ext/hash_set>
-using __gnu_cxx::hash_set;
-
+#include <unordered_set>
 
 #include "fst/lib/connect.h"
 #include "fst/lib/dfs-visit.h"
@@ -35,7 +33,7 @@ namespace fst {
 // For a trinary (i.e. two-bit) property, both bits are
 // returned set iff either corresponding input bit is set.
 inline uint64 KnownProperties(uint64 props) {
-  return kBinaryProperties | props & kTrinaryProperties |
+  return kBinaryProperties | (props & kTrinaryProperties) |
     (props & kPosTrinaryProperties) << 1 |
     (props & kNegTrinaryProperties) >> 1;
 }
@@ -114,8 +112,8 @@ uint64 ComputeProperties(const Fst<Arc> &fst, uint64 mask, uint64 *known,
     if (mask & (kODeterministic | kNonODeterministic))
       comp_props |= kODeterministic;
 
-    hash_set<Label> *ilabels = 0;
-    hash_set<Label> *olabels = 0;
+    std::unordered_set<Label> *ilabels = 0;
+    std::unordered_set<Label> *olabels = 0;
 
     StateId nfinal = 0;
     for (StateIterator< Fst<Arc> > siter(fst);
@@ -126,9 +124,9 @@ uint64 ComputeProperties(const Fst<Arc> &fst, uint64 mask, uint64 *known,
       Arc prev_arc(kNoLabel, kNoLabel, Weight::One(), 0);
       // Create these only if we need to
       if (mask & (kIDeterministic | kNonIDeterministic))
-        ilabels = new hash_set<Label>;
+        ilabels = new std::unordered_set<Label>;
       if (mask & (kODeterministic | kNonODeterministic))
-        olabels = new hash_set<Label>;
+        olabels = new std::unordered_set<Label>;
 
       for (ArcIterator< Fst<Arc> > aiter(fst, s);
            !aiter.Done();

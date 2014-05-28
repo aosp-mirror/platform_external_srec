@@ -20,8 +20,7 @@
 #ifndef FST_LIB_REPLACE_H__
 #define FST_LIB_REPLACE_H__
 
-#include <ext/hash_map>
-using __gnu_cxx::hash_map;
+#include <unordered_map>
 
 #include "fst/lib/fst.h"
 #include "fst/lib/cache.h"
@@ -75,7 +74,7 @@ class ReplaceFstImpl : public CacheImpl<A> {
   typedef typename A::StateId StateId;
   typedef CacheState<A> State;
   typedef A Arc;
-  typedef hash_map<Label, Label> NonTerminalHash;
+  typedef std::unordered_map<Label, Label> NonTerminalHash;
 
 
   // \struct StateTuple
@@ -379,7 +378,7 @@ class ReplaceFstImpl : public CacheImpl<A> {
     }
   };
 
-  typedef hash_map<StateTuple, StateId, StateTupleKey, StateTupleEqual>
+  typedef std::unordered_map<StateTuple, StateId, StateTupleKey, StateTupleEqual>
   StateTupleHash;
 
   // \class PrefixTuple
@@ -451,7 +450,7 @@ class ReplaceFstImpl : public CacheImpl<A> {
     }
   };
 
-  typedef hash_map<StackPrefix, int, StackPrefixKey, StackPrefixEqual>
+  typedef std::unordered_map<StackPrefix, int, StackPrefixKey, StackPrefixEqual>
   StackPrefixHash;
 
   // private methods

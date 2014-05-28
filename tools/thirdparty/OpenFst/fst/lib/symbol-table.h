@@ -19,11 +19,10 @@
 #ifndef FST_LIB_SYMBOL_TABLE_H__
 #define FST_LIB_SYMBOL_TABLE_H__
 
-#include <ext/hash_map>
-using __gnu_cxx::hash_map;
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "fst/lib/compat.h"
@@ -70,7 +69,7 @@ class SymbolTableImpl {
   // Return the string associated with the key. If the key is out of
   // range (<0, >max), return an empty string.
   string Find(int64 key) const {
-    hash_map<int64, string>::const_iterator it =
+    std::unordered_map<int64, string>::const_iterator it =
       key_map_.find(key);
     if (it == key_map_.end()) {
       return "";
@@ -89,7 +88,7 @@ class SymbolTableImpl {
   // Return the key associated with the symbol. If the symbol
   // does not exists, return -1.
   int64 Find(const char* symbol) const {
-    hash_map<string, int64>::const_iterator it =
+    unordered_map<string, int64>::const_iterator it =
       symbol_map_.find(symbol);
     if (it == symbol_map_.end()) {
       return -1;
@@ -126,8 +125,8 @@ class SymbolTableImpl {
   string name_;
   int64 available_key_;
   vector<const char *> symbols_;
-  hash_map<int64, string> key_map_;
-  hash_map<string, int64> symbol_map_;
+  std::unordered_map<int64, string> key_map_;
+  std::unordered_map<string, int64> symbol_map_;
 
   mutable int ref_count_;
   mutable bool check_sum_finalized_;
@@ -376,7 +375,7 @@ inline bool CompatSymbols(const SymbolTable *syms1,
     return true;
   else if (!syms1 && !syms2)
     return true;
-  else if (syms1 && !syms2 || !syms1 && syms2)
+  else if ((syms1 && !syms2) || (!syms1 && syms2))
     return false;
   else
     return syms1->CheckSum() == syms2->CheckSum();

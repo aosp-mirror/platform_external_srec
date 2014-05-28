@@ -363,11 +363,12 @@ void SubGraph::ClearDuplicateArcs ()
     SortLanguage();
     currId= 0;
     for (int ii= 1; ii < numArc; ii++) {
-        if (arc[forwardList[ii]]->GetInput() != DISCARD_LABEL)
+        if (arc[forwardList[ii]]->GetInput() != DISCARD_LABEL) {
             if (ARC_COMPARE (forwardList[currId], forwardList[ii]) == 0)
                 arc[forwardList[ii]]->AssignInput (DISCARD_LABEL);
             else
                 currId= ii;
+        }
     }
     return;
 }
