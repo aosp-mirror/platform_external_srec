@@ -16,16 +16,12 @@ LOCAL_C_INCLUDES := \
 LOCAL_CFLAGS += \
 	-DFST_DL \
 
-LOCAL_CLANG := true
-
-LOCAL_CPPFLAGS += -std=c++11
+LOCAL_CPPFLAGS +=  -std=c++11
 
 LOCAL_SHARED_LIBRARIES := \
 
 LOCAL_LDLIBS += -lpthread
 
 LOCAL_MODULE := libfst
-
-include external/libcxx/libcxx.mk
 
 include $(BUILD_HOST_SHARED_LIBRARY)

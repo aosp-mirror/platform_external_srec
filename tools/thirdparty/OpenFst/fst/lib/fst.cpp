@@ -65,11 +65,9 @@ bool FstHeader::Read(istream &strm, const string &source) {
   ReadType(strm, &start_);
   ReadType(strm, &numstates_);
   ReadType(strm, &numarcs_);
-  if (!strm) {
+  if (!strm)
     LOG(ERROR) << "FstHeader::Read: read failed: " << source;
-    return false;
-  }
-  return true;
+  return strm;
 }
 
 // Write Fst magic number and Fst header.
@@ -83,11 +81,9 @@ bool FstHeader::Write(ostream &strm, const string &source) const {
   WriteType(strm, start_);
   WriteType(strm, numstates_);
   WriteType(strm, numarcs_);
-  if (!strm) {
+  if (!strm)
     LOG(ERROR) << "FstHeader::Write: write failed: " << source;
-    return false;
-  }
-  return true;
+  return strm;
 }
 
 }

@@ -138,11 +138,9 @@ bool SymbolTableImpl::Write(ostream &strm) const {
     WriteType(strm, it->second);
   }
   strm.flush();
-  if (!strm) {
+  if (!strm)
     LOG(ERROR) << "SymbolTable::Write: write failed";
-    return false;
-  }
-  return true;
+  return strm;
 }
 
 bool SymbolTableImpl::WriteText(ostream &strm) const {
@@ -152,11 +150,9 @@ bool SymbolTableImpl::WriteText(ostream &strm) const {
     strm.write(line, strlen(line));
   }
   strm.flush();
-  if (!strm) {
+  if (!strm)
     LOG(ERROR) << "SymbolTable::WriteText: write failed";
-    return false;
-  }
-  return true;
+  return strm;
 }
 
 }  // namespace fst

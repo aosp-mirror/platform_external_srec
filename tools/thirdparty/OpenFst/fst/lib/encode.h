@@ -137,11 +137,9 @@ template <class A>  class EncodeTable {
       tuple->weight.Write(strm);
     }
     strm.flush();
-    if (!strm) {
+    if (!strm)
       LOG(ERROR) << "EncodeTable::Write: write failed: " << source;
-      return false;
-    }
-    return true;
+    return strm;
   }
 
   bool Read(istream &strm, const string &source) {
@@ -168,11 +166,9 @@ template <class A>  class EncodeTable {
       encode_tuples_.push_back(tuple);
       encode_hash_[encode_tuples_.back()] = encode_tuples_.size();
     }
-    if (!strm) {
+    if (!strm)
       LOG(ERROR) << "EncodeTable::Read: read failed: " << source;
-      return false;
-    }
-    return true;
+    return strm;
   }
 
   uint32 flags() const { return flags_; }

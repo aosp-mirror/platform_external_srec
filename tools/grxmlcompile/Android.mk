@@ -63,8 +63,6 @@ LOCAL_CFLAGS +=	-DOPENFSTSDK
 LOCAL_SHARED_LIBRARIES += libfst
 endif
 
-LOCAL_CLANG := true
-
 LOCAL_CPPFLAGS += -std=c++11
 
 LOCAL_STATIC_LIBRARIES := \
@@ -76,7 +74,5 @@ LOCAL_LDLIBS := \
 	-ldl \
 
 LOCAL_MODULE:= grxmlcompile
-
-include external/libcxx/libcxx.mk
 
 include $(BUILD_HOST_EXECUTABLE)
