@@ -24,6 +24,8 @@ LOCAL_CFLAGS += \
 	$(ASR_GLOBAL_DEFINES) \
 	$(ASR_GLOBAL_CPPFLAGS) \
 
+LOCAL_CLANG := true
+
 LOCAL_CPPFLAGS += -std=c++11
 
 LOCAL_SHARED_LIBRARIES := \
@@ -50,5 +52,7 @@ LOCAL_LDLIBS += -ldl
 endif
 
 LOCAL_MODULE:= make_cfst
+
+include external/libcxx/libcxx.mk
 
 include $(BUILD_HOST_EXECUTABLE)
