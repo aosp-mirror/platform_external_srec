@@ -27,8 +27,8 @@ class SymbolTableIterator;
 class LogWeight;
 class TropicalWeight;
 
-class LogArc;
-class StdArc;
+struct LogArc;
+struct StdArc;
 
 template <class A> class ConstFst;
 template <class A> class ExpandedFst;
