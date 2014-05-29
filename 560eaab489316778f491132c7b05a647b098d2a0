@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ff8c944a_979caee4",
+        "filename": "tools/thirdparty/OpenFst/fst/lib/fst-decl.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1010118
+      },
+      "writtenOn": "2014-05-29T00:26:13Z",
+      "side": 1,
+      "message": "strictly this change just fixes a warning, not an error",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 14
+      },
+      "revId": "560eaab489316778f491132c7b05a647b098d2a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
