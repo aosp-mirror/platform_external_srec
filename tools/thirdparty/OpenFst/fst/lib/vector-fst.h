@@ -440,11 +440,9 @@ bool VectorFstImpl<A>::Write(ostream &strm,
     }
   }
   strm.flush();
-  if (!strm) {
+  if (!strm)
     LOG(ERROR) << "VectorFst::Write: write failed: " << opts.source;
-    return false;
-  }
-  return true;
+  return strm;
 }
 
 // Simple concrete, mutable FST. Supports additional operations:
