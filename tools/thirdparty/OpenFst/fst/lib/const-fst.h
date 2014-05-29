@@ -211,9 +211,11 @@ bool ConstFstImpl<A>::Write(ostream &strm,
     strm.write("", 1);
   strm.write(reinterpret_cast<char *>(arcs_), narcs_ * sizeof(A));
   strm.flush();
-  if (!strm)
+  if (!strm) {
     LOG(ERROR) << "ConstFst::Write: Write failed: " << opts.source;
-  return strm;
+    return false;
+  }
+  return true;
 }
 
 // Simple concrete immutable FST.  This class attaches interface to

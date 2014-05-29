@@ -38,11 +38,6 @@ static const char portable_h[] = "$Id: portable.h,v 1.4.10.4 2007/10/15 18:06:25
 
 #define ASSERT passert
 
-/* QNX defines log in math.h */
-#ifndef log
-#define log(X)          ((X) <= 1e-32 ? -MAX_LOG : log(X))
-/* #define exp(X)          ((X) < FLT_MIN_EXP ? 0.0 : exp(X)) */
-#endif
 /*  Allocation macros
 */
 
