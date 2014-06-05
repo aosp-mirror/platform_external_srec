@@ -38,4 +38,6 @@ LOCAL_SHARED_LIBRARIES := \
 	
 LOCAL_MODULE:= test_swiarb
 
+LOCAL_32_BIT_ONLY := true
+
 include $(BUILD_HOST_EXECUTABLE)

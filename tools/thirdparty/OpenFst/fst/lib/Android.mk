@@ -26,6 +26,8 @@ LOCAL_LDLIBS += -lpthread
 
 LOCAL_MODULE := libfst
 
+LOCAL_32_BIT_ONLY := true
+
 include external/libcxx/libcxx.mk
 
 include $(BUILD_HOST_SHARED_LIBRARY)
