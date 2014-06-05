@@ -105,5 +105,6 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES := dictionary/cmu2nuance.cpp
 LOCAL_MODULE := cmu2nuance
 LOCAL_MODULE_TAGS := optional
+LOCAL_32_BIT_ONLY := true
 
 include $(BUILD_HOST_EXECUTABLE)

@@ -42,4 +42,6 @@ LOCAL_SHARED_LIBRARIES := \
 	
 LOCAL_MODULE:= parseStringTest
 
+LOCAL_32_BIT_ONLY := true
+
 include $(BUILD_HOST_EXECUTABLE)

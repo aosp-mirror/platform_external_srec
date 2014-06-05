@@ -56,6 +56,8 @@ LOCAL_CFLAGS += $(common_CFLAGS)
 
 LOCAL_MODULE := $(common_TARGET)
 
+LOCAL_32_BIT_ONLY := true
+
 include $(BUILD_HOST_SHARED_LIBRARY)
 
 
