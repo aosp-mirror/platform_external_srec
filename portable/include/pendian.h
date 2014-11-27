@@ -41,7 +41,7 @@
 #elif defined (__linux)
 /*	    */#include <endian.h>
 
-#elif defined(__FreeBSD__) || defined(_decunix_)
+#elif defined (__APPLE__) || defined(__FreeBSD__) || defined(_decunix_)
 /*	*/#include <machine/endian.h>
 
 #elif defined(__i386) || defined(_M_IX86)
