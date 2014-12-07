@@ -84,7 +84,7 @@ common_SHARED_LIBRARIES := \
 
 common_STATIC_LIBRARIES := \
 	libzipfile \
-	libunz \
+	libz \
 
 common_TARGET:= libSR_Core
 
