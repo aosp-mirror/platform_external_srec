@@ -48,7 +48,7 @@ LOCAL_SHARED_LIBRARIES := \
 
 LOCAL_STATIC_LIBRARIES := \
   libzipfile \
-  libunz \
+  libz \
 
 LOCAL_WHOLE_STATIC_LIBRARIES := \
   libESR_Shared \
