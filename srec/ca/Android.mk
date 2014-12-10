@@ -88,6 +88,8 @@ common_STATIC_LIBRARIES := \
 
 common_TARGET:= libSR_Core
 
+# ca_cms.c:214:28: error: address of array 'hWave->data.channel->spchchan'
+# will always evaluate to 'true' [-Werror,-Wpointer-bool-conversion]
 
 # For the host
 # =====================================================
@@ -105,6 +107,8 @@ LOCAL_MODULE := $(common_TARGET)
 
 LOCAL_32_BIT_ONLY := true
 
+LOCAL_CLANG_CFLAGS += -Wno-pointer-bool-conversion
+
 include $(BUILD_HOST_SHARED_LIBRARY)
 
 
@@ -118,5 +122,7 @@ LOCAL_C_INCLUDES := $(common_C_INCLUDES)
 LOCAL_CFLAGS += $(common_CFLAGS)
 
 LOCAL_MODULE := $(common_TARGET)
+
+LOCAL_CLANG_CFLAGS += -Wno-pointer-bool-conversion
 
 include $(BUILD_STATIC_LIBRARY)
